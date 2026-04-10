@@ -32,13 +32,23 @@
   --color-error: #9f403d;
   --color-on-error: #fff7f6;
 
+  --color-tertiary: #006b62;
+  --color-tertiary-dim: #005e56;
+  --color-on-tertiary: #e2fff9;
+  --color-tertiary-container: #91feef;
+  --color-on-tertiary-container: #006259;
+  
+  --color-surface-variant: #d9e4ea;
+  
   /* Shadows */
   --shadow-editorial: 0 20px 40px -15px rgba(42, 52, 57, 0.06);
+  --shadow-card: 0 8px 30px rgba(0, 0, 0, 0.02);
   
   /* Radii */
   --radius-xl: 0.5rem;
   --radius-2xl: 1rem;
   --radius-3xl: 2rem;
+  --radius-full: 9999px;
 }
 
 @layer base {

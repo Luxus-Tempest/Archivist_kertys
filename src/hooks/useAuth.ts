@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState, AppDispatch } from '../store';
-import { loginUser, signupUser, logout, clearError } from '../store/auth/authSlice';
+import { loginUser, signupUser, logout, clearError, fetchMe } from '../store/auth/authSlice';
 import type { LoginFormData, SignupFormData } from '../utils/validations';
 
 export const useAuth = () => {
@@ -13,6 +13,10 @@ export const useAuth = () => {
 
   const signup = async (data: SignupFormData) => {
     return dispatch(signupUser(data)).unwrap();
+  };
+
+  const getProfile = async () => {
+    return dispatch(fetchMe()).unwrap();
   };
 
   const handleLogout = () => {
@@ -31,6 +35,7 @@ export const useAuth = () => {
     isAuthenticated: !!token,
     login,
     signup,
+    getProfile,
     logout: handleLogout,
     clearError: handleClearError
   };

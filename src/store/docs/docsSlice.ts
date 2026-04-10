@@ -1,6 +1,7 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { UploadResponse } from '../../types/documents';
+import type { UploadResponse, HistoryResponse, SessionInfo } from '../../types/documents';
+import { fetchAuth } from '../../utils/api';
 
 export interface StagedFileMetadata {
   id: string;
@@ -13,25 +14,63 @@ export interface StagedFileMetadata {
 interface DocsState {
   stagedFiles: StagedFileMetadata[];
   activeSessions: Record<string, UploadResponse>;
+  history: {
+    sessions: SessionInfo[];
+    totalCount: number;
+    isLoading: boolean;
+    error: string | null;
+  };
 }
 
 // Récupération initiale depuis localStorage
 const loadInitialState = (): DocsState => {
+  const defaultState: DocsState = {
+    stagedFiles: [],
+    activeSessions: {},
+    history: {
+      sessions: [],
+      totalCount: 0,
+      isLoading: false,
+      error: null
+    }
+  };
+
   try {
     const saved = localStorage.getItem('docs_state');
     if (saved) {
-      return JSON.parse(saved);
+      const parsed = JSON.parse(saved);
+      // Merge saved state with default state to ensure new properties are defined
+      return {
+        ...defaultState,
+        ...parsed,
+        history: {
+          ...defaultState.history,
+          ...(parsed.history || {})
+        }
+      };
     }
   } catch (e) {
     console.error("Failed to load docs state from localStorage", e);
   }
-  return {
-    stagedFiles: [],
-    activeSessions: {},
-  };
+  return defaultState;
 };
 
 const initialState: DocsState = loadInitialState();
+
+export const fetchHistory = createAsyncThunk<
+  HistoryResponse,
+  { offset?: number, limit?: number } | void,
+  { rejectValue: string }
+>('docs/fetchHistory', async (params, thunkAPI) => {
+  try {
+    const offset = params?.offset ?? 0;
+    const limit = params?.limit ?? 10;
+    const data = await fetchAuth(`/docs/user/sessions-infos?offset=${offset}&limit=${limit}`);
+    return data as HistoryResponse;
+  } catch (err: any) {
+    return thunkAPI.rejectWithValue(err.message || "Failed to fetch history");
+  }
+});
 
 export const docsSlice = createSlice({
   name: 'docs',
@@ -83,6 +122,28 @@ export const docsSlice = createSlice({
       state.activeSessions[action.payload.id] = newSession as UploadResponse;
       localStorage.setItem('docs_state', JSON.stringify(state));
     }
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchHistory.pending, (state) => {
+      state.history.isLoading = true;
+      state.history.error = null;
+    });
+    builder.addCase(fetchHistory.fulfilled, (state, action: PayloadAction<HistoryResponse>) => {
+      state.history.isLoading = false;
+      if (action.payload.offset === 0) {
+        state.history.sessions = action.payload.row;
+      } else {
+        // Concatenate new sessions, avoiding duplicates if any
+        const existingIds = new Set(state.history.sessions.map(s => s.sessionId));
+        const newSessions = action.payload.row.filter(s => !existingIds.has(s.sessionId));
+        state.history.sessions = [...state.history.sessions, ...newSessions];
+      }
+      state.history.totalCount = action.payload.totalCount;
+    });
+    builder.addCase(fetchHistory.rejected, (state, action) => {
+      state.history.isLoading = false;
+      state.history.error = action.payload as string;
+    });
   },
 });
 

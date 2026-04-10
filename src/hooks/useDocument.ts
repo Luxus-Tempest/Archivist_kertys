@@ -1,12 +1,17 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { fetchAuth } from '../utils/api';
 import type { UploadResponse } from '../types/documents';
-
+import { fetchHistory } from '../store/docs/docsSlice';
+import type { RootState, AppDispatch } from '../store';
 
 export function useDocument() {
+  const dispatch = useDispatch<AppDispatch>();
   const [isUploading, setIsUploading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [localError, setError] = useState<string | null>(null);
   
+  const { history } = useSelector((state: RootState) => state.docs);
+
   const uploadFiles = async (files: File[]): Promise<UploadResponse | null> => {
     setIsUploading(true);
     setError(null);
@@ -41,10 +46,16 @@ export function useDocument() {
     }
   };
 
+  const getHistory = useCallback((params?: { offset?: number, limit?: number }) => {
+    return dispatch(fetchHistory(params));
+  }, [dispatch]);
+
   return {
     uploadFiles,
     fetchPendingSessions,
+    getHistory,
+    history,
     isUploading,
-    error
+    error: localError
   };
 }

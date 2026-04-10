@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Login } from './pages/Login';
 import { Signup } from './pages/Signup';
@@ -28,6 +29,17 @@ function GuestRoute({ children }: { children: React.ReactNode }) {
 }
 
 function App() {
+  const { token, user, getProfile } = useAuth();
+
+  // Rehydration du profil utilisateur au montage
+  useEffect(() => {
+    if (token && !user) {
+      getProfile().catch(() => {
+        // Optionnel: logger l'erreur ou forcer la déconnexion si le token est expiré
+      });
+    }
+  }, [token, user, getProfile]);
+
   return (
     <Router>
       <Routes>

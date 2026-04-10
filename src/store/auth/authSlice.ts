@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import type { AuthState, LoginResponse } from '../../types/auth';
+import type { AuthState, LoginResponse, User } from '../../types/auth';
 import type { LoginFormData, SignupFormData } from '../../utils/validations';
 
 
@@ -27,6 +27,33 @@ export const signupUser = createAsyncThunk<
     if (!response.ok) {
       const errorData = await response.json();
       return thunkAPI.rejectWithValue(errorData.message || 'Erreur lors de la création du compte.');
+    }
+    return await response.json();
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(error.message || 'Erreur de connexion au serveur.');
+  }
+});
+
+export const fetchMe = createAsyncThunk<
+  User,
+  void,
+  { rejectValue: string }
+>('auth/me', async (_, thunkAPI) => {
+  try {
+    const token = (thunkAPI.getState() as any).auth.token;
+    if (!token) return thunkAPI.rejectWithValue('No token found');
+
+    const response = await fetch(`${API_URL}/me`, {
+      method: 'GET',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      return thunkAPI.rejectWithValue(errorData.message || 'Erreur lors de la récupération du profil.');
     }
     return await response.json();
   } catch (error: any) {
@@ -100,6 +127,26 @@ const authSlice = createSlice({
     builder.addCase(loginUser.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.payload || 'Erreur inconnue';
+    });
+    // FetchMe
+    builder.addCase(fetchMe.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(fetchMe.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.error = null;
+      state.user = action.payload;
+    });
+    builder.addCase(fetchMe.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload || 'Erreur inconnue';
+      // Si le token est invalide, on déconnecte
+      if (action.payload === 'Unauthorized' || action.payload?.includes('token')) {
+        state.user = null;
+        state.token = null;
+        localStorage.removeItem('token');
+      }
     });
   },
 });

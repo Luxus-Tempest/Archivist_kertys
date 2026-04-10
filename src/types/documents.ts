@@ -22,3 +22,29 @@ export interface UploadResponse {
     fileName: string;
   }[];
 }
+
+export interface FileSessionInfo {
+  fileId: string;
+  fileName: string;
+  fileMFId: string | null;
+  fileMFClass: string | null;
+  status: ProcessingStatus;
+  category: string | null;
+  size: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SessionInfo {
+  sessionId: string;
+  sessionStatus: string;
+  date: string;
+  files: FileSessionInfo[];
+}
+
+export interface HistoryResponse {
+  totalCount: number;
+  offset: number;
+  limit: number;
+  row: SessionInfo[];
+}

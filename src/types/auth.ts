@@ -1,7 +1,10 @@
 export interface User {
-  id: string;
+  id?: string;
   email: string;
   fullName: string;
+  fileCount: number;
+  totalSize: number;
+  pendingSessions: number;
 }
 
 export interface AuthState {
