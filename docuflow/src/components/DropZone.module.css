@@ -1,0 +1,58 @@
+.zone {
+  background: var(--color-bg-primary);
+  border: 1.5px dashed var(--color-border-strong);
+  border-radius: 12px;
+  padding: 40px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  user-select: none;
+  outline: none;
+}
+
+.zone:focus-visible {
+  box-shadow: 0 0 0 3px rgba(83, 74, 183, 0.2);
+}
+
+.zone:hover {
+  border-color: #7F77DD;
+}
+
+.zone.dragging {
+  border-color: #7F77DD;
+  background: #EEEDFE;
+}
+
+.zone.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.iconWrap {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 14px;
+  background: #EEEDFE;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  margin-bottom: 6px;
+}
+
+.sub {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.link {
+  color: #534AB7;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
