@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 export function SidebarNew() {
   const navItems = [
     { name: 'Library', icon: 'book', path: '/history-new' },
-    { name: 'Recent', icon: 'history', path: '#' },
+    { name: 'Activities', icon: 'history', path: '#' },
     { name: 'Shared', icon: 'group', path: '#' },
     { name: 'Archive', icon: 'inventory_2', path: '/process-new' },
   ];

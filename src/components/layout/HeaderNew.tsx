@@ -36,7 +36,7 @@ export function HeaderNew() {
         <div className="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant/20 active:scale-95 transition-transform duration-200 cursor-pointer">
           <img 
             alt="User profile" 
-            src={`https://ui-avatars.com/api/?name=${user?.name || 'User'}&background=random`} 
+            src={`https://ui-avatars.com/api/?name=${user?.fullName || 'User'}&background=random`} 
           />
         </div>
       </div>

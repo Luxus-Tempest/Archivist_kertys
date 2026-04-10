@@ -31,8 +31,19 @@ export function useDocument() {
     }
   };
 
+  const fetchPendingSessions = async (): Promise<string[]> => {
+    try {
+      const data = await fetchAuth('/docs/pendingSessions');
+      return data.pendingSessions || [];
+    } catch (err) {
+      console.error("Failed to fetch pending sessions:", err);
+      return [];
+    }
+  };
+
   return {
     uploadFiles,
+    fetchPendingSessions,
     isUploading,
     error
   };

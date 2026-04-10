@@ -62,12 +62,26 @@ export const docsSlice = createSlice({
       delete state.activeSessions[action.payload];
       localStorage.setItem('docs_state', JSON.stringify(state));
     },
+    initializeSessionsFromIds: (state, action: PayloadAction<string[]>) => {
+      action.payload.forEach(id => {
+        if (!state.activeSessions[id]) {
+          state.activeSessions[id] = {
+            message: "Synchronizing...",
+            session: { id, status: 'Pending' },
+            files: []
+          };
+        }
+      });
+      localStorage.setItem('docs_state', JSON.stringify(state));
+    },
     updateSessionStatus: (state, action: PayloadAction<{id: string, update: Partial<UploadResponse>}>) => {
       const session = state.activeSessions[action.payload.id];
-      if (session) {
-        state.activeSessions[action.payload.id] = { ...session, ...action.payload.update };
-        localStorage.setItem('docs_state', JSON.stringify(state));
-      }
+      const newSession = {
+        ...(session || { message: '', session: { id: action.payload.id, status: '' }, files: [] }),
+        ...action.payload.update
+      };
+      state.activeSessions[action.payload.id] = newSession as UploadResponse;
+      localStorage.setItem('docs_state', JSON.stringify(state));
     }
   },
 });
@@ -79,6 +93,7 @@ export const {
   clearStagedFiles, 
   setSession, 
   removeSession,
+  initializeSessionsFromIds,
   updateSessionStatus
 } = docsSlice.actions;
 
