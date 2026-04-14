@@ -6,6 +6,7 @@ import { History } from './pages/History';
 import { Process } from './pages/Process';
 import { HistoryNew } from './pages/HistoryNew';
 import { ProcessNew } from './pages/ProcessNew';
+import { ExplorerNew } from './pages/ExplorerNew';
 import { DashboardLayout } from './components/layout/DashboardLayout';
 import { useAuth } from './hooks/useAuth';
 import './index.css';
@@ -23,7 +24,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 function GuestRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuth();
   if (isAuthenticated) {
-    return <Navigate to="/process-new" replace />;
+    return <Navigate to="/explorer-new" replace />;
   }
   return <>{children}</>;
 }
@@ -63,6 +64,11 @@ function App() {
         <Route path="/history-new" element={
           <ProtectedRoute>
             <HistoryNew />
+          </ProtectedRoute>
+        } />
+        <Route path="/explorer-new" element={
+          <ProtectedRoute>
+            <ExplorerNew />
           </ProtectedRoute>
         } />
 

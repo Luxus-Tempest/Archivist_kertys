@@ -5,9 +5,10 @@ import { SidebarNew } from './SidebarNew';
 
 interface DashboardLayoutNewProps {
   children: React.ReactNode;
+  isFullWidth?: boolean;
 }
 
-export function DashboardLayoutNew({ children }: DashboardLayoutNewProps) {
+export function DashboardLayoutNew({ children, isFullWidth = false }: DashboardLayoutNewProps) {
   return (
     <div className="bg-surface text-on-surface selection:bg-primary/20 min-h-screen">
       <HeaderNew />
@@ -16,7 +17,7 @@ export function DashboardLayoutNew({ children }: DashboardLayoutNewProps) {
         <SidebarNew />
         
         {/* Main Content Area */}
-        <main className="flex-1 md:ml-64 p-6 lg:p-12 max-w-7xl mx-auto w-full pb-32">
+        <main className={`flex-1 md:ml-64 ${isFullWidth ? 'pb-24' : 'p-6 lg:p-12 max-w-7xl mx-auto w-full pb-32'}`}>
           {children}
         </main>
       </div>

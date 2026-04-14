@@ -12,7 +12,7 @@ export function HeaderNew() {
       </div>
       
       <div className="flex items-center gap-4">
-        <div className="hidden md:flex gap-6 items-center mr-8">
+        {/* <div className="hidden md:flex gap-6 items-center mr-8">
           <Link 
             to="/history-new" 
             className="text-slate-900 font-semibold font-headline tracking-tight"
@@ -31,7 +31,7 @@ export function HeaderNew() {
           >
             Shared
           </Link>
-        </div>
+        </div> */}
 
         <div className="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant/20 active:scale-95 transition-transform duration-200 cursor-pointer">
           <img 

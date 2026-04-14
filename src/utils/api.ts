@@ -29,3 +29,27 @@ export async function fetchAuth(endpoint: string, options: RequestInit = {}) {
 
   return response.json();
 }
+
+/**
+ * Similar to fetchAuth but returns a Blob (for files/images).
+ */
+export async function fetchAuthBlob(endpoint: string, options: RequestInit = {}) {
+  const token = localStorage.getItem('token');
+  const headers = new Headers(options.headers || {});
+  
+  if (token) {
+    headers.set('Authorization', `Bearer ${token}`);
+  }
+  
+  const response = await fetch(`${API_URL}${endpoint}`, {
+    ...options,
+    headers,
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+    throw new Error(errorData?.message || 'Erreur lors de la récupération du fichier');
+  }
+
+  return response.blob();
+}
