@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { DashboardLayoutNew } from '../components/layout/DashboardLayoutNew';
 import { useMFilesDocsHook, type MFilesDocumentDto } from '../hooks/useMFilesDocsHook';
 import { Document, Page, pdfjs } from 'react-pdf';
@@ -10,6 +11,7 @@ import 'react-pdf/dist/Page/TextLayer.css';
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 export function ExplorerNew() {
   const { documents, isLoading, fetchDocuments, getFileContent } = useMFilesDocsHook();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [activeDoc, setActiveDoc] = useState<MFilesDocumentDto | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
@@ -22,10 +24,34 @@ export function ExplorerNew() {
   }, [fetchDocuments]);
 
   useEffect(() => {
-    if (documents.length > 0 && !activeDoc) {
-      setActiveDoc(documents[0]);
+    if (documents.length > 0) {
+      const urlObjectId = searchParams.get('oid');
+      const urlFileId = searchParams.get('fid');
+
+      if (urlObjectId && urlFileId) {
+        const foundDoc = documents.find((doc: any) => {
+          const docObjId = String(doc.ObjVer?.ID || doc.objVer?.id);
+          const files = doc.Files || doc.files || [];
+          const docFileId = String(files?.[0]?.ID || files?.[0]?.id);
+          return docObjId === urlObjectId && docFileId === urlFileId;
+        });
+
+        if (foundDoc && foundDoc !== activeDoc) {
+          setActiveDoc(foundDoc);
+        }
+      }
     }
-  }, [documents, activeDoc]);
+  }, [documents, searchParams, activeDoc]);
+
+  const handleRowClick = (doc: any) => {
+    const objId = String(doc.ObjVer?.ID || doc.objVer?.id);
+    const files = doc.Files || doc.files || [];
+    if (files.length > 0) {
+      const fileId = String(files[0].ID || files[0].id);
+      setSearchParams({ oid: objId, fid: fileId }, { replace: true });
+    }
+    setActiveDoc(doc);
+  };
 
   useEffect(() => {
     let currentUrl: string | null = null;
@@ -106,23 +132,25 @@ export function ExplorerNew() {
         <section className="w-full md:w-[320px] lg:w-[350px] shrink-0 bg-surface-container-lowest border-r border-slate-100 flex flex-col h-full overflow-hidden">
           {/* Header Action Bar */}
           <div className="p-4 shrink-0 border-b border-surface">
-            {/* <div className="flex items-center gap-2 mb-4">
-              <span className="material-symbols-outlined text-on-surface text-[20px] cursor-pointer">home</span>
-              <span className="material-symbols-outlined text-on-surface-variant text-[16px]">chevron_right</span>
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-blue-500 text-[20px]">grid_view</span>
-                <span className="text-sm font-semibold truncate text-on-surface">Récemment ...</span>
+            <div className="flex items-center gap-2">
+              <div className="flex-1 flex items-center justify-between border border-outline-variant/30 rounded-lg px-3 py-2 bg-white">
+                <input 
+                  type="text" 
+                  placeholder="Rechercher par nom..." 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="text-[13px] font-medium border-none bg-transparent outline-none w-full text-on-surface placeholder:text-outline" 
+                />
+                <span className="material-symbols-outlined text-[18px] text-outline-variant">search</span>
               </div>
-            </div> */}
-            <div className="flex items-center justify-between border border-outline-variant/30 rounded-lg px-3 py-2 bg-white">
-              <input 
-                type="text" 
-                placeholder="Rechercher par nom..." 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="text-[13px] font-medium border-none bg-transparent outline-none w-full text-on-surface placeholder:text-outline" 
-              />
-              <span className="material-symbols-outlined text-[18px] text-outline-variant">search</span>
+              <button 
+                onClick={() => fetchDocuments()}
+                disabled={isLoading}
+                className="shrink-0 w-9 h-9 flex items-center justify-center bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed group"
+                title="Rafraîchir la liste"
+              >
+                <span className={`material-symbols-outlined text-[18px] transition-transform ${isLoading ? 'animate-spin' : 'group-hover:rotate-180'}`}>sync</span>
+              </button>
             </div>
           </div>
           
@@ -142,11 +170,22 @@ export function ExplorerNew() {
               </thead>
               <tbody className="divide-y divide-slate-50">
                 {isLoading && documents.length === 0 ? (
-                  <tr>
-                    <td colSpan={3} className="p-8 text-center">
-                      <span className="material-symbols-outlined animate-spin text-primary">sync</span>
-                    </td>
-                  </tr>
+                  Array.from({ length: 10 }).map((_, i) => (
+                    <tr key={`skeleton-${i}`} className="animate-pulse border-b border-slate-50">
+                      <td className="px-4 py-3 max-w-[200px]">
+                        <div className="flex items-center gap-3">
+                          <div className="w-[18px] h-[18px] rounded bg-slate-200/70 shrink-0"></div>
+                          <div className="h-3.5 bg-slate-200/70 rounded w-full max-w-[140px]" style={{ width: `${Math.random() * 40 + 40}%` }}></div>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="h-3 bg-slate-200/70 rounded w-16"></div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="h-3 bg-slate-200/70 rounded w-16"></div>
+                      </td>
+                    </tr>
+                  ))
                 ) : filteredDocs.length === 0 ? (
                   <tr>
                     <td colSpan={3} className="p-12 text-center text-slate-500">
@@ -186,7 +225,7 @@ export function ExplorerNew() {
                     return (
                       <tr 
                         key={displayId}
-                        onClick={() => setActiveDoc(doc)}
+                        onClick={() => handleRowClick(doc)}
                         className={`group cursor-pointer transition-colors ${
                           isActive 
                             ? 'bg-primary/5 hover:bg-primary/10 relative overflow-hidden'
@@ -239,7 +278,7 @@ export function ExplorerNew() {
                  <div className="w-20 h-20 bg-surface-container-high rounded-full flex items-center justify-center mb-6 text-slate-300">
                     <span className="material-symbols-outlined text-4xl">inventory_2</span>
                  </div>
-                 <h3 className="text-xl font-headline font-bold text-on-surface">Sélectionnez un document</h3>
+                 <h3 className="text-xl font-headline font-bold text-on-surface">Sélectionnez un fichier</h3>
                  <p className="text-sm text-slate-500 mt-2 max-w-xs">Choisissez un fichier dans la liste à gauche pour prévisualiser son contenu ici.</p>
               </div>
             ) : (
@@ -353,6 +392,13 @@ export function ExplorerNew() {
 
         {/* Right Pane: Metadata Sidebar */}
         <section className="w-full md:w-[320px] lg:w-[360px] shrink-0 bg-surface-container-lowest border-l border-slate-100 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden hidden lg:block h-full relative">
+          {!activeDoc ? (
+            <div className="flex flex-col items-center justify-center p-8 text-center h-full text-slate-500">
+              <span className="material-symbols-outlined text-4xl mb-4 opacity-50">info</span>
+              <p className="text-sm font-bold text-on-surface">Aucun fichier sélectionné</p>
+              <p className="text-xs mt-2 max-w-[200px]">Sélectionnez un fichier pour en voir les propriétés.</p>
+            </div>
+          ) : (
           <div className="p-8 space-y-10">
             {/* Properties Section */}
             <div>
@@ -429,6 +475,7 @@ export function ExplorerNew() {
               </div>
             </div>
           </div>
+          )}
         </section>
       </div>
     </DashboardLayoutNew>
