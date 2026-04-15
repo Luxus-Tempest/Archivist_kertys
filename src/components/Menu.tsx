@@ -46,7 +46,7 @@ export function Menu({ isOpen, onClose, items, header, className = '' }: MenuPro
   return (
     <div 
       ref={menuRef}
-      className={`absolute right-0 mt-3 w-64 bg-white rounded-md shadow-xs border border-slate-200 py-2 z-[100] transition-all origin-top-right ${className}`}
+      className={`absolute right-0 mt-3 w-56 bg-white rounded-md shadow-xs border border-slate-200 py-2 z-[100] transition-all origin-top-right ${className}`}
       style={{
         animation: 'menu-appear 0.2s cubic-bezier(0.16, 1, 0.3, 1)'
       }}
@@ -81,7 +81,7 @@ export function Menu({ isOpen, onClose, items, header, className = '' }: MenuPro
             }`}
           >
             {item.icon && (
-              <span className={`material-symbols-outlined text-[20px] transition-colors ${
+              <span className={`material-symbols-outlined text-[10px] transition-colors ${
                 item.variant === 'danger' 
                   ? 'text-[#B05B56]/70 group-hover:text-[#B05B56]' 
                   : 'text-slate-400 group-hover:text-slate-600'
@@ -89,7 +89,7 @@ export function Menu({ isOpen, onClose, items, header, className = '' }: MenuPro
                 {item.icon}
               </span>
             )}
-            <span className="text-[15px] font-bold tracking-tight">
+            <span className="text-[13px] font-bold tracking-tight">
               {item.label}
             </span>
           </button>
