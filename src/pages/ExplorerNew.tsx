@@ -6,6 +6,8 @@ export function ExplorerNew() {
   const [activeDoc, setActiveDoc] = useState<MFilesDocumentDto | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
+  const [zoomLevel, setZoomLevel] = useState(100);
+  const [pageCount, setPageCount] = useState(1);
 
   useEffect(() => {
     fetchDocuments();
@@ -32,10 +34,25 @@ export function ExplorerNew() {
 
       if (objId !== undefined && fileId !== undefined) {
         setIsPreviewLoading(true);
-        const url = await getFileContent(objId, fileId);
-        if (url) {
+        try {
+          // Instead of using getFileContent (which revokes early if we aren't careful),
+          // we fetch the blob directly here to parse the page count.
+          const { fetchAuthBlob } = await import('../utils/api');
+          const blob = await fetchAuthBlob(`/MFilesDocs/${objId}/files/${fileId}/content`);
+          
+          // Try to extract page count
+          const text = await blob.text();
+          const matches = text.match(/\/Count\s+(\d+)/);
+          const count = matches && matches[1] ? parseInt(matches[1], 10) : 1;
+          setPageCount(count);
+
+          const url = URL.createObjectURL(blob);
           setPreviewUrl(url);
           currentUrl = url;
+          setZoomLevel(100); // Reset zoom on new document
+        } catch (err) {
+          console.error("Error loading PDF preview:", err);
+          setPreviewUrl(null);
         }
         setIsPreviewLoading(false);
       } else {
@@ -150,23 +167,8 @@ export function ExplorerNew() {
 
         {/* Center Pane: Preview Area */}
         <section className="flex-1 min-w-0 bg-surface flex flex-col h-full overflow-hidden">
-          {/* <div className="p-8 pb-0 shrink-0">
-            <div className="mb-6 flex flex-col lg:flex-row justify-between lg:items-center gap-4 min-w-0 overflow-hidden">
-              <div className="min-w-0 flex-1">
-                <h3 className="text-2xl lg:text-3xl font-headline font-extrabold tracking-tighter text-on-surface leading-tight truncate w-full" title={(activeDoc as any)?.Title || (activeDoc as any)?.title}>
-                  {(activeDoc as any)?.Title || (activeDoc as any)?.title || 'Aucun document'}
-                </h3>
-              </div>
-              <div className="flex space-x-2 shrink-0 bg-surface-container-low p-1.5 rounded-xl border border-slate-100 shadow-sm">
-                 <button className="p-2 rounded-lg hover:bg-white hover:shadow-sm transition-all text-slate-500 cursor-pointer flex items-center justify-center"><span className="material-symbols-outlined text-[20px]">zoom_in</span></button>
-                <button className="p-2 rounded-lg hover:bg-white hover:shadow-sm transition-all text-slate-500 cursor-pointer flex items-center justify-center"><span className="material-symbols-outlined text-[20px]">zoom_out</span></button>
-                <button className="p-2 rounded-lg hover:bg-white hover:shadow-sm transition-all text-slate-500 cursor-pointer flex items-center justify-center"><span className="material-symbols-outlined text-[20px]">fullscreen</span></button>
-              </div>
-            </div>
-          </div>  */}
 
           <div className="flex-1 p-2 overflow-hidden flex flex-col">
-            {/* Document Preview Canvas */}
             <div className="flex-1 relative rounded-xs overflow-hidden shadow-editorial border border-slate-100/50 bg-[#F5F7F9] min-h-0 flex flex-col">
             {isPreviewLoading ? (
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/50 backdrop-blur-sm z-10 transition-all duration-300">
@@ -189,13 +191,22 @@ export function ExplorerNew() {
                  <p className="text-sm text-slate-500 mt-2 max-w-xs">Choisissez un fichier dans la liste à gauche pour prévisualiser son contenu ici.</p>
               </div>
             ) : (
-              <div className="flex-1 relative flex flex-col h-full">
+              <div className="flex-1 relative flex flex-col h-full overflow-auto [scrollbar-width:thin]">
                 {previewUrl ? (
-                  <iframe 
-                    src={`${previewUrl}#toolbar=0&navpanes=0&scrollbar=1`}
-                    className="w-full h-full border-none bg-white rounded-xl"
-                    title="Document Preview"
-                  />
+                  <div 
+                    className="flex-1 transition-transform duration-200 ease-out origin-top"
+                    style={{ 
+                      transform: `scale(${zoomLevel / 100})`,
+                      height: zoomLevel > 100 ? `${zoomLevel}%` : '100%',
+                      width: '100%'
+                    }}
+                  >
+                    <iframe 
+                      src={`${previewUrl}#toolbar=0&navpanes=0&scrollbar=1&view=FitH`}
+                      className="w-full h-full border-none bg-white rounded-xl"
+                      title="Document Preview"
+                    />
+                  </div>
                 ) : (
                   <div className="flex-1 flex flex-col items-center justify-center p-12 text-center bg-white">
                     <div className="w-16 h-16 bg-error/5 text-error rounded-full flex items-center justify-center mb-4">
@@ -209,13 +220,19 @@ export function ExplorerNew() {
                 {/* PDF Overlay Controls (Floating) */}
                 {previewUrl && (
                   <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center space-x-2 bg-on-surface/90 backdrop-blur-xl px-5 py-2.5 rounded-full border border-white/10 shadow-2xl z-20">
-                    <button className="p-1.5 hover:bg-white/10 rounded-full transition-colors flex items-center justify-center cursor-pointer text-white">
+                    <button 
+                      onClick={() => setZoomLevel(prev => Math.max(prev - 10, 50))}
+                      className="p-1.5 hover:bg-white/10 rounded-full transition-colors flex items-center justify-center cursor-pointer text-white"
+                    >
                       <span className="material-symbols-outlined text-lg">zoom_out</span>
                     </button>
                     <div className="h-4 w-px bg-white/20 mx-1"></div>
-                    <span className="text-[10px] font-black text-white/90 px-3 uppercase tracking-widest whitespace-nowrap">Page 1 / 1</span>
+                    <span className="text-[10px] font-black text-white/90 px-3 uppercase tracking-widest whitespace-nowrap">PAGE 1 / {pageCount}</span>
                     <div className="h-4 w-px bg-white/20 mx-1"></div>
-                    <button className="p-1.5 hover:bg-white/10 rounded-full transition-colors flex items-center justify-center cursor-pointer text-white">
+                    <button 
+                      onClick={() => setZoomLevel(prev => Math.min(prev + 10, 200))}
+                      className="p-1.5 hover:bg-white/10 rounded-full transition-colors flex items-center justify-center cursor-pointer text-white"
+                    >
                       <span className="material-symbols-outlined text-lg">zoom_in</span>
                     </button>
                     <div className="h-4 w-px bg-white/20 mx-1"></div>
