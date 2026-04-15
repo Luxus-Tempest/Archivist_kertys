@@ -154,7 +154,7 @@ export function ExplorerNew() {
 
   return (
     <DashboardLayoutNew isFullWidth>
-      <div className="-mt-4 flex flex-col md:flex-row h-[calc(100vh-80px)] overflow-hidden w-full m-0 p-0">
+      <div className="-mt-4 flex flex-col md:flex-row h-full overflow-hidden w-full m-0 p-0">
         {/* Left Pane: Document List */}
         <section className="w-full  md:w-[320px] lg:w-[350px] shrink-0 bg-surface-container-lowest border-r border-slate-100 flex flex-col h-full overflow-hidden">
           {/* Header Action Bar */}
