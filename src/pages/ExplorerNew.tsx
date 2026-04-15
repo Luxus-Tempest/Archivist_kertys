@@ -154,16 +154,16 @@ export function ExplorerNew() {
 
   return (
     <DashboardLayoutNew isFullWidth>
-      <div className="-mt- flex flex-col md:flex-row h-full overflow-hidden w-full m-0 p-0">
+      <div className="flex flex-col md:flex-row h-full overflow-hidden w-full m-0 p-0 ">
         {/* Left Pane: Document List */}
-        <section className="w-full  md:w-[320px] lg:w-[350px] shrink-0 bg-surface-container-lowest border-r border-slate-100 flex flex-col h-full overflow-hidden">
+        <section className="w-full pt-2  md:w-[320px] lg:w-[350px] shrink-0 bg-white border-r border-slate-100 flex flex-col h-full overflow-hidden">
           {/* Header Action Bar */}
-          <div className="p-4 shrink-0 border-b border-surface">
+          <div className="p-4 pt-0 shrink-0 border-b border-surface">
             <div className="flex items-center gap-2">
               <div className="flex-1 flex items-center justify-between border border-outline-variant/30 rounded-lg px-3 py-2 bg-white">
                 <input 
                   type="text" 
-                  placeholder="Rechercher par nom..." 
+                  placeholder="Search by name..." 
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="text-[13px] font-medium border-none bg-transparent outline-none w-full text-on-surface placeholder:text-outline" 
@@ -174,7 +174,7 @@ export function ExplorerNew() {
                 onClick={() => fetchDocuments()}
                 disabled={isLoading}
                 className="shrink-0 w-9 h-9 flex items-center justify-center bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed group"
-                title="Rafraîchir la liste"
+                title="Refresh list"
               >
                 <span className={`material-symbols-outlined text-[18px] transition-transform ${isLoading ? 'animate-spin' : 'group-hover:rotate-180'}`}>sync</span>
               </button>
@@ -218,11 +218,11 @@ export function ExplorerNew() {
                     <td colSpan={3} className="p-12 text-center text-slate-500">
                       <div className="flex flex-col items-center justify-center">
                         <SvgIcon name="SearchFile" width={64} height={64} className="text-slate-300 mb-4 opacity-60" />
-                        <p className="text-sm font-bold text-on-surface">Aucun document trouvé</p>
+                        <p className="text-sm font-bold text-on-surface">No documents found</p>
                         <p className="text-xs mt-2 text-slate-500 max-w-xs text-center">
                           {searchQuery 
-                            ? `Aucun fichier ne correspond à votre recherche "${searchQuery}".` 
-                            : 'Aucun fichier n\'est disponible.'}
+                            ? `No files match your search "${searchQuery}".` 
+                            : 'No files are available.'}
                         </p>
                       </div>
                     </td>
@@ -296,7 +296,7 @@ export function ExplorerNew() {
                     <span className="material-symbols-outlined text-primary animate-pulse text-xl">picture_as_pdf</span>
                   </div>
                 </div>
-                <p className="mt-4 text-xs font-bold text-primary uppercase tracking-widest animate-pulse">Chargement du document...</p>
+                <p className="mt-4 text-xs font-bold text-primary uppercase tracking-widest animate-pulse">Loading document...</p>
               </div>
             ) : null}
 
@@ -305,8 +305,8 @@ export function ExplorerNew() {
                  <div className="w-20 h-20 bg-surface-container-high rounded-full flex items-center justify-center mb-6 text-slate-300">
                     <span className="material-symbols-outlined text-4xl">inventory_2</span>
                  </div>
-                 <h3 className="text-xl font-headline font-bold text-on-surface">Sélectionnez un fichier</h3>
-                 <p className="text-sm text-slate-500 mt-2 max-w-xs">Choisissez un fichier dans la liste à gauche pour prévisualiser son contenu ici.</p>
+                 <h3 className="text-xl font-headline font-bold text-on-surface">Select a file</h3>
+                 <p className="text-sm text-slate-500 mt-2 max-w-xs">Choose a file from the list on the left to preview its content here.</p>
               </div>
             ) : (
               <div id="pdf-preview-container" className="flex-1 relative h-full bg-[#F5F7F9]">
@@ -351,8 +351,8 @@ export function ExplorerNew() {
                       <div className="w-16 h-16 bg-error/5 text-error rounded-full flex items-center justify-center mb-4">
                         <span className="material-symbols-outlined text-3xl">error_outline</span>
                       </div>
-                      <p className="text-sm font-bold text-on-surface">Aperçu non disponible</p>
-                      <p className="text-xs text-slate-500 mt-1">Impossible de charger le contenu de ce fichier.</p>
+                      <p className="text-sm font-bold text-on-surface">Preview unavailable</p>
+                      <p className="text-xs text-slate-500 mt-1">Unable to load the content of this file.</p>
                     </div>
                   )}
                 </div>
@@ -422,8 +422,8 @@ export function ExplorerNew() {
           {!activeDoc ? (
             <div className="flex flex-col items-center justify-center p-8 text-center h-full text-slate-500">
               <span className="material-symbols-outlined text-4xl mb-4 opacity-50">info</span>
-              <p className="text-sm font-bold text-on-surface">Aucun fichier sélectionné</p>
-              <p className="text-xs mt-2 max-w-[200px]">Sélectionnez un fichier pour en voir les propriétés.</p>
+              <p className="text-sm font-bold text-on-surface">No file selected</p>
+              <p className="text-xs mt-2 max-w-[200px]">Select a file to view its properties.</p>
             </div>
           ) : (
           <div className="p-8 pr-3 flex flex-col h-full overflow-hidden">
@@ -440,10 +440,21 @@ export function ExplorerNew() {
                    </div>
                 ) : fileProperties && Object.keys(fileProperties).length > 0 ? (
                    Object.entries(fileProperties).map(([key, value], index) => {
+                     const isCategory = key === 'ClassName';
+                     const displayKey = isCategory ? 'Category' : key;
+                     
                      return (
                        <div key={index} className="flex flex-col xl:flex-row xl:justify-between xl:items-center pb-3 border-b border-gray-100 gap-1">
-                         <span className="text-[13px] font-medium self-start text-slate-500 shrink-0 pr-4">{key}</span>
-                         <span className="text-sm font-bold text-on-surface xl:text-right" title={String(value)}>{String(value) || '-'}</span>
+                         <span className="text-[13px] font-medium self-start text-slate-500 shrink-0 pr-4">{displayKey}</span>
+                         <span className="text-sm font-bold text-on-surface xl:text-right" title={String(value)}>
+                           {isCategory ? (
+                             <span className="px-2 py-0.5 bg-surface-container text-on-surface-variant text-[10px] font-black rounded uppercase tracking-widest border border-outline-variant/20">
+                               {String(value)}
+                             </span>
+                           ) : (
+                             String(value) || '-'
+                           )}
+                         </span>
                        </div>
                      );
                    })

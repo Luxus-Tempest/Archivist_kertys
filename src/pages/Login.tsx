@@ -24,12 +24,12 @@ export function Login() {
 
   const onSubmit = async (data: LoginFormData) => {
     toast.promise(login(data), {
-      loading: 'Connexion en cours...',
+      loading: 'Signing in...',
       success: () => {
         navigate('/process-new');
-        return 'Connecté avec succès.';
+        return 'Successfully signed in.';
       },
-      error: (err: any) => err || 'Email ou mot de passe incorrect.',
+      error: (err: any) => err || 'Incorrect email or password.',
     });
   };
 
@@ -90,7 +90,7 @@ export function Login() {
       </form>
 
       <p className="text-center text-sm text-on-surface-variant pt-4">
-        New to Archivist? <Link to="/signup" className="text-primary font-semibold hover:underline">Create an archivist account</Link>
+        New to DocMe? <Link to="/signup" className="text-primary font-semibold hover:underline">Create an DocMe account</Link>
       </p>
     </AuthPageLayout>
   );

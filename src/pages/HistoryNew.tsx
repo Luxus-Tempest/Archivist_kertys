@@ -5,7 +5,7 @@ import { ActivitiesTable } from '../components/history/ActivitiesTable';
 export function HistoryNew() {
   return (
     <DashboardLayoutNew>
-      <div className="max-w-7xl mx-auto pt-4">
+      <div className="max-w-7xl mx-auto px-15 pt-4">
         {/* Search Bar Section */}
         <div className="mb-12">
           <div className="relative max-w-2xl group">

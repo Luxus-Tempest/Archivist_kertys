@@ -102,14 +102,14 @@ export function ProcessNew() {
 
   return (
     <DashboardLayoutNew>
-      <header className="mb-10">
+      <header className="mb-10 px-15">
         <h2 className="text-4xl font-extrabold tracking-tight text-on-surface mb-2 font-headline">Ingest Documents</h2>
         <p className="text-on-surface-variant font-body max-w-2xl leading-relaxed">
           Securely process your intellectual assets. Our system automatically classifies and inserts into M-Files each entry.
         </p>
       </header>
 
-      <div className="grid grid-cols-1 gap-8">
+      <div className="grid grid-cols-1 gap-8 px-15">
         <UploadAreaNew onFilesSelected={handleFilesSelected} />
 
         {stagedFiles.length > 0 && (

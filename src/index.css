@@ -55,6 +55,30 @@
   body {
     @apply bg-surface text-on-surface font-body antialiased;
   }
+
+  /* Custom Scrollbar Styling */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--color-outline-variant), transparent 50%) transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 3px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--color-outline-variant), transparent 50%);
+    border-radius: 20px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--color-outline-variant), transparent 40%);
+  }
 }
 
 .material-symbols-outlined {

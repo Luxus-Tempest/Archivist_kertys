@@ -29,7 +29,7 @@ export function useDocument() {
       
       return response as UploadResponse;
     } catch (err: any) {
-      setError(err.message || "Une erreur s'est produite lors de l'upload des fichiers.");
+      setError(err.message || "An error occurred during file upload.");
       return null;
     } finally {
       setIsUploading(false);

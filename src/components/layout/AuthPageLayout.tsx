@@ -25,7 +25,7 @@ export function AuthPageLayout({
       <header className="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl flex justify-between items-center px-8 py-3">
         <div className="flex items-center gap-2">
           <span className="material-symbols-outlined text-primary">account_balance_wallet</span>
-          <span className="text-xl font-bold tracking-tighter text-slate-800 font-headline">Archivist</span>
+          <span className="text-xl font-bold tracking-tighter text-slate-800 font-headline">DocMe</span>
         </div>
         <div className="hidden md:flex gap-8 items-center text-sm font-medium text-on-surface-variant">
           <a className="px-5 py-2 border border-outline-variant/30 rounded-full hover:bg-surface-container-high transition-all" href="#">About</a>
@@ -69,7 +69,7 @@ export function AuthPageLayout({
       {/* Footer */}
       <footer className="p-8 text-center text-on-surface">
         <p className="text-xs text-outline-variant tracking-widest font-body uppercase">
-          © 2024 Archivist Document Systems. Secure. Private. Editorial.
+          © 2024 DocMe Document Systems. Secure. Private. Editorial.
         </p>
       </footer>
     </div>

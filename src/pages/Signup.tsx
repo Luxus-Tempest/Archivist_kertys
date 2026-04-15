@@ -26,9 +26,9 @@ export function Signup() {
     try {
       const signupPromise = signup(data);
       toast.promise(signupPromise, {
-        loading: 'Inscription en cours...',
-        success: 'Compte créé avec succès.',
-        error: (err: any) => err || 'Erreur lors de la création du compte.',
+        loading: 'Creating account...',
+        success: 'Account created successfully.',
+        error: (err: any) => err || 'Error creating account.',
       });
       
       await signupPromise;
@@ -43,7 +43,7 @@ export function Signup() {
   return (
     <AuthPageLayout
       title="Create Account"
-      subtitle="Join Archivist to start managing your documents with editorial precision."
+      subtitle="Join DocMe to start managing your documents with editorial precision."
       imageAlt="Modern architectural details with clean lines"
       imageSrc="https://lh3.googleusercontent.com/aida-public/AB6AXuAVmvP0nNUNNLIrcGB5yQOTmZepG9Iq80ckhRKYj_ITI7PIvxq1CtZn4_iZb-l1vhI0TFE6yZgREZomjh2L5S-0UyAT6apBw2RVzRc83plgfgl_nqbwFXLI7MuCR1JRoP715RpRUiYE4vqwgl_gYnacAy5GH8XBGbAYq3tuxRrjLpaNzKln8Y5ha9nfrOFG2YpO2J7hTFQ0Y8TBnyYHEwKwxWqdx59zFAy64nZy9JmpuJiRUfqhev2uFnSvnUsUNCkXYi6rJFDaHNo"
       headline={<>The Quiet Authority <br/>of Secure Design.</>}

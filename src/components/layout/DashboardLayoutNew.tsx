@@ -13,7 +13,7 @@ export function DashboardLayoutNew({ children, isFullWidth = false }: DashboardL
     <div className="bg-surface text-on-surface selection:bg-primary/20 h-screen overflow-hidden flex flex-col">
       <HeaderNew />
       
-      <div className="flex flex-1 pt-20 min-h-0 overflow-hidden">
+      <div className="flex flex-1 pt-16 min-h-0 overflow-hidden">
         <SidebarNew />
         
         {/* Main Content Area */}
