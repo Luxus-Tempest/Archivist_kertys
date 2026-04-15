@@ -98,7 +98,7 @@ export function ExplorerNew() {
     <DashboardLayoutNew isFullWidth>
       <div className="flex flex-col md:flex-row h-[calc(100vh-80px)] overflow-hidden w-full m-0 p-0">
         {/* Left Pane: Document List */}
-        <section className="w-full md:w-[320px] lg:w-[320px] shrink-0 bg-surface-container-lowest border-r border-slate-100 flex flex-col h-full overflow-hidden">
+        <section className="w-full md:w-[320px] lg:w-[350px] shrink-0 bg-surface-container-lowest border-r border-slate-100 flex flex-col h-full overflow-hidden">
           {/* Header Action Bar */}
           <div className="p-4 shrink-0 border-b border-surface">
             {/* <div className="flex items-center gap-2 mb-4">
@@ -116,60 +116,79 @@ export function ExplorerNew() {
           </div>
           
           {/* List Content */}
-          <div className="flex flex-col flex-1 overflow-y-auto py-4 px-3 space-y-1">
-            <div className="px-3 py-2 border-b border-surface-container-high pb-3 mb-2">
-              <span className="text-xs uppercase tracking-widest font-bold text-outline">Nom</span>
-            </div>
-            
-            <div className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-surface-container-high transition-colors cursor-pointer text-on-surface">
-              <span className="material-symbols-outlined text-[20px] text-primary">folder_open</span>
-              <span className="text-sm font-bold tracking-tight">Documents</span>
-              <span className="text-[10px] text-on-surface-variant font-bold ml-auto bg-surface px-2 py-0.5 rounded-full shadow-sm border border-slate-100">
-                {documents.length || 0}
-              </span>
-            </div>
-            
-            {/* Tree Items */}
-            <div className="flex flex-col pl-4 mt-2 space-y-1 pb-4">
-              {isLoading && documents.length === 0 ? (
-                <div className="flex items-center justify-center p-4">
-                  <span className="material-symbols-outlined animate-spin text-primary">sync</span>
-                </div>
-              ) : (
-                documents.map((doc: any) => {
-                  const displayId = doc.DisplayID || doc.displayID || doc.displayId;
-                  const rawTitle = doc.Title || doc.title || '';
-                  const files = doc.Files || doc.files || [];
-                  const ext = (files[0]?.Extension || files[0]?.extension || '').toLowerCase();
-                  
-                  let title = rawTitle;
-                  if (ext && !rawTitle.toLowerCase().endsWith(`.${ext}`)) {
-                    title = `${rawTitle}.${ext}`;
-                  }
-                  
-                  const isActive = (activeDoc as any)?.DisplayID === displayId || (activeDoc as any)?.displayID === displayId || (activeDoc as any)?.displayId === displayId;
-                  const { icon, color } = getFileIcon(title, doc.SingleFile ?? doc.singleFile);
-                  
-                  return (
-                    <div 
-                      key={displayId}
-                      onClick={() => setActiveDoc(doc)}
-                      className={`flex items-center gap-3 px-3 py-2 transition-colors cursor-pointer text-sm rounded-lg group ${
-                        isActive 
-                          ? 'bg-primary text-on-primary shadow-md hover:bg-primary-dim relative overflow-hidden' 
-                          : 'hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface'
-                      }`}
-                    >
-                      {isActive && <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>}
-                      <span className={`material-symbols-outlined text-[18px] ${isActive ? 'text-on-primary' : color}`}>{icon}</span>
-                      <span className={`truncate ${isActive ? 'font-bold tracking-tight' : 'font-medium'}`}>
-                        {title}
-                      </span>
-                    </div>
-                  );
-                })
-              )}
-            </div>
+          <div className="flex-1 overflow-x-auto overflow-y-auto w-full [scrollbar-width:thin]">
+            <table className="w-full min-w-max text-left border-collapse">
+              <thead className="sticky top-0 bg-surface-container-lowest z-10 shadow-sm border-b border-slate-100">
+                <tr>
+                  <th className="px-4 py-3 text-[10px] uppercase tracking-widest font-black text-slate-400 whitespace-nowrap">Name</th>
+                  <th className="px-4 py-3 text-[10px] uppercase tracking-widest font-black text-slate-400 whitespace-nowrap cursor-pointer hover:text-slate-600 transition-colors">
+                    Creation <span className="material-symbols-outlined text-[12px] align-middle ml-1">unfold_more</span>
+                  </th>
+                  <th className="px-4 py-3 text-[10px] uppercase tracking-widest font-black text-slate-400 whitespace-nowrap cursor-pointer hover:text-slate-600 transition-colors">
+                    Modified <span className="material-symbols-outlined text-[12px] align-middle ml-1">arrow_drop_down</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-50">
+                {isLoading && documents.length === 0 ? (
+                  <tr>
+                    <td colSpan={3} className="p-8 text-center">
+                      <span className="material-symbols-outlined animate-spin text-primary">sync</span>
+                    </td>
+                  </tr>
+                ) : (
+                  documents.map((doc: any) => {
+                    const displayId = doc.DisplayID || doc.displayID || doc.displayId;
+                    const rawTitle = doc.Title || doc.title || '';
+                    const files = doc.Files || doc.files || [];
+                    const firstFile = files[0];
+                    
+                    const ext = (firstFile?.Extension || firstFile?.extension || '').toLowerCase();
+                    const createdStr = firstFile?.CreatedUtc || firstFile?.createdUtc || (doc as any)?.Created || '';
+                    const modifiedStr = firstFile?.LastModified || firstFile?.lastModified || (doc as any)?.LastModified || '';
+                    
+                    const createdDate = createdStr ? new Date(createdStr).toLocaleDateString() : '-';
+                    const modifiedDate = modifiedStr ? new Date(modifiedStr).toLocaleDateString() : '-';
+                    
+                    let title = rawTitle;
+                    if (ext && !rawTitle.toLowerCase().endsWith(`.${ext}`)) {
+                      title = `${rawTitle}.${ext}`;
+                    }
+                    
+                    const isActive = (activeDoc as any)?.DisplayID === displayId || (activeDoc as any)?.displayID === displayId || (activeDoc as any)?.displayId === displayId;
+                    const { icon, color } = getFileIcon(title, doc.SingleFile ?? doc.singleFile);
+                    
+                    return (
+                      <tr 
+                        key={displayId}
+                        onClick={() => setActiveDoc(doc)}
+                        className={`group cursor-pointer transition-colors ${
+                          isActive 
+                            ? 'bg-primary/5 hover:bg-primary/10 relative overflow-hidden'
+                            : 'hover:bg-surface-container-high'
+                        }`}
+                      >
+                        <td className="px-4 py-3 max-w-[200px]">
+                          {isActive && <div className="absolute inset-y-0 left-0 w-1 bg-primary"></div>}
+                          <div className="flex items-center gap-3">
+                            <span className={`material-symbols-outlined text-[18px] shrink-0 ${isActive ? 'text-primary' : color}`}>{icon}</span>
+                            <span className={`truncate text-sm ${isActive ? 'font-bold text-primary tracking-tight' : 'font-medium text-on-surface'}`} title={title}>
+                              {title}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 text-xs font-medium text-slate-500 whitespace-nowrap">
+                          {createdDate}
+                        </td>
+                        <td className="px-4 py-3 text-xs font-medium text-slate-500 whitespace-nowrap">
+                          {modifiedDate}
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
           </div>
         </section>
 
