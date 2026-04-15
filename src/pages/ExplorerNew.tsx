@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react';
 import { DashboardLayoutNew } from '../components/layout/DashboardLayoutNew';
 import { useMFilesDocsHook, type MFilesDocumentDto } from '../hooks/useMFilesDocsHook';
+import { Document, Page, pdfjs } from 'react-pdf';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
+
+// Initialize PDF worker
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 export function ExplorerNew() {
   const { documents, isLoading, fetchDocuments, getFileContent } = useMFilesDocsHook();
   const [activeDoc, setActiveDoc] = useState<MFilesDocumentDto | null>(null);
@@ -8,6 +14,7 @@ export function ExplorerNew() {
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(100);
   const [pageCount, setPageCount] = useState(1);
+  const [pageNumber, setPageNumber] = useState(1);
 
   useEffect(() => {
     fetchDocuments();
@@ -35,26 +42,19 @@ export function ExplorerNew() {
       if (objId !== undefined && fileId !== undefined) {
         setIsPreviewLoading(true);
         try {
-          // Instead of using getFileContent (which revokes early if we aren't careful),
-          // we fetch the blob directly here to parse the page count.
           const { fetchAuthBlob } = await import('../utils/api');
           const blob = await fetchAuthBlob(`/MFilesDocs/${objId}/files/${fileId}/content`);
           
-          // Try to extract page count
-          const text = await blob.text();
-          const matches = text.match(/\/Count\s+(\d+)/);
-          const count = matches && matches[1] ? parseInt(matches[1], 10) : 1;
-          setPageCount(count);
-
           const url = URL.createObjectURL(blob);
           setPreviewUrl(url);
           currentUrl = url;
-          setZoomLevel(100); // Reset zoom on new document
+          setZoomLevel(70); 
+          setPageNumber(1);
         } catch (err) {
           console.error("Error loading PDF preview:", err);
           setPreviewUrl(null);
         }
-        setIsPreviewLoading(false);
+        // setIsPreviewLoading(false) will be handled by react-pdf onLoadSuccess or we wait a bit
       } else {
         setPreviewUrl(null);
       }
@@ -191,57 +191,105 @@ export function ExplorerNew() {
                  <p className="text-sm text-slate-500 mt-2 max-w-xs">Choisissez un fichier dans la liste à gauche pour prévisualiser son contenu ici.</p>
               </div>
             ) : (
-              <div className="flex-1 relative flex flex-col h-full overflow-auto [scrollbar-width:thin]">
-                {previewUrl ? (
-                  <div 
-                    className="flex-1 transition-transform duration-200 ease-out origin-top"
-                    style={{ 
-                      transform: `scale(${zoomLevel / 100})`,
-                      height: zoomLevel > 100 ? `${zoomLevel}%` : '100%',
-                      width: '100%'
-                    }}
-                  >
-                    <iframe 
-                      src={`${previewUrl}#toolbar=0&navpanes=0&scrollbar=1&view=FitH`}
-                      className="w-full h-full border-none bg-white rounded-xl"
-                      title="Document Preview"
-                    />
-                  </div>
-                ) : (
-                  <div className="flex-1 flex flex-col items-center justify-center p-12 text-center bg-white">
-                    <div className="w-16 h-16 bg-error/5 text-error rounded-full flex items-center justify-center mb-4">
-                      <span className="material-symbols-outlined text-3xl">error_outline</span>
+              <div id="pdf-preview-container" className="flex-1 relative h-full bg-[#F5F7F9]">
+                {/* Scrollable Container */}
+                <div className="absolute inset-0 overflow-auto [scrollbar-width:thin] text-center whitespace-nowrap p-4">
+                  {/* Pseudo-element for vertical centering */}
+                  <span className="inline-block h-full align-middle"></span>
+                  
+                  {previewUrl ? (
+                    <div className="inline-block align-middle text-left" style={{ minWidth: 'min-content' }}>
+                      <Document
+                        file={previewUrl}
+                        onLoadSuccess={({ numPages }) => {
+                          setPageCount(numPages);
+                          setIsPreviewLoading(false);
+                        }}
+                        onLoadError={() => setIsPreviewLoading(false)}
+                        loading={null}
+                      >
+                        <div className="flex flex-col gap-6 align-middle transition-transform duration-200">
+                          {Array.from(new Array(pageCount), (el, index) => (
+                            <div key={`page_${index + 1}`} className="bg-white shadow-xl">
+                              <Page 
+                                pageNumber={index + 1} 
+                                scale={zoomLevel / 100}
+                                renderTextLayer={false}
+                                renderAnnotationLayer={false}
+                                loading={
+                                  <div className="flex items-center justify-center p-20 text-slate-400">
+                                    <span className="material-symbols-outlined animate-spin mr-2">sync</span>
+                                    Rendering page {index + 1}...
+                                  </div>
+                                }
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </Document>
                     </div>
-                    <p className="text-sm font-bold text-on-surface">Aperçu non disponible</p>
-                    <p className="text-xs text-slate-500 mt-1">Impossible de charger le contenu de ce fichier.</p>
-                  </div>
-                )}
+                  ) : (
+                    <div className="inline-flex flex-col items-center justify-center p-12 text-center bg-white rounded-xl shadow-sm border border-slate-100 max-w-sm align-middle">
+                      <div className="w-16 h-16 bg-error/5 text-error rounded-full flex items-center justify-center mb-4">
+                        <span className="material-symbols-outlined text-3xl">error_outline</span>
+                      </div>
+                      <p className="text-sm font-bold text-on-surface">Aperçu non disponible</p>
+                      <p className="text-xs text-slate-500 mt-1">Impossible de charger le contenu de ce fichier.</p>
+                    </div>
+                  )}
+                </div>
                 
                 {/* PDF Overlay Controls (Floating) */}
                 {previewUrl && (
-                  <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center space-x-2 bg-on-surface/90 backdrop-blur-xl px-5 py-2.5 rounded-full border border-white/10 shadow-2xl z-20">
+                  <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center space-x-2 bg-on-surface/60 backdrop-blur-xs  px-4 py-1 rounded-full border border-white/10 shadow-2xl z-20">
+                    
+
+                    <span className="text-[10px] font-black text-center text-white/90 px-2 uppercase tracking-widest whitespace-nowrap">
+                      {pageCount} PAGE{pageCount > 1 ? 'S' : ''}
+                    </span>
+                    
+                    <div className="h-4 w-px bg-white/20 mx-1"></div>
+                    
                     <button 
-                      onClick={() => setZoomLevel(prev => Math.max(prev - 10, 50))}
+                      onClick={() => setZoomLevel(prev => Math.max(prev - 20, 50))}
                       className="p-1.5 hover:bg-white/10 rounded-full transition-colors flex items-center justify-center cursor-pointer text-white"
                     >
-                      <span className="material-symbols-outlined text-lg">zoom_out</span>
+                      <span className="material-symbols-outlined text-[18px]">zoom_out</span>
                     </button>
-                    <div className="h-4 w-px bg-white/20 mx-1"></div>
-                    <span className="text-[10px] font-black text-white/90 px-3 uppercase tracking-widest whitespace-nowrap">PAGE 1 / {pageCount}</span>
-                    <div className="h-4 w-px bg-white/20 mx-1"></div>
+                    
+                    {/* <div className="h-4 w-px bg-white/20 mx-1"></div> */}
+                    
                     <button 
                       onClick={() => setZoomLevel(prev => Math.min(prev + 10, 200))}
                       className="p-1.5 hover:bg-white/10 rounded-full transition-colors flex items-center justify-center cursor-pointer text-white"
                     >
-                      <span className="material-symbols-outlined text-lg">zoom_in</span>
+                      <span className="material-symbols-outlined text-[18px]">zoom_in</span>
                     </button>
+                    
                     <div className="h-4 w-px bg-white/20 mx-1"></div>
+                    
+                    <button 
+                      onClick={() => {
+                        const elem = document.getElementById('pdf-preview-container');
+                        if (!document.fullscreenElement) {
+                          elem?.requestFullscreen().catch(() => {});
+                        } else {
+                          document.exitFullscreen().catch(() => {});
+                        }
+                      }}
+                      className="p-1.5 hover:bg-white/10 rounded-full transition-colors flex items-center justify-center cursor-pointer text-white"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">fullscreen</span>
+                    </button>
+                    
+                    <div className="h-4 w-px bg-white/20 mx-1"></div>
+                    
                     <a 
                       href={previewUrl} 
                       download={(activeDoc as any)?.Title || (activeDoc as any)?.title || 'document.pdf'}
                       className="p-1.5 hover:bg-white/10 rounded-full transition-colors flex items-center justify-center cursor-pointer text-white"
                     >
-                      <span className="material-symbols-outlined text-lg">download</span>
+                      <span className="material-symbols-outlined text-[18px]">download</span>
                     </a>
                   </div>
                 )}
