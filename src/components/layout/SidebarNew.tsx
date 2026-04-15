@@ -9,7 +9,7 @@ export function SidebarNew() {
   ];
 
   return (
-    <aside className="hidden md:flex flex-col p-4 -mt-4 border-r border-outline-variant/30 gap-2 h-[calc(100vh-80px)] w-64 fixed left-0 bg-surface font-body text-sm font-medium">
+    <aside className="hidden md:flex flex-col p-4 -mt-4 border-r border-outline-variant/45 gap-2 h-[calc(100vh-80px)] w-64 fixed left-0 bg-surface font-body text-sm font-medium">
       {/* <p className="px-4 py-2 text-xs font-bold text-slate-400 uppercase tracking-widest">Collections</p> */}
       <nav className="flex flex-col gap-1">
         {navItems.map((item) => (

@@ -154,7 +154,7 @@ export function ExplorerNew() {
 
   return (
     <DashboardLayoutNew isFullWidth>
-      <div className="-mt-4 flex flex-col md:flex-row h-full overflow-hidden w-full m-0 p-0">
+      <div className="-mt- flex flex-col md:flex-row h-full overflow-hidden w-full m-0 p-0">
         {/* Left Pane: Document List */}
         <section className="w-full  md:w-[320px] lg:w-[350px] shrink-0 bg-surface-container-lowest border-r border-slate-100 flex flex-col h-full overflow-hidden">
           {/* Header Action Bar */}
@@ -426,7 +426,7 @@ export function ExplorerNew() {
               <p className="text-xs mt-2 max-w-[200px]">Sélectionnez un fichier pour en voir les propriétés.</p>
             </div>
           ) : (
-          <div className="p-8 flex flex-col h-full overflow-hidden">
+          <div className="p-8 pr-3 flex flex-col h-full overflow-hidden">
             {/* Properties Section */}
             <div className="flex flex-col h-full min-h-0">
               <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6 shrink-0">File Properties</h4>
