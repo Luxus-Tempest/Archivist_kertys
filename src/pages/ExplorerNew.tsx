@@ -154,9 +154,9 @@ export function ExplorerNew() {
 
   return (
     <DashboardLayoutNew isFullWidth>
-      <div className="flex flex-col md:flex-row h-[calc(100vh-80px)] overflow-hidden w-full m-0 p-0">
+      <div className="-mt-4 flex flex-col md:flex-row h-[calc(100vh-80px)] overflow-hidden w-full m-0 p-0">
         {/* Left Pane: Document List */}
-        <section className="w-full md:w-[320px] lg:w-[350px] shrink-0 bg-surface-container-lowest border-r border-slate-100 flex flex-col h-full overflow-hidden">
+        <section className="w-full  md:w-[320px] lg:w-[350px] shrink-0 bg-surface-container-lowest border-r border-slate-100 flex flex-col h-full overflow-hidden">
           {/* Header Action Bar */}
           <div className="p-4 shrink-0 border-b border-surface">
             <div className="flex items-center gap-2">
@@ -418,7 +418,7 @@ export function ExplorerNew() {
       </section>
 
         {/* Right Pane: Metadata Sidebar */}
-        <section className="w-full md:w-[320px] lg:w-[360px] shrink-0 bg-surface-container-lowest border-l border-slate-100 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden hidden lg:block h-full relative">
+        <section className="w-full md:w-[320px] lg:w-[360px] shrink-0 bg-surface-container-lowest border-l border-slate-100 hidden lg:flex flex-col h-full relative overflow-hidden">
           {!activeDoc ? (
             <div className="flex flex-col items-center justify-center p-8 text-center h-full text-slate-500">
               <span className="material-symbols-outlined text-4xl mb-4 opacity-50">info</span>
@@ -426,11 +426,11 @@ export function ExplorerNew() {
               <p className="text-xs mt-2 max-w-[200px]">Sélectionnez un fichier pour en voir les propriétés.</p>
             </div>
           ) : (
-          <div className="p-8 space-y-10">
+          <div className="p-8 flex flex-col h-full overflow-hidden">
             {/* Properties Section */}
-            <div>
-              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6">File Properties</h4>
-              <div className="space-y-4 shrink-0">
+            <div className="flex flex-col h-full min-h-0">
+              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6 shrink-0">File Properties</h4>
+              <div className="space-y-4 overflow-y-auto pr-2 pb-4 [scrollbar-width:thin]">
                 {isPropertiesLoading ? (
                    <div className="flex flex-col space-y-4 animate-pulse">
                      <div className="h-4 bg-slate-200/50 rounded w-full"></div>

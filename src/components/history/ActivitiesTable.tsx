@@ -89,7 +89,7 @@ export function ActivitiesTable() {
           <div className="h-4 w-[1px] bg-outline-variant/20 mx-2"></div>
 
           <div className="flex gap-2">
-            <button className="px-4 py-2 text-sm font-semibold bg-surface-container-high text-on-surface-variant rounded-lg hover:bg-surface-variant transition-colors cursor-pointer">Export Logs</button>
+            <button disabled className="px-4 py-2 text-sm font-semibold bg-surface-container-high text-on-surface-variant rounded-lg hover:bg-surface-variant transition-colors cursor-pointer">Export Logs</button>
             <button 
               onClick={() => navigate('/process-new')}
               className="px-4 py-2 text-sm font-semibold bg-primary text-on-primary rounded-lg shadow-sm flex items-center gap-2 hover:bg-primary-dim transition-colors cursor-pointer"
