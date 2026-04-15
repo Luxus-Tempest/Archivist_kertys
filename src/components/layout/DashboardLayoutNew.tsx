@@ -17,7 +17,7 @@ export function DashboardLayoutNew({ children, isFullWidth = false }: DashboardL
         <SidebarNew />
         
         {/* Main Content Area */}
-        <main className={`flex-1 md:ml-64 ${isFullWidth ? 'pb-24' : 'p-6 lg:p-12 max-w-7xl mx-auto w-full pb-32'}`}>
+        <main className={`flex-1 md:ml-64 min-w-0 overflow-x-hidden ${isFullWidth ? 'pb-24' : 'p-6 lg:p-12 max-w-7xl mx-auto w-full pb-32'}`}>
           {children}
         </main>
       </div>

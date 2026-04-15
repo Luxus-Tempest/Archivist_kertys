@@ -149,26 +149,25 @@ export function ExplorerNew() {
         </section>
 
         {/* Center Pane: Preview Area */}
-        <section className="flex-1 bg-surface flex flex-col p-8 h-full overflow-hidden">
-          <div className="mb-6 flex flex-col lg:flex-row justify-between lg:items-end gap-4 shrink-0">
-            <div className="min-w-0">
-              <h3 className="text-3xl font-headline font-extrabold tracking-tighter text-on-surface leading-none truncate block">
-                {(activeDoc as any)?.Title || (activeDoc as any)?.title || 'Aucun document'}
-              </h3>
-              {/* <p className="text-slate-500 text-sm mt-2 flex items-center shrink-0">
-                <span className="material-symbols-outlined text-sm mr-1">folder_open</span>
-                <span className="truncate">Projects / Architecture / 2023 / Blue-Sky</span>
-              </p> */}
+        <section className="flex-1 min-w-0 bg-surface flex flex-col h-full overflow-hidden">
+          {/* <div className="p-8 pb-0 shrink-0">
+            <div className="mb-6 flex flex-col lg:flex-row justify-between lg:items-center gap-4 min-w-0 overflow-hidden">
+              <div className="min-w-0 flex-1">
+                <h3 className="text-2xl lg:text-3xl font-headline font-extrabold tracking-tighter text-on-surface leading-tight truncate w-full" title={(activeDoc as any)?.Title || (activeDoc as any)?.title}>
+                  {(activeDoc as any)?.Title || (activeDoc as any)?.title || 'Aucun document'}
+                </h3>
+              </div>
+              <div className="flex space-x-2 shrink-0 bg-surface-container-low p-1.5 rounded-xl border border-slate-100 shadow-sm">
+                 <button className="p-2 rounded-lg hover:bg-white hover:shadow-sm transition-all text-slate-500 cursor-pointer flex items-center justify-center"><span className="material-symbols-outlined text-[20px]">zoom_in</span></button>
+                <button className="p-2 rounded-lg hover:bg-white hover:shadow-sm transition-all text-slate-500 cursor-pointer flex items-center justify-center"><span className="material-symbols-outlined text-[20px]">zoom_out</span></button>
+                <button className="p-2 rounded-lg hover:bg-white hover:shadow-sm transition-all text-slate-500 cursor-pointer flex items-center justify-center"><span className="material-symbols-outlined text-[20px]">fullscreen</span></button>
+              </div>
             </div>
-            <div className="flex space-x-3 shrink-0">
-              <button className="p-2.5 rounded-full hover:bg-surface-container-high transition-colors text-slate-500 cursor-pointer flex items-center justify-center"><span className="material-symbols-outlined">zoom_in</span></button>
-              <button className="p-2.5 rounded-full hover:bg-surface-container-high transition-colors text-slate-500 cursor-pointer flex items-center justify-center"><span className="material-symbols-outlined">zoom_out</span></button>
-              <button className="p-2.5 rounded-full hover:bg-surface-container-high transition-colors text-slate-500 cursor-pointer flex items-center justify-center"><span className="material-symbols-outlined">fullscreen</span></button>
-            </div>
-          </div>
+          </div>  */}
 
-          {/* Document Preview Canvas */}
-          <div className="flex-1 relative rounded-2xl overflow-hidden shadow-editorial border border-slate-100/50 bg-[#F5F7F9] min-h-0 flex flex-col">
+          <div className="flex-1 p-2 overflow-hidden flex flex-col">
+            {/* Document Preview Canvas */}
+            <div className="flex-1 relative rounded-xs overflow-hidden shadow-editorial border border-slate-100/50 bg-[#F5F7F9] min-h-0 flex flex-col">
             {isPreviewLoading ? (
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/50 backdrop-blur-sm z-10 transition-all duration-300">
                 <div className="relative">
@@ -232,7 +231,8 @@ export function ExplorerNew() {
               </div>
             )}
           </div>
-        </section>
+        </div>
+      </section>
 
         {/* Right Pane: Metadata Sidebar */}
         <section className="w-full md:w-[320px] lg:w-[360px] shrink-0 bg-surface-container-lowest border-l border-slate-100 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden hidden lg:block h-full relative">
