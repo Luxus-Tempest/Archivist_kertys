@@ -10,7 +10,7 @@ import 'react-pdf/dist/Page/TextLayer.css';
 // Initialize PDF worker
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 export function ExplorerNew() {
-  const { documents, isLoading, fetchDocuments, getFileContent } = useMFilesDocsHook();
+  const { documents, isLoading, fetchDocuments, getFileContent, getFileProperties } = useMFilesDocsHook();
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeDoc, setActiveDoc] = useState<MFilesDocumentDto | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -18,6 +18,8 @@ export function ExplorerNew() {
   const [zoomLevel, setZoomLevel] = useState(100);
   const [pageCount, setPageCount] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
+  const [fileProperties, setFileProperties] = useState<Record<string, any> | null>(null);
+  const [isPropertiesLoading, setIsPropertiesLoading] = useState(false);
 
   useEffect(() => {
     fetchDocuments();
@@ -52,6 +54,31 @@ export function ExplorerNew() {
     }
     setActiveDoc(doc);
   };
+
+  useEffect(() => {
+    async function loadProperties() {
+      if (!activeDoc) {
+        setFileProperties(null);
+        return;
+      }
+      
+      const objId = (activeDoc as any)?.ObjVer?.ID || (activeDoc as any)?.objVer?.id;
+      if (objId !== undefined) {
+        setIsPropertiesLoading(true);
+        try {
+          const data = await getFileProperties(objId);
+          setFileProperties(data || null);
+        } catch (error) {
+          console.error("Error fetching properties:", error);
+          setFileProperties(null);
+        } finally {
+          setIsPropertiesLoading(false);
+        }
+      }
+    }
+    
+    loadProperties();
+  }, [activeDoc, getFileProperties]);
 
   useEffect(() => {
     let currentUrl: string | null = null;
@@ -404,33 +431,53 @@ export function ExplorerNew() {
             <div>
               <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6">File Properties</h4>
               <div className="space-y-4 shrink-0">
-                <div className="flex justify-between items-center pb-3 border-b border-slate-50">
-                  <span className="text-sm font-medium text-slate-500 shrink-0 pr-4">Name</span>
-                  <span className="text-sm font-bold text-on-surface truncate">{(activeDoc as any)?.Title || (activeDoc as any)?.title || '-'}</span>
-                </div>
-                <div className="flex justify-between items-center pb-3 border-b border-slate-50">
-                  <span className="text-sm font-medium text-slate-500 shrink-0 pr-4">Type</span>
-                  <span className="text-sm font-bold text-on-surface truncate">{(activeDoc as any)?.Class !== undefined ? `Class ID: ${(activeDoc as any).Class}` : ((activeDoc as any)?.class !== undefined ? `Class ID: ${(activeDoc as any).class}` : '-')}</span>
-                </div>
-                <div className="flex justify-between items-center pb-3 border-b border-slate-50">
-                  <span className="text-sm font-medium text-slate-500 shrink-0 pr-4">Size</span>
-                  <span className="text-sm font-bold text-on-surface truncate">
-                    {((activeDoc as any)?.Files?.[0]?.Size || (activeDoc as any)?.files?.[0]?.size) 
-                       ? formatSize((activeDoc as any)?.Files?.[0]?.Size || (activeDoc as any)?.files?.[0]?.size) 
-                       : '-'}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center pb-3 border-b border-slate-50">
-                  <span className="text-sm font-medium text-slate-500 shrink-0 pr-4">Version</span>
-                  <div className="flex items-center text-on-surface font-bold text-sm truncate">
-                    v{(activeDoc as any)?.ObjVer?.Version || (activeDoc as any)?.objVer?.version || 1}
-                  </div>
-                </div>
+                {isPropertiesLoading ? (
+                   <div className="flex flex-col space-y-4 animate-pulse">
+                     <div className="h-4 bg-slate-200/50 rounded w-full"></div>
+                     <div className="h-4 bg-slate-200/50 rounded w-3/4"></div>
+                     <div className="h-4 bg-slate-200/50 rounded w-full"></div>
+                     <div className="h-4 bg-slate-200/50 rounded w-5/6"></div>
+                   </div>
+                ) : fileProperties && Object.keys(fileProperties).length > 0 ? (
+                   Object.entries(fileProperties).map(([key, value], index) => {
+                     return (
+                       <div key={index} className="flex flex-col xl:flex-row xl:justify-between xl:items-center pb-3 border-b border-gray-100 gap-1">
+                         <span className="text-[13px] font-medium self-start text-slate-500 shrink-0 pr-4">{key}</span>
+                         <span className="text-sm font-bold text-on-surface xl:text-right" title={String(value)}>{String(value) || '-'}</span>
+                       </div>
+                     );
+                   })
+                ) : (
+                  <>
+                    <div className="flex justify-between items-center pb-3 border-b border-slate-50">
+                      <span className="text-sm font-medium text-slate-500 shrink-0 pr-4">Name</span>
+                      <span className="text-sm font-bold text-on-surface truncate">{(activeDoc as any)?.Title || (activeDoc as any)?.title || '-'}</span>
+                    </div>
+                    <div className="flex justify-between items-center pb-3 border-b border-slate-50">
+                      <span className="text-sm font-medium text-slate-500 shrink-0 pr-4">Type</span>
+                      <span className="text-sm font-bold text-on-surface truncate">{(activeDoc as any)?.Class !== undefined ? `Class ID: ${(activeDoc as any).Class}` : ((activeDoc as any)?.class !== undefined ? `Class ID: ${(activeDoc as any).class}` : '-')}</span>
+                    </div>
+                    <div className="flex justify-between items-center pb-3 border-b border-slate-50">
+                      <span className="text-sm font-medium text-slate-500 shrink-0 pr-4">Size</span>
+                      <span className="text-sm font-bold text-on-surface truncate">
+                        {((activeDoc as any)?.Files?.[0]?.Size || (activeDoc as any)?.files?.[0]?.size) 
+                           ? formatSize((activeDoc as any)?.Files?.[0]?.Size || (activeDoc as any)?.files?.[0]?.size) 
+                           : '-'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center pb-3 border-b border-slate-50">
+                      <span className="text-sm font-medium text-slate-500 shrink-0 pr-4">Version</span>
+                      <div className="flex items-center text-on-surface font-bold text-sm truncate">
+                        v{(activeDoc as any)?.ObjVer?.Version || (activeDoc as any)?.objVer?.version || 1}
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
 
             {/* Version History Section */}
-            <div className="shrink-0">
+            {/* <div className="shrink-0">
               <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6">Version History</h4>
               <div className="space-y-6 relative before:absolute before:left-3 before:top-2 before:bottom-2 before:w-px before:bg-slate-100">
                 <div className="relative pl-8">
@@ -455,10 +502,10 @@ export function ExplorerNew() {
                 </div>
               </div>
               <button className="mt-6 text-xs font-bold text-primary hover:underline transition-all cursor-pointer">View full timeline →</button>
-            </div>
+            </div> */}
 
             {/* Security Section */}
-            <div className="p-6 bg-surface-container-low rounded-2xl border border-slate-100 shrink-0">
+            {/* <div className="p-6 bg-surface-container-low rounded-2xl border border-slate-100 shrink-0">
               <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4">Security Status</h4>
               <div className="flex items-start space-x-3">
                 <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-tertiary shadow-sm shrink-0">
@@ -473,7 +520,7 @@ export function ExplorerNew() {
                 <button className="w-full py-2.5 bg-white border border-slate-200 text-on-surface rounded-xl text-xs font-bold hover:bg-slate-50 transition-colors cursor-pointer block">Manage Permissions</button>
                 <button className="w-full py-2.5 bg-white border border-slate-200 text-on-surface rounded-xl text-xs font-bold hover:bg-slate-50 transition-colors cursor-pointer block">Download Audit Log</button>
               </div>
-            </div>
+            </div> */}
           </div>
           )}
         </section>

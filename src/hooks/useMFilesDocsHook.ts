@@ -80,12 +80,23 @@ export function useMFilesDocsHook() {
     }
   }, []);
 
+  const getFileProperties = useCallback(async (objectId: number): Promise<any | null> => {
+    try {
+      const data = await fetchAuth(`/MFilesDocs/get-file-properties/${objectId}`);
+      return data;
+    } catch (err) {
+      console.error("useMFilesDocsHook getFileProperties error:", err);
+      return null;
+    }
+  }, []);
+
   return {
     documents,
     isLoading,
     error,
     hasMore,
     fetchDocuments,
-    getFileContent
+    getFileContent,
+    getFileProperties
   };
 }
