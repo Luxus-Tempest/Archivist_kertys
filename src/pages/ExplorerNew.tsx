@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { DashboardLayoutNew } from '../components/layout/DashboardLayoutNew';
 import { useMFilesDocsHook, type MFilesDocumentDto } from '../hooks/useMFilesDocsHook';
 import { Document, Page, pdfjs } from 'react-pdf';
+import { SvgIcon } from '../components/SvgIcon';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
@@ -14,7 +15,7 @@ export function ExplorerNew() {
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(100);
   const [pageCount, setPageCount] = useState(1);
-  const [pageNumber, setPageNumber] = useState(1);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchDocuments();
@@ -48,8 +49,7 @@ export function ExplorerNew() {
           const url = URL.createObjectURL(blob);
           setPreviewUrl(url);
           currentUrl = url;
-          setZoomLevel(70); 
-          setPageNumber(1);
+          setZoomLevel(70);
         } catch (err) {
           console.error("Error loading PDF preview:", err);
           setPreviewUrl(null);
@@ -94,6 +94,11 @@ export function ExplorerNew() {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
   };
 
+  const filteredDocs = documents.filter((doc: any) => {
+    const rawTitle = doc.Title || doc.title || '';
+    return rawTitle.toLowerCase().includes(searchQuery.toLowerCase());
+  });
+
   return (
     <DashboardLayoutNew isFullWidth>
       <div className="flex flex-col md:flex-row h-[calc(100vh-80px)] overflow-hidden w-full m-0 p-0">
@@ -110,7 +115,13 @@ export function ExplorerNew() {
               </div>
             </div> */}
             <div className="flex items-center justify-between border border-outline-variant/30 rounded-lg px-3 py-2 bg-white">
-              <input type="text" placeholder="Rechercher dans cette v" className="text-[13px] font-medium border-none bg-transparent outline-none w-full text-on-surface placeholder:text-outline" />
+              <input 
+                type="text" 
+                placeholder="Rechercher par nom..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="text-[13px] font-medium border-none bg-transparent outline-none w-full text-on-surface placeholder:text-outline" 
+              />
               <span className="material-symbols-outlined text-[18px] text-outline-variant">search</span>
             </div>
           </div>
@@ -136,8 +147,22 @@ export function ExplorerNew() {
                       <span className="material-symbols-outlined animate-spin text-primary">sync</span>
                     </td>
                   </tr>
+                ) : filteredDocs.length === 0 ? (
+                  <tr>
+                    <td colSpan={3} className="p-12 text-center text-slate-500">
+                      <div className="flex flex-col items-center justify-center">
+                        <SvgIcon name="SearchFile" width={64} height={64} className="text-slate-300 mb-4 opacity-60" />
+                        <p className="text-sm font-bold text-on-surface">Aucun document trouvé</p>
+                        <p className="text-xs mt-2 text-slate-500 max-w-xs text-center">
+                          {searchQuery 
+                            ? `Aucun fichier ne correspond à votre recherche "${searchQuery}".` 
+                            : 'Aucun fichier n\'est disponible.'}
+                        </p>
+                      </div>
+                    </td>
+                  </tr>
                 ) : (
-                  documents.map((doc: any) => {
+                  filteredDocs.map((doc: any) => {
                     const displayId = doc.DisplayID || doc.displayID || doc.displayId;
                     const rawTitle = doc.Title || doc.title || '';
                     const files = doc.Files || doc.files || [];
