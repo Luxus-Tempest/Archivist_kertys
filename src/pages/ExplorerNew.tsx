@@ -138,7 +138,15 @@ export function ExplorerNew() {
               ) : (
                 documents.map((doc: any) => {
                   const displayId = doc.DisplayID || doc.displayID || doc.displayId;
-                  const title = doc.Title || doc.title || '';
+                  const rawTitle = doc.Title || doc.title || '';
+                  const files = doc.Files || doc.files || [];
+                  const ext = (files[0]?.Extension || files[0]?.extension || '').toLowerCase();
+                  
+                  let title = rawTitle;
+                  if (ext && !rawTitle.toLowerCase().endsWith(`.${ext}`)) {
+                    title = `${rawTitle}.${ext}`;
+                  }
+                  
                   const isActive = (activeDoc as any)?.DisplayID === displayId || (activeDoc as any)?.displayID === displayId || (activeDoc as any)?.displayId === displayId;
                   const { icon, color } = getFileIcon(title, doc.SingleFile ?? doc.singleFile);
                   
