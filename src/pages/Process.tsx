@@ -25,6 +25,8 @@ export function Process() {
 
     connection.on("ReceiveStatusUpdate", (data: any) => {
       console.log("ReceiveStatusUpdate", data);
+      const sessionStatus = (data.sessionStatus ?? data.SessionStatus) as ProcessingStatus;
+
       setSessionData(prev => {
         if (!prev) return prev;
         
@@ -36,7 +38,7 @@ export function Process() {
           ...prev,
           session: {
             ...prev.session,
-            status: (data.sessionStatus ?? data.SessionStatus) as ProcessingStatus
+            status: sessionStatus
           },
           files: filesArray.map((f: any) => ({
             id: f.fileId ?? f.FileId,
@@ -46,6 +48,12 @@ export function Process() {
           }))
         };
       });
+
+      // Close connection if session is completed
+      if (sessionStatus === ProcessingStatus.COMPLETED) {
+        console.log(`SignalR: Session ${sessionId} completed. Closing connection.`);
+        connection.stop();
+      }
     });
 
     connection.start().catch((err) => {

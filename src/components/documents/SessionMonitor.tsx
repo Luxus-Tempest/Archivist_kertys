@@ -30,6 +30,7 @@ export function SessionMonitor({ sessionId, onClose }: SessionMonitorProps) {
       .build();
 
     connection.on("ReceiveStatusUpdate", (data: any) => {
+      const sessionStatus = (data.sessionStatus ?? data.SessionStatus) as ProcessingStatus;
       const filesArray = data.files ?? data.Files;
       if (!Array.isArray(filesArray)) return;
       
@@ -38,7 +39,7 @@ export function SessionMonitor({ sessionId, onClose }: SessionMonitorProps) {
         update: {
           session: {
             id: sessionId,
-            status: (data.sessionStatus ?? data.SessionStatus) as ProcessingStatus
+            status: sessionStatus
           },
           files: filesArray.map((f: any) => ({
             id: f.fileId ?? f.FileId,
@@ -48,6 +49,12 @@ export function SessionMonitor({ sessionId, onClose }: SessionMonitorProps) {
           }))
         }
       }));
+
+      // Close connection if session is completed
+      if (sessionStatus === ProcessingStatus.COMPLETED) {
+        connection.stop();
+        console.log(`SignalR: Session ${sessionId} completed. Connection closed.`);
+      }
     });
 
     connection.start().catch((err: unknown) => console.error("SignalR Connection Error:", err));
