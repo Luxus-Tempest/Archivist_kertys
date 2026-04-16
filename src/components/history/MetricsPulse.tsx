@@ -20,7 +20,7 @@ export function MetricsPulse() {
           <span className="w-2 h-2 rounded-full bg-tertiary"></span>
           System Pulse
         </h2>
-        <span className="text-xs font-medium text-outline uppercase tracking-widest">Real-time Telemetry</span>
+        {/* <span className="text-xs font-medium text-outline uppercase tracking-widest">Real-time Telemetry</span> */}
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {/* Metric Card 1 */}
@@ -31,7 +31,7 @@ export function MetricsPulse() {
               <SkeletonValue />
             ) : (
               <span className="text-3xl font-headline font-extrabold text-on-surface">
-                {user.fileCount.toLocaleString()}
+                {user?.fileCount?.toLocaleString()}
               </span>
             )}
           </div>
@@ -52,7 +52,7 @@ export function MetricsPulse() {
         </div>
 
         {/* Metric Card 3 */}
-        <div className="bg-surface-container-lowest p-3 rounded-xl border border-outline-variant/10 shadow-card">
+        {/* <div className="bg-surface-container-lowest p-3 rounded-xl border border-outline-variant/10 shadow-card">
           <p className="text-outline text-xs font-semibold uppercase tracking-wider mb-2">Active Sessions</p>
           <div className="flex items-baseline gap-2">
             {isLoading || !user ? (
@@ -66,7 +66,7 @@ export function MetricsPulse() {
               </>
             )}
           </div>
-        </div>
+        </div> */}
       </div>
     </section>
   );

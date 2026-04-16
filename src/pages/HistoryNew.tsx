@@ -7,7 +7,7 @@ export function HistoryNew() {
     <DashboardLayoutNew>
       <div className="max-w-7xl mx-auto px-15 pt-4">
         {/* Search Bar Section */}
-        <div className="mb-12">
+        {/* <div className="mb-12">
           <div className="relative max-w-2xl group">
             <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">
               search
@@ -18,7 +18,7 @@ export function HistoryNew() {
               type="text"
             />
           </div>
-        </div>
+        </div> */}
 
         {/* Metrics Grid */}
         <MetricsPulse />

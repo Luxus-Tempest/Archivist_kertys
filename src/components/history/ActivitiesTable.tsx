@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDocument } from '../../hooks/useDocument';
 
@@ -68,7 +68,7 @@ export function ActivitiesTable() {
           <div className="flex bg-surface-container-high p-1 rounded-full border border-outline-variant/10 shadow-sm">
             <button 
               onClick={() => setGroupBy('session')}
-              className={`px-6 cursor-pointer py-1.5 text-xs font-bold rounded-full transition-all duration-300 flex items-center gap-2 ${
+              className={`px-3 cursor-pointer py-1.5 text-xs font-bold rounded-full transition-all duration-300 flex items-center gap-2 ${
                 groupBy === 'session' ? 'bg-white shadow-sm text-primary' : 'text-outline hover:text-on-surface'
               }`}
             >
@@ -77,7 +77,7 @@ export function ActivitiesTable() {
             </button>
             <button 
               onClick={() => setGroupBy('files')}
-              className={`px-6 cursor-pointer py-1.5 text-xs font-bold rounded-full transition-all duration-300 flex items-center gap-2 ${
+              className={`px-3 cursor-pointer py-1.5 text-xs font-bold rounded-full transition-all duration-300 flex items-center gap-2 ${
                 groupBy === 'files' ? 'bg-white shadow-sm text-primary' : 'text-outline hover:text-on-surface'
               }`}
             >
@@ -89,7 +89,7 @@ export function ActivitiesTable() {
           <div className="h-4 w-[1px] bg-outline-variant/20 mx-2"></div>
 
           <div className="flex gap-2">
-            <button disabled className="px-4 py-2 text-sm font-semibold bg-surface-container-high text-on-surface-variant rounded-lg hover:bg-surface-variant transition-colors cursor-pointer">Export Logs</button>
+            {/* <button disabled className="px-4 py-2 text-sm font-semibold bg-surface-container-high text-on-surface-variant rounded-lg hover:bg-surface-variant transition-colors cursor-pointer">Export Logs</button> */}
             <button 
               onClick={() => navigate('/process-new')}
               className="px-4 py-2 text-sm font-semibold bg-primary text-on-primary rounded-lg shadow-sm flex items-center gap-2 hover:bg-primary-dim transition-colors cursor-pointer"
@@ -127,7 +127,7 @@ export function ActivitiesTable() {
           <tbody className="divide-y divide-surface-container">
             {groupBy === 'session' ? (
               history?.sessions?.map((session) => (
-                <div key={session.sessionId} className="contents">
+                <Fragment key={session.sessionId}>
                   <tr 
                     className={`transition-colors cursor-pointer group ${expandedId === session.sessionId ? 'bg-surface-container-low/30' : 'hover:bg-surface-container-low'}`}
                     onClick={() => setExpandedId(expandedId === session.sessionId ? null : session.sessionId)}
@@ -203,7 +203,7 @@ export function ActivitiesTable() {
                       </div>
                     </td>
                   </tr>
-                </div>
+                </Fragment>
               ))
             ) : (
               allFiles.map((file, idx) => (
@@ -215,8 +215,8 @@ export function ActivitiesTable() {
                       </span>
                       <div className="flex flex-col">
                         <span className="font-bold text-on-surface text-sm tracking-tight">{file.fileName}</span>
-                        <span className="text-[10px] text-outline font-medium tracking-tighter uppercase whitespace-nowrap overflow-hidden text-ellipsis max-w-[150px]">
-                        Session {file.sessionId.substring(0, 12)}...
+                        <span className="text-[10px] text-outline font-medium tracking-tighter uppercase whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">
+                        {file.sessionId}
                       </span>
                       </div>
                     </div>
@@ -235,7 +235,7 @@ export function ActivitiesTable() {
                   </td>
                   <td className="px-6 py-4 border-none">
                     <div className="flex flex-col">
-                      <span className="text-on-surface-variant text-sm font-medium tracking-tight whitespace-nowrap overflow-hidden text-ellipsis max-w-[120px]">
+                      <span className="text-on-surface-variant text-sm font-medium tracking-tight whitespace-nowrap overflow-hidden text-ellipsis max-w-[150px]">
                         {formatDate(file.sessionDate)}
                       </span>
                       <span className="text-[10px] text-outline uppercase font-bold tracking-widest">{file.status}</span>

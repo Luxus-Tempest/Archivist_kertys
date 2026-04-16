@@ -327,7 +327,7 @@ export function ExplorerNew() {
                         loading={null}
                       >
                         <div className="flex flex-col gap-6 align-middle transition-transform duration-200">
-                          {Array.from(new Array(pageCount), (el, index) => (
+                          {Array.from({ length: pageCount }).map((_, index) => (
                             <div key={`page_${index + 1}`} className="bg-white shadow-xl">
                               <Page 
                                 pageNumber={index + 1} 

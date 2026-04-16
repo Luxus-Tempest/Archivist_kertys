@@ -3,11 +3,9 @@ import {
   PanelLeftClose,
   Search,
   Home,
-  GitBranch,
   UploadCloud,
   History,
   Settings,
-  HelpCircle,
   MoreVertical,
   LogOut
 } from 'lucide-react';

@@ -13,7 +13,6 @@ import {
   clearStagedFiles, 
   setSession, 
   removeSession, 
-  updateSessionStatus,
   initializeSessionsFromIds
 } from '../store/docs/docsSlice';
 import { fileStorage } from '../utils/fileStorage';
