@@ -18,7 +18,14 @@ export function SessionMonitor({ sessionId, onClose }: SessionMonitorProps) {
   const [isExpanded, setIsExpanded] = useState(true);
 
   useEffect(() => {
-    if (!sessionId) return;
+    if (!sessionId || !sessionData) return;
+    
+    // Si la session est déjà terminée localement, on ne se connecte pas
+    const terminalStates: string[] = [ProcessingStatus.COMPLETED, ProcessingStatus.UPLOADED, ProcessingStatus.FAILED];
+    if (terminalStates.includes(sessionData.session.status)) {
+      console.log(`SignalR: Session ${sessionId} is already ${sessionData.session.status}. Navigation connection skipped.`);
+      return;
+    }
     
     const baseUrl = import.meta.env.VITE_BASE_URL || '';
     const rootUrl = baseUrl.replace(/\/api\/?$/, '');

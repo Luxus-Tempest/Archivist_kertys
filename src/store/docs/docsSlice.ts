@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
+import { ProcessingStatus } from '../../types/documents';
 import type { UploadResponse, HistoryResponse, SessionInfo } from '../../types/documents';
 
 export interface StagedFileMetadata {
@@ -108,6 +109,22 @@ export const docsSlice = createSlice({
       state.activeSessions[action.payload.id] = newSession as UploadResponse;
       localStorage.setItem('docs_state', JSON.stringify(state));
     },
+    reconcilePendingSessions: (state, action: PayloadAction<string[]>) => {
+      const pendingIds = new Set(action.payload);
+      Object.keys(state.activeSessions).forEach(id => {
+        const session = state.activeSessions[id];
+        // If the session is not in the pending list and is not already in a terminal state,
+        // we mark it as completed because it should have finished while we were offline.
+        if (!pendingIds.has(id)) {
+          const terminalStates: string[] = [ProcessingStatus.COMPLETED, ProcessingStatus.UPLOADED, ProcessingStatus.FAILED];
+          if (!terminalStates.includes(session.session.status)) {
+            session.session.status = ProcessingStatus.COMPLETED;
+            // Optionally clear files status if needed, but the session status is the main trigger
+          }
+        }
+      });
+      localStorage.setItem('docs_state', JSON.stringify(state));
+    },
     setHistoryLoading: (state) => {
       state.history.isLoading = true;
       state.history.error = null;
@@ -139,6 +156,7 @@ export const {
   removeSession,
   initializeSessionsFromIds,
   updateSessionStatus,
+  reconcilePendingSessions,
   setHistoryLoading,
   setHistoryData,
   setHistoryError,

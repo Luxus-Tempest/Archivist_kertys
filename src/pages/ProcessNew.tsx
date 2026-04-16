@@ -13,7 +13,8 @@ import {
   clearStagedFiles, 
   setSession, 
   removeSession, 
-  initializeSessionsFromIds
+  initializeSessionsFromIds,
+  reconcilePendingSessions
 } from '../store/docs/docsSlice';
 import { fileStorage } from '../utils/fileStorage';
 import type { StagedFileMetadata } from '../store/docs/docsSlice';
@@ -29,6 +30,9 @@ export function ProcessNew() {
   useEffect(() => {
     const syncSessions = async () => {
       const pendingIds = await fetchPendingSessions();
+      // First mark finished sessions as Completed
+      dispatch(reconcilePendingSessions(pendingIds));
+      // Then initialize any new ones that weren't in our local state
       if (pendingIds.length > 0) {
         dispatch(initializeSessionsFromIds(pendingIds));
       }
