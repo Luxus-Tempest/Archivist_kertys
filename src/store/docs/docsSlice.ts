@@ -131,13 +131,8 @@ export const docsSlice = createSlice({
     },
     setHistoryData: (state, action: PayloadAction<HistoryResponse>) => {
       state.history.isLoading = false;
-      if (action.payload.offset === 0) {
-        state.history.sessions = action.payload.row;
-      } else {
-        const existingIds = new Set(state.history.sessions.map(s => s.sessionId));
-        const newSessions = action.payload.row.filter(s => !existingIds.has(s.sessionId));
-        state.history.sessions = [...state.history.sessions, ...newSessions];
-      }
+      // We always replace the sessions to support true page-by-page pagination
+      state.history.sessions = action.payload.row;
       state.history.totalCount = action.payload.totalCount;
     },
     setHistoryError: (state, action: PayloadAction<string>) => {

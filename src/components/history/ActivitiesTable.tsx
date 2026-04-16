@@ -32,13 +32,28 @@ const formatDate = (dateString: string) => {
 export function ActivitiesTable() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [groupBy, setGroupBy] = useState<'session' | 'files'>('session');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(10);
   const navigate = useNavigate();
   const { getHistory, history } = useDocument();
 
   useEffect(() => {
-    getHistory();
-  }, [getHistory]);
+    const offset = (currentPage - 1) * pageSize;
+    getHistory({ offset, limit: pageSize });
+  }, [getHistory, currentPage, pageSize]);
 
+  const totalCount = history?.totalCount || 0;
+  const startRange = totalCount === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+  const endRange = Math.min(currentPage * pageSize, totalCount);
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) setCurrentPage(prev => prev - 1);
+  };
+
+  const handleNextPage = () => {
+    if (currentPage * pageSize < totalCount) setCurrentPage(prev => prev + 1);
+  };
+  
   const allFiles = history?.sessions?.flatMap(session => 
     session.files.map(file => ({
       ...file,
@@ -89,7 +104,6 @@ export function ActivitiesTable() {
           <div className="h-4 w-[1px] bg-outline-variant/20 mx-2"></div>
 
           <div className="flex gap-2">
-            {/* <button disabled className="px-4 py-2 text-sm font-semibold bg-surface-container-high text-on-surface-variant rounded-lg hover:bg-surface-variant transition-colors cursor-pointer">Export Logs</button> */}
             <button 
               onClick={() => navigate('/process-new')}
               className="px-4 py-2 text-sm font-semibold bg-primary text-on-primary rounded-lg shadow-sm flex items-center gap-2 hover:bg-primary-dim transition-colors cursor-pointer"
@@ -264,27 +278,37 @@ export function ActivitiesTable() {
         </table>
       </div>
 
-      {history?.sessions?.length > 0 && history?.sessions?.length < history?.totalCount && (
-        <div className="mt-12 flex justify-center">
+      {/* Pagination Bar */}
+      <div className="mt-8 flex justify-center">
+        <div className="flex items-center bg-surface-container-high/50 backdrop-blur-sm rounded-full border border-outline-variant/10 p-1.5 shadow-sm transition-all hover:shadow-md">
           <button 
-            className="px-12 py-3 text-xs font-black uppercase tracking-widest text-primary border-2 border-primary/20 hover:border-primary/50 rounded-full hover:bg-primary/5 transition-all cursor-pointer shadow-lg shadow-primary/5 active:scale-95 duration-200"
-            onClick={() => getHistory({ offset: history?.sessions?.length, limit: 5 })}
-            disabled={history?.isLoading}
+            onClick={handlePrevPage}
+            disabled={currentPage === 1 || history?.isLoading}
+            className="w-10 h-10 flex items-center justify-center rounded-full text-outline hover:text-primary hover:bg-white transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed active:scale-90"
           >
-            {history?.isLoading ? (
-              <div className="flex items-center gap-3">
-                <div className="w-3 h-3 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
-                Loading...
-              </div>
-            ) : (
-              <div className="flex items-center gap-1 hover:gap-3 transition-all">
-                Load more activities
-                <span className="material-symbols-outlined text-sm">arrow_forward</span>
-              </div>
-            )}
+            <span className="material-symbols-outlined text-xl">chevron_left</span>
+          </button>
+          
+          <div className="flex items-center px-4 gap-4">
+            <div className="h-4 w-[1px] bg-outline-variant/20"></div>
+            <div className="flex items-center gap-2 text-[13px] font-bold tracking-tight">
+              <span className="text-primary">{startRange} - {endRange}</span>
+              <span className="text-outline-variant">/</span>
+              <span className="text-on-surface-variant opacity-60">{totalCount}</span>
+            </div>
+            <div className="h-4 w-[1px] bg-outline-variant/20"></div>
+          </div>
+
+          <button 
+            onClick={handleNextPage}
+            disabled={endRange >= totalCount || history?.isLoading}
+            className="w-10 h-10 flex items-center justify-center rounded-full text-outline hover:text-primary hover:bg-white transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed active:scale-90"
+          >
+            <span className="material-symbols-outlined text-xl">chevron_right</span>
           </button>
         </div>
-      )}
+      </div>
     </section>
+
   );
 }
