@@ -1,7 +1,6 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { UploadResponse, HistoryResponse, SessionInfo } from '../../types/documents';
-import { fetchAuth } from '../../utils/api';
 
 export interface StagedFileMetadata {
   id: string;
@@ -57,20 +56,7 @@ const loadInitialState = (): DocsState => {
 
 const initialState: DocsState = loadInitialState();
 
-export const fetchHistory = createAsyncThunk<
-  HistoryResponse,
-  { offset?: number, limit?: number } | void,
-  { rejectValue: string }
->('docs/fetchHistory', async (params, thunkAPI) => {
-  try {
-    const offset = params?.offset ?? 0;
-    const limit = params?.limit ?? 10;
-    const data = await fetchAuth(`/docs/user/sessions-infos?offset=${offset}&limit=${limit}`);
-    return data as HistoryResponse;
-  } catch (err: any) {
-    return thunkAPI.rejectWithValue(err.message || "Failed to fetch history");
-  }
-});
+
 
 export const docsSlice = createSlice({
   name: 'docs',
@@ -121,29 +107,26 @@ export const docsSlice = createSlice({
       };
       state.activeSessions[action.payload.id] = newSession as UploadResponse;
       localStorage.setItem('docs_state', JSON.stringify(state));
-    }
-  },
-  extraReducers: (builder) => {
-    builder.addCase(fetchHistory.pending, (state) => {
+    },
+    setHistoryLoading: (state) => {
       state.history.isLoading = true;
       state.history.error = null;
-    });
-    builder.addCase(fetchHistory.fulfilled, (state, action: PayloadAction<HistoryResponse>) => {
+    },
+    setHistoryData: (state, action: PayloadAction<HistoryResponse>) => {
       state.history.isLoading = false;
       if (action.payload.offset === 0) {
         state.history.sessions = action.payload.row;
       } else {
-        // Concatenate new sessions, avoiding duplicates if any
         const existingIds = new Set(state.history.sessions.map(s => s.sessionId));
         const newSessions = action.payload.row.filter(s => !existingIds.has(s.sessionId));
         state.history.sessions = [...state.history.sessions, ...newSessions];
       }
       state.history.totalCount = action.payload.totalCount;
-    });
-    builder.addCase(fetchHistory.rejected, (state, action) => {
+    },
+    setHistoryError: (state, action: PayloadAction<string>) => {
       state.history.isLoading = false;
-      state.history.error = action.payload as string;
-    });
+      state.history.error = action.payload;
+    },
   },
 });
 
@@ -155,7 +138,10 @@ export const {
   setSession, 
   removeSession,
   initializeSessionsFromIds,
-  updateSessionStatus
+  updateSessionStatus,
+  setHistoryLoading,
+  setHistoryData,
+  setHistoryError,
 } = docsSlice.actions;
 
 export default docsSlice.reducer;

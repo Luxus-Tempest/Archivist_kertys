@@ -7,4 +7,19 @@ export default defineConfig({
     react(),
     tailwindcss()
   ],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://209.209.40.100:3007',
+        changeOrigin: true,
+        secure: false
+      },
+      '/events': {
+        target: 'http://209.209.40.100:3007',
+        changeOrigin: true,
+        secure: false,
+        ws: true
+      }
+    }
+  }
 })

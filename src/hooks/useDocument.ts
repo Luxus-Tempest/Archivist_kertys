@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAuth } from '../utils/api';
-import type { UploadResponse } from '../types/documents';
-import { fetchHistory } from '../store/docs/docsSlice';
+import type { UploadResponse, HistoryResponse } from '../types/documents';
+import { setHistoryLoading, setHistoryData, setHistoryError } from '../store/docs/docsSlice';
 import type { RootState, AppDispatch } from '../store';
 
 export function useDocument() {
@@ -46,8 +46,17 @@ export function useDocument() {
     }
   };
 
-  const getHistory = useCallback((params?: { offset?: number, limit?: number }) => {
-    return dispatch(fetchHistory(params));
+  const getHistory = useCallback(async (params?: { offset?: number, limit?: number }) => {
+    const offset = params?.offset ?? 0;
+    const limit = params?.limit ?? 10;
+
+    dispatch(setHistoryLoading());
+    try {
+      const data = await fetchAuth(`/docs/user/sessions-infos?offset=${offset}&limit=${limit}`);
+      dispatch(setHistoryData(data as HistoryResponse));
+    } catch (err: any) {
+      dispatch(setHistoryError(err.message || "Failed to fetch history"));
+    }
   }, [dispatch]);
 
   return {
