@@ -1,4 +1,6 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next'
+import { LanguageSelector } from '../LanguageSelector';
 
 interface AuthPageLayoutProps {
   children: React.ReactNode;
@@ -19,16 +21,18 @@ export function AuthPageLayout({
   headline,
   description,
 }: AuthPageLayoutProps) {
+  const { t } = useTranslation()
   return (
     <div className="bg-surface text-on-surface flex flex-col min-h-screen">
       {/* Header */}
       <header className="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl flex justify-between items-center px-8 py-3">
         <div className="flex items-center gap-2">
           <span className="material-symbols-outlined text-primary">account_balance_wallet</span>
-          <span className="text-xl font-bold tracking-tighter text-slate-800 font-headline">DocMe</span>
+          <span className="text-xl font-bold tracking-tighter text-slate-800 font-headline">{t('docme', 'DocMe')}</span>
         </div>
         <div className="hidden md:flex gap-8 items-center text-sm font-medium text-on-surface-variant">
-          <a className="px-5 py-2 border border-outline-variant/30 rounded-full hover:bg-surface-container-high transition-all" href="#">About</a>
+          <LanguageSelector />
+          <a className="px-5 py-2 border border-outline-variant/30 rounded-full hover:bg-surface-container-high transition-all" href="#">{t('about', 'About')}</a>
         </div>
       </header>
 
@@ -69,7 +73,7 @@ export function AuthPageLayout({
       {/* Footer */}
       <footer className="p-8 text-center text-on-surface">
         <p className="text-xs text-outline-variant tracking-widest font-body uppercase">
-          © 2024 DocMe Document Systems. Secure. Private. Editorial.
+          {t('2024DocmeDocumentSystemsSecurePrivateEditorial', '© 2024 DocMe Document Systems. Secure. Private. Editorial.')}
         </p>
       </footer>
     </div>

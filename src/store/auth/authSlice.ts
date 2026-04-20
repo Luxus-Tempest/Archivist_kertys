@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { AuthState, LoginResponse, User } from '../../types/auth';
 import type { LoginFormData, SignupFormData } from '../../utils/validations';
+import i18next from 'i18next'
 
 
 const API_URL = import.meta.env.VITE_BASE_URL + '/auth';
@@ -47,7 +48,7 @@ export const fetchMe = createAsyncThunk<
       method: 'GET',
       headers: { 
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+        'Authorization': i18next.t('bearerToken', 'Bearer {{token}}', { token })
       },
     });
 

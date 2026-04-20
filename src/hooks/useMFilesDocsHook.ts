@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { fetchAuth, fetchAuthBlob } from '../utils/api';
+import i18next from 'i18next'
 
 export interface MFilesObjVerDto {
   Version: number;
@@ -64,7 +65,7 @@ export function useMFilesDocsHook() {
       setHasMore(hasMoreResults);
       return data;
     } catch (err: any) {
-      const errorMessage = err.message || "Erreur lors de la récupération des documents MFiles.";
+      const errorMessage = err.message || i18next.t('erreurLorsDeLaRcuprationDesDocumentsMfiles', 'Erreur lors de la récupération des documents MFiles.');
       setError(errorMessage);
       console.error("useMFilesDocsHook error:", err);
       return null;

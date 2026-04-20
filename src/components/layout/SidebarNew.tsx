@@ -1,10 +1,12 @@
 import { NavLink } from 'react-router-dom';
+import { useTranslation } from 'react-i18next'
 
 export function SidebarNew() {
+  const { t } = useTranslation()
   const navItems = [
-    { name: 'Explorer', icon: 'folder', path: '/explorer-new' },
-    { name: 'History', icon: 'history', path: '/history-new' },
-    { name: 'Process', icon: 'add', path: '/process-new' },
+    { name: t('sidebar.explorer', 'Explorer'), icon: 'folder', path: '/explorer' },
+    { name: t('sidebar.history', 'History'), icon: 'history', path: '/history' },
+    { name: t('sidebar.process', 'Process'), icon: 'add', path: '/process' },
   ];
 
   return (

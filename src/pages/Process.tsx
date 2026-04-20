@@ -4,8 +4,10 @@ import { Clock, Loader2, Tags, CheckCircle2 } from 'lucide-react';
 import { UploadArea } from '../components/UploadArea';
 import { SvgIcon } from '../components/SvgIcon';
 import { ProcessingStatus, type UploadResponse } from '../types/documents';
+import { useTranslation } from 'react-i18next'
 
 export function Process() {
+  const { t } = useTranslation()
   const [sessionData, setSessionData] = useState<UploadResponse | null>(null);
 
   // Initialiser la connexion SignalR quand la session est créée
@@ -16,7 +18,7 @@ export function Process() {
     const baseUrl = import.meta.env.VITE_BASE_URL || '';
     // Construction de l'URL du hub en supposant que la base URL contient potentiellement /api
     const rootUrl = baseUrl.replace(/\/api\/?$/, '');
-    const hubUrl = `${rootUrl}/events/external/status/${sessionId}`;
+    const hubUrl = t('rooturleventsexternalstatussessionid', '{{rootUrl}}/events/external/status/{{sessionId}}', { rootUrl, sessionId });
 
     const connection = new signalR.HubConnectionBuilder()
       .withUrl(hubUrl)
@@ -71,21 +73,21 @@ export function Process() {
         return (
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-sm font-medium bg-zinc-100 text-zinc-600 ring-1 ring-inset ring-zinc-500/10">
             <Clock strokeWidth={1.5} className="w-3.5 h-3.5" />
-            En attente
+            {t('enAttente', 'En attente')}
           </span>
         );
       case ProcessingStatus.PROCESSING:
         return (
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-sm font-medium bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-600/20">
             <Loader2 strokeWidth={1.5} className="w-3.5 h-3.5 animate-spin" />
-            En cours
+            {t('enCours', 'En cours')}
           </span>
         );
       case ProcessingStatus.CLASSIFIED:
         return (
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-sm font-medium bg-purple-50 text-purple-700 ring-1 ring-inset ring-purple-600/20">
             <Tags strokeWidth={1.5} className="w-3.5 h-3.5" />
-            Classifié
+            {t('classifi', 'Classifié')}
           </span>
         );
       case ProcessingStatus.UPLOADED:
@@ -93,7 +95,7 @@ export function Process() {
         return (
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-sm font-medium bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
             <CheckCircle2 strokeWidth={1.5} className="w-3.5 h-3.5" />
-            Terminé
+            {t('termin', 'Terminé')}
           </span>
         );
       default:
@@ -112,8 +114,8 @@ export function Process() {
       <section>
         <div className="mb-5 flex items-end justify-between">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">Téléchargement et traitement</h1>
-            <p className="text-base text-zinc-500 mt-1">Sélectionnez les fichiers à envoyer pour lancer une session de traitement.</p>
+            <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">{t('tlchargementEtTraitement', 'Téléchargement et traitement')}</h1>
+            <p className="text-base text-zinc-500 mt-1">{t('slectionnezLesFichiersEnvoyerPourLancerUneSessionDeTraitement', 'Sélectionnez les fichiers à envoyer pour lancer une session de traitement.')}</p>
           </div>
         </div>
 
@@ -126,11 +128,11 @@ export function Process() {
         <section>
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-lg font-semibold text-zinc-900">Session Actuelle</h2>
-              <p className="text-sm text-zinc-500">Statut en temps réel des documents téléversés.</p>
+              <h2 className="text-lg font-semibold text-zinc-900">{t('sessionActuelle', 'Session Actuelle')}</h2>
+              <p className="text-sm text-zinc-500">{t('statutEnTempsRelDesDocumentsTlverss', 'Statut en temps réel des documents téléversés.')}</p>
             </div>
             <div className="flex items-center gap-2 bg-white border border-zinc-200 px-3 py-1.5 rounded-xs">
-              <span className="text-xs text-zinc-400 font-medium uppercase tracking-wider">Session ID</span>
+              <span className="text-xs text-zinc-400 font-medium uppercase tracking-wider">{t('sessionId', 'Session ID')}</span>
               <span className="text-sm font-medium font-mono text-zinc-700">{sessionData.session.id}</span>
             </div>
           </div>
@@ -140,8 +142,8 @@ export function Process() {
             
             {/* List Header */}
             <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-zinc-50/80 border-b border-zinc-200 text-xs font-medium text-zinc-900 uppercase tracking-wider">
-              <div className="col-span-8 sm:col-span-8">Nom du fichier</div>
-              <div className="col-span-4 sm:col-span-4 text-right">Statut</div>
+              <div className="col-span-8 sm:col-span-8">{t('nomDuFichier', 'Nom du fichier')}</div>
+              <div className="col-span-4 sm:col-span-4 text-right">{t('statut', 'Statut')}</div>
             </div>
 
             {/* List Items */}

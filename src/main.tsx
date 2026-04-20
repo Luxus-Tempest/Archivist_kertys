@@ -5,6 +5,7 @@ import './index.css'
 import App from './App.tsx'
 import { store } from './store/index.ts'
 import { Toaster } from 'sonner'
+import './i18n'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

@@ -4,6 +4,7 @@ import { SvgIcon } from './SvgIcon';
 import { useDocument } from '../hooks/useDocument';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { UploadResponse } from '../types/documents';
+import { useTranslation, Trans } from 'react-i18next'
 
 interface UploadedFile {
   id: string;
@@ -18,6 +19,7 @@ export interface UploadAreaProps {
 }
 
 export function UploadArea({ onUploadSuccess }: UploadAreaProps) {
+  const { t } = useTranslation()
   const [isDragging, setIsDragging] = useState(false);
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -128,11 +130,9 @@ export function UploadArea({ onUploadSuccess }: UploadAreaProps) {
         <div className="w-10 h-10 mb-3 rounded-full bg-white border border-zinc-200 flex items-center justify-center ">
            <CloudUpload strokeWidth={1.5} className="w-5 h-5 text-zinc-700" />
         </div>
-        <h3 className="text-sm font-medium text-zinc-900 mb-1">
-          <span className="font-semibold underline underline-offset-2">Cliquez pour téléverser</span> ou glissez-déposez
-        </h3>
+        <h3 className="text-sm font-medium text-zinc-900 mb-1"><Trans i18nKey="spanClassnamefontsemiboldUnderlineUnderlineoffset2cliquezPourTlverserspanOuGlissezdposez"><span className="font-semibold underline underline-offset-2">Cliquez pour téléverser</span> ou glissez-déposez</Trans></h3>
         <p className="text-xs text-zinc-500 font-medium">
-          PDF, PPT, XLS ou JPG (max. 25MB)
+          {t('pdfPptXlsOuJpgMax25mb', 'PDF, PPT, XLS ou JPG (max. 25MB)')}
         </p>
       </div>
 
@@ -209,7 +209,7 @@ export function UploadArea({ onUploadSuccess }: UploadAreaProps) {
                   onClick={() => setFiles([])}
                   disabled={isUploading}
               >
-                Nettoyer
+                {t('nettoyer', 'Nettoyer')}
               </Button>
               <Button 
                   variant="solid" 
@@ -220,7 +220,7 @@ export function UploadArea({ onUploadSuccess }: UploadAreaProps) {
                 {isUploading ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    Envoi en cours...
+                    {t('envoiEnCours', 'Envoi en cours...')}
                   </>
                 ) : (
                   'Envoyer'

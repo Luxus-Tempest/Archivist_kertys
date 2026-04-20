@@ -24,7 +24,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 function GuestRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuth();
   if (isAuthenticated) {
-    return <Navigate to="/explorer-new" replace />;
+    return <Navigate to="/explorer" replace />;
   }
   return <>{children}</>;
 }
@@ -56,17 +56,17 @@ function App() {
         } />
         
         {/* New Dashboard Routes (Refactored Design) */}
-        <Route path="/process-new" element={
+        <Route path="/process" element={
           <ProtectedRoute>
             <ProcessNew />
           </ProtectedRoute>
         } />
-        <Route path="/history-new" element={
+        <Route path="/history" element={
           <ProtectedRoute>
             <HistoryNew />
           </ProtectedRoute>
         } />
-        <Route path="/explorer-new" element={
+        <Route path="/explorer" element={
           <ProtectedRoute>
             <ExplorerNew />
           </ProtectedRoute>
@@ -76,18 +76,18 @@ function App() {
         <Route path="/" element={
           <ProtectedRoute>
             <DashboardLayout>
-              <Navigate to="/process" replace />
+              <Navigate to="/process-old" replace />
             </DashboardLayout>
           </ProtectedRoute>
         } />
-        <Route path="/process" element={
+        <Route path="/process-old" element={
           <ProtectedRoute>
             <DashboardLayout>
               <Process />
             </DashboardLayout>
           </ProtectedRoute>
         } />
-        <Route path="/history" element={
+        <Route path="/history-old" element={
           <ProtectedRoute>
             <DashboardLayout>
               <History />

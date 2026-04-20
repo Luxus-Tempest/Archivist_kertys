@@ -1,26 +1,18 @@
+import { useTranslation } from 'react-i18next'
 import { useState, useEffect, Fragment } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDocument } from '../../hooks/useDocument';
 
-const formatSize = (bytes: number) => {
-  if (bytes === 0) return '0 B';
-  const k = 1024;
-  const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-};
-
-const formatDate = (dateString: string) => {
-  // Replace space with T for better cross-browser compatibility if needed
+const formatDate = (dateString: string, lng: string) => {
   const d = new Date(dateString.replace(' ', 'T'));
   
-  const time = new Intl.DateTimeFormat('en-US', {
+  const time = new Intl.DateTimeFormat(lng, {
     hour: '2-digit',
     minute: '2-digit',
     hour12: false
   }).format(d);
 
-  const date = new Intl.DateTimeFormat('en-US', {
+  const date = new Intl.DateTimeFormat(lng, {
     month: 'short',
     day: 'numeric',
     year: 'numeric'
@@ -30,6 +22,21 @@ const formatDate = (dateString: string) => {
 };
 
 export function ActivitiesTable() {
+  const { t, i18n } = useTranslation()
+
+  const formatSize = (bytes: number) => {
+    if (bytes === 0) return t('bytesB', '0 B', { bytes: 0 });
+    const k = 1024;
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    const val = parseFloat((bytes / Math.pow(k, i)).toFixed(2));
+    
+    if (i === 0) return t('bytesB', '{{bytes}} B', { bytes: val });
+    if (i === 1) return t('valKb', '{{val}} KB', { val });
+    if (i === 2) return t('valMb', '{{val}} MB', { val });
+    
+    const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+    return val + ' ' + sizes[i];
+  };
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [groupBy, setGroupBy] = useState<'session' | 'files'>('session');
   const [currentPage, setCurrentPage] = useState(1);
@@ -66,7 +73,7 @@ export function ActivitiesTable() {
     return (
       <div className="flex flex-col items-center justify-center py-20 bg-surface-container-lowest rounded-2xl border border-outline-variant/10">
         <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-4"></div>
-        <p className="text-on-surface-variant font-medium">Loading your activities...</p>
+        <p className="text-on-surface-variant font-medium">{t('loadingYourActivities', 'Loading your activities...')}</p>
       </div>
     );
   }
@@ -75,8 +82,8 @@ export function ActivitiesTable() {
     <section>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h2 className="font-headline font-bold text-2xl tracking-tight text-on-surface mb-1">Recent Activities</h2>
-          <p className="text-sm text-outline tracking-tight">Review and manage your processed documents</p>
+          <h2 className="font-headline font-bold text-2xl tracking-tight text-on-surface mb-1">{t('recentActivities', 'Recent Activities')}</h2>
+          <p className="text-sm text-outline tracking-tight">{t('reviewAndManageYourProcessedDocuments', 'Review and manage your processed documents')}</p>
         </div>
         <div className="flex gap-4 items-center">
           {/* Segmented Control / Toggle */}
@@ -88,8 +95,7 @@ export function ActivitiesTable() {
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">view_agenda</span>
-              Sessions
-            </button>
+              {t('sessions', 'Sessions')}</button>
             <button 
               onClick={() => setGroupBy('files')}
               className={`px-3 cursor-pointer py-1.5 text-xs font-bold rounded-full transition-all duration-300 flex items-center gap-2 ${
@@ -97,8 +103,7 @@ export function ActivitiesTable() {
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">description</span>
-              Files
-            </button>
+              {t('files', 'Files')}</button>
           </div>
 
           <div className="h-4 w-px bg-outline-variant/20 mx-2"></div>
@@ -108,9 +113,8 @@ export function ActivitiesTable() {
               onClick={() => navigate('/process-new')}
               className="px-4 py-2 text-sm font-semibold bg-primary text-on-primary rounded-lg shadow-sm flex items-center gap-2 hover:bg-primary-dim transition-colors cursor-pointer"
             >
-              Upload new files
-              <span className="material-symbols-outlined text-sm">add</span>
-            </button>
+              {t('uploadNewFiles')}
+              <span className="material-symbols-outlined text-sm">add</span></button>
           </div>
         </div>
       </div>
@@ -121,19 +125,19 @@ export function ActivitiesTable() {
             <tr className="bg-surface-container-low/50">
               {groupBy === 'session' ? (
                 <>
-                  <th className="px-6 py-2 text-[11px] font-bold uppercase tracking-widest text-outline border-none">Session ID</th>
-                  <th className="px-6 py-2 text-[11px] font-bold uppercase tracking-widest text-outline border-none">Files</th>
-                  <th className="px-6 py-2 text-[11px] font-bold uppercase tracking-widest text-outline border-none">Status</th>
-                  <th className="px-6 py-2 text-[11px] font-bold uppercase tracking-widest text-outline border-none">Date</th>
+                  <th className="px-6 py-2 text-[11px] font-bold uppercase tracking-widest text-outline border-none">{t('sessionId', 'Session ID')}</th>
+                  <th className="px-6 py-2 text-[11px] font-bold uppercase tracking-widest text-outline border-none">{t('files', 'Files')}</th>
+                  <th className="px-6 py-2 text-[11px] font-bold uppercase tracking-widest text-outline border-none">{t('status', 'Status')}</th>
+                  <th className="px-6 py-2 text-[11px] font-bold uppercase tracking-widest text-outline border-none">{t('date', 'Date')}</th>
                   <th className="px-6 py-2 w-10 border-none"></th>
                 </>
               ) : (
                 <>
-                  <th className="px-6 py-2 text-[11px] font-bold uppercase tracking-widest text-outline border-none">File Name</th>
-                  <th className="px-6 py-2 text-[11px] font-bold uppercase tracking-widest text-outline border-none">Category</th>
-                  <th className="px-6 py-2 text-[11px] font-bold uppercase tracking-widest text-outline border-none">Size</th>
-                  <th className="px-6 py-2 text-[11px] font-bold uppercase tracking-widest text-outline border-none">Date</th>
-                  <th className="px-6 py-2 text-[11px] font-bold uppercase tracking-widest text-outline border-none">Action</th>
+                  <th className="px-6 py-2 text-[11px] font-bold uppercase tracking-widest text-outline border-none">{t('fileName', 'File Name')}</th>
+                  <th className="px-6 py-2 text-[11px] font-bold uppercase tracking-widest text-outline border-none">{t('category', 'Category')}</th>
+                  <th className="px-6 py-2 text-[11px] font-bold uppercase tracking-widest text-outline border-none">{t('size', 'Size')}</th>
+                  <th className="px-6 py-2 text-[11px] font-bold uppercase tracking-widest text-outline border-none">{t('date', 'Date')}</th>
+                  <th className="px-6 py-2 text-[11px] font-bold uppercase tracking-widest text-outline border-none">{t('action', 'Action')}</th>
                 </>
               )}
             </tr>
@@ -156,7 +160,7 @@ export function ActivitiesTable() {
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-5 text-on-surface-variant text-xs font-bold border-none">{session.files.length} Documents</td>
+                    <td className="px-6 py-5 text-on-surface-variant text-xs font-bold border-none">{t('lengthDocuments', '{{length}} Documents', { length: session.files.length })}</td>
                     <td className="px-6 py-5 border-none">
                       <span className={`px-3 py-1 text-[10px] font-bold rounded-full border border-outline-variant/20 uppercase tracking-tight ${
                         session.sessionStatus === 'Completed' || session.sessionStatus === 'Pending'
@@ -166,7 +170,7 @@ export function ActivitiesTable() {
                         {session.sessionStatus}
                       </span>
                     </td>
-                    <td className="px-6 py-5 text-on-surface-variant text-sm font-medium border-none">{formatDate(session.date)}</td>
+                    <td className="px-6 py-5 text-on-surface-variant text-sm font-medium border-none">{formatDate(session.date, i18n.language)}</td>
                     <td className="px-6 py-5 border-none">
                       <span className={`material-symbols-outlined transition-transform duration-300 ${expandedId === session.sessionId ? 'text-primary rotate-180' : 'text-outline-variant group-hover:text-primary'}`}>
                         expand_more
@@ -194,8 +198,7 @@ export function ActivitiesTable() {
                                   <div>
                                     <p className="text-sm font-bold text-on-surface tracking-tight">{file.fileName}</p>
                                     <p className="text-[10px] text-outline uppercase tracking-widest font-bold">
-                                      {formatSize(file.size)} • {file.status}
-                                    </p>
+                                      {formatSize(file.size)}{t('status2', '• {{status}}', { status: file.status })}</p>
                                   </div>
                                 </div>
                                 <div className="flex items-center gap-6">
@@ -210,7 +213,7 @@ export function ActivitiesTable() {
                                 </div>
                               </div>
                             )) : (
-                              <p className="text-sm text-outline-variant py-4">No files found for this session.</p>
+                              <p className="text-sm text-outline-variant py-4">{t('noFilesFoundForThisSession', 'No files found for this session.')}</p>
                             )}
                           </div>
                         </div>
@@ -250,7 +253,7 @@ export function ActivitiesTable() {
                   <td className="px-6 py-4 border-none">
                     <div className="flex flex-col">
                       <span className="text-on-surface-variant text-sm font-medium tracking-tight whitespace-nowrap overflow-hidden text-ellipsis max-w-[150px]">
-                        {formatDate(file.sessionDate)}
+                        {formatDate(file.sessionDate, i18n.language)}
                       </span>
                       <span className="text-[10px] text-outline uppercase font-bold tracking-widest">{file.status}</span>
                     </div>
@@ -268,8 +271,8 @@ export function ActivitiesTable() {
                 <td colSpan={groupBy === 'session' ? 5 : 5} className="px-6 py-24 text-center">
                   <div className="flex flex-col items-center opacity-40">
                     <span className="material-symbols-outlined text-6xl mb-4">folder_off</span>
-                    <p className="text-on-surface-variant font-bold text-lg tracking-tight">No activity history found</p>
-                    <p className="text-sm text-outline max-w-[280px]">Your processed files and sessions will appear here after ingestion.</p>
+                    <p className="text-on-surface-variant font-bold text-lg tracking-tight">{t('noActivityHistoryFound', 'No activity history found')}</p>
+                    <p className="text-sm text-outline max-w-[280px]">{t('yourProcessedFilesAndSessionsWillAppearHereAfterIngestion', 'Your processed files and sessions will appear here after ingestion.')}</p>
                   </div>
                 </td>
               </tr>
@@ -292,11 +295,11 @@ export function ActivitiesTable() {
           <div className="flex items-center px-4 gap-4">
             <div className="h-4 w-px bg-outline-variant/20"></div>
             <div className="flex items-center gap-2 text-[13px] font-bold tracking-tight">
-              <span className="text-primary">{startRange} - {endRange}</span>
+              <span className="text-primary">{t('startrangeEndrange', '{{startRange}} - {{endRange}}', { startRange, endRange })}</span>
               <span className="text-outline-variant">/</span>
               <span className="text-on-surface-variant opacity-60">{totalCount}</span>
             </div>
-            <div className="h-4 w-[1px] bg-outline-variant/20"></div>
+            <div className="h-4 w-px bg-outline-variant/20"></div>
           </div>
 
           <button 

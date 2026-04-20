@@ -1,5 +1,6 @@
 import { cloneElement } from 'react';
 import type { ReactElement } from 'react';
+import { useTranslation } from 'react-i18next'
 
 // Dictionnaire de tous vos SVGs
 const icons: Record<string, ReactElement> = {
@@ -66,6 +67,7 @@ export function SvgIcon({
   color,
   className = ''
 }: SvgIconProps) {
+  const { t } = useTranslation()
   
   // Normalisation du nom de l'extension
   const ext = name.toLowerCase().replace('.', '');
@@ -85,7 +87,7 @@ export function SvgIcon({
   return cloneElement(svgElement, {
     width,
     height,
-    className: `${(svgElement as any).props?.className || ''} ${className}`.trim(),
+    className: t('valClassname', '{{val}} {{className}}', { val: (svgElement as any).props?.className || '', className }).trim(),
     ...(color ? { fill: color, color } : {})
   } as any);
 }

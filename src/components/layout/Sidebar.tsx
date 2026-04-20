@@ -12,21 +12,23 @@ import {
 import { Link, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
+import { useTranslation } from 'react-i18next'
 
 export function Sidebar() {
+  const { t } = useTranslation()
   const location = useLocation();
   const { user, logout } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const navItems = [
-    { name: 'Accueil', icon: Home, path: '/' },
+    { name: t('accueil', 'Accueil'), icon: Home, path: '/' },
     // { name: 'Workflows', icon: GitBranch, path: '/workflows' },
-    { name: 'Traiter les fichiers', icon: UploadCloud, path: '/process' },
-    { name: 'Historique', icon: History, path: '/history' },
+    { name: t('traiterLesFichiers', 'Traiter les fichiers'), icon: UploadCloud, path: '/process' },
+    { name: t('historique', 'Historique'), icon: History, path: '/history' },
   ];
 
   const otherItems = [
-    { name: 'Paramètres', icon: Settings, path: '/settings' },
+    { name: t('paramtres', 'Paramètres'), icon: Settings, path: '/settings' },
     // { name: 'Aide', icon: HelpCircle, path: '/help' },
   ];
 
@@ -38,7 +40,7 @@ export function Sidebar() {
           <div className="w-6 h-6 bg-zinc-900 rounded-md flex items-center justify-center text-white">
             <Zap strokeWidth={1.5} className="w-4 h-4" />
           </div>
-          <span className="font-semibold text-base">Gestion Documentaire</span>
+          <span className="font-semibold text-base">{t('gestionDocumentaire', 'Gestion Documentaire')}</span>
         </div>
         <button className="text-zinc-400 hover:text-zinc-600 transition-colors">
           <PanelLeftClose strokeWidth={1.5} className="w-4 h-4" />
@@ -64,7 +66,7 @@ export function Sidebar() {
       {/* Navigation */}
       <div className="flex-1 overflow-y-auto py-4 px-3 space-y-6">
         <div>
-          <div className="text-xs font-medium text-zinc-400 mb-2 px-2 tracking-wider">MENU</div>
+          <div className="text-xs font-medium text-zinc-400 mb-2 px-2 tracking-wider">{t('menu', 'MENU')}</div>
           <nav className="space-y-0.5">
             {navItems.map((item) => {
               const isActive = location.pathname === item.path || (item.path === '/process' && location.pathname === '/');
@@ -88,7 +90,7 @@ export function Sidebar() {
         </div>
 
         <div>
-          <div className="text-xs font-medium text-zinc-400 mb-2 px-2 tracking-wider">AUTRES</div>
+          <div className="text-xs font-medium text-zinc-400 mb-2 px-2 tracking-wider">{t('autres', 'AUTRES')}</div>
           <nav className="space-y-0.5">
             {otherItems.map((item) => {
               const isActive = location.pathname === item.path;
@@ -130,7 +132,7 @@ export function Sidebar() {
                 className="w-full cursor-pointer flex items-center gap-2.5 px-3 py-2.5 text-sm text-red-600 hover:bg-red-50/80 rounded-lg transition-colors text-left font-medium"
               >
                 <LogOut strokeWidth={1.5} className="w-4 h-4" />
-                Déconnexion
+                {t('dconnexion', 'Déconnexion')}
               </button>
             </div>
           </>

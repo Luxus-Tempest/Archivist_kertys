@@ -9,10 +9,12 @@ import 'react-pdf/dist/Page/TextLayer.css';
 import { SearchTag } from '../components/search/SearchTag';
 import { MUIMenu } from '../components/MUIMenu';
 import { InfoTooltip } from '../components/InfoTooltip';
+import { useTranslation, Trans } from 'react-i18next'
 
 // Initialize PDF worker
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 export function ExplorerNew() {
+  const { t } = useTranslation()
   const { documents, isLoading, fetchDocuments, getFileContent, getFileProperties, fetchVaultClasses } = useMFilesDocsHook();
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeDoc, setActiveDoc] = useState<MFilesDocumentDto | null>(null);
@@ -167,11 +169,17 @@ export function ExplorerNew() {
   };
 
   const formatSize = (bytes: number) => {
-    if (!bytes || bytes === 0) return '0 B';
+    if (!bytes || bytes === 0) return t('bytesB', '0 B', { bytes: 0 });
     const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    const val = parseFloat((bytes / Math.pow(k, i)).toFixed(1));
+    
+    if (i === 0) return t('bytesB', '{{bytes}} B', { bytes: val });
+    if (i === 1) return t('valKb', '{{val}} KB', { val });
+    if (i === 2) return t('valMb', '{{val}} MB', { val });
+    
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    return val + ' ' + sizes[i];
   };
 
   const filteredDocs = documents.filter((doc: any) => {
@@ -191,8 +199,8 @@ export function ExplorerNew() {
                 <InfoTooltip 
                   header="Conseils de recherche"
                   items={[
-                    <>Tapez le <strong>nom du fichier</strong> pour filtrer par titre.</>,
-                    <>Tapez <strong>'/'</strong> pour choisir une <strong>catégorie</strong>.</>
+                    <><Trans i18nKey="tapezLeStrongnomDuFichierstrongPourFiltrerParTitre">Tapez le <strong>nom du fichier</strong> pour filtrer par titre.</Trans></>,
+                    <><Trans i18nKey="tapezStrongstrongPourChoisirUneStrongcatgoriestrong">Tapez <strong>'/'</strong> pour choisir une <strong>catégorie</strong>.</Trans></>
                   ]}
                   footer="Vous pouvez combiner : si une catégorie est active, la recherche s'applique uniquement à celle-ci."
                   placement="top-start"
@@ -220,7 +228,7 @@ export function ExplorerNew() {
                   
                   <input 
                     type="text" 
-                    placeholder={selectedCategory ? "Search within category..." : "Search by name or type '/' for categories..."} 
+                    placeholder={selectedCategory ? t('searchWithinCategory', 'Search within category...') : t('searchByNameOrTypeForCategories', 'Search by name or type \'/\' for categories...')} 
                     value={searchQuery}
                     onChange={(e) => {
                       const val = e.target.value;
@@ -291,7 +299,7 @@ export function ExplorerNew() {
                 }}
                 disabled={isLoading}
                 className="shrink-0 w-9 h-9 flex items-center justify-center bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed group"
-                title="Refresh list"
+                title={t('refreshList', 'Refresh list')}
               >
                 <span className={`material-symbols-outlined text-[18px] transition-transform ${isLoading ? 'animate-spin' : 'group-hover:rotate-180'}`}>sync</span>
               </button>
@@ -303,13 +311,9 @@ export function ExplorerNew() {
             <table className="w-full min-w-max text-left border-collapse">
               <thead className="sticky top-0 bg-surface-container-lowest z-10 shadow-sm border-b border-slate-100">
                 <tr>
-                  <th className="px-4 py-3 text-[10px] uppercase tracking-widest font-black text-slate-400 whitespace-nowrap">Name</th>
-                  <th className="px-4 py-3 text-[10px] uppercase tracking-widest font-black text-slate-400 whitespace-nowrap cursor-pointer hover:text-slate-600 transition-colors">
-                    Creation <span className="material-symbols-outlined text-[12px] align-middle ml-1">unfold_more</span>
-                  </th>
-                  <th className="px-4 py-3 text-[10px] uppercase tracking-widest font-black text-slate-400 whitespace-nowrap cursor-pointer hover:text-slate-600 transition-colors">
-                    Modified <span className="material-symbols-outlined text-[12px] align-middle ml-1">arrow_drop_down</span>
-                  </th>
+                  <th className="px-4 py-3 text-[10px] uppercase tracking-widest font-black text-slate-400 whitespace-nowrap">{t('name', 'Name')}</th>
+                  <th className="px-4 py-3 text-[10px] uppercase tracking-widest font-black text-slate-400 whitespace-nowrap cursor-pointer hover:text-slate-600 transition-colors">{t('creationSpanClassnamematerialsymbolsoutlinedText12pxAlignmiddleMl1unfold_morespan')}</th>
+                  <th className="px-4 py-3 text-[10px] uppercase tracking-widest font-black text-slate-400 whitespace-nowrap cursor-pointer hover:text-slate-600 transition-colors">{t('modifiedSpanClassnamematerialsymbolsoutlinedText12pxAlignmiddleMl1arrow_drop_downspan')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50">
@@ -335,11 +339,11 @@ export function ExplorerNew() {
                     <td colSpan={3} className="p-12 text-center text-slate-500">
                       <div className="flex flex-col items-center justify-center">
                         <SvgIcon name="SearchFile" width={64} height={64} className="text-slate-300 mb-4 opacity-60" />
-                        <p className="text-sm font-bold text-on-surface">No documents found</p>
+                        <p className="text-sm font-bold text-on-surface">{t('noDocumentsFound', 'No documents found')}</p>
                         <p className="text-xs mt-2 text-slate-500 max-w-xs text-center">
                           {searchQuery 
-                            ? `No files match your search "${searchQuery}".` 
-                            : 'No files are available.'}
+                            ? t('noFilesMatchYourSearchSearchquery', 'No files match your search "{{searchQuery}}".', { searchQuery }) 
+                            : t('noFilesAreAvailable', 'No files are available.')}
                         </p>
                       </div>
                     </td>
@@ -360,7 +364,7 @@ export function ExplorerNew() {
                     
                     let title = rawTitle;
                     if (ext && !rawTitle.toLowerCase().endsWith(`.${ext}`)) {
-                      title = `${rawTitle}.${ext}`;
+                      title = t('rawtitleext', '{{rawTitle}}.{{ext}}', { rawTitle, ext });
                     }
                     
                     const isActive = (activeDoc as any)?.DisplayID === displayId || (activeDoc as any)?.displayID === displayId || (activeDoc as any)?.displayId === displayId;
@@ -413,7 +417,7 @@ export function ExplorerNew() {
                     <span className="material-symbols-outlined text-primary animate-pulse text-xl">picture_as_pdf</span>
                   </div>
                 </div>
-                <p className="mt-4 text-xs font-bold text-primary uppercase tracking-widest animate-pulse">Loading document...</p>
+                <p className="mt-4 text-xs font-bold text-primary uppercase tracking-widest animate-pulse">{t('loadingDocument', 'Loading document...')}</p>
               </div>
             ) : null}
 
@@ -422,8 +426,8 @@ export function ExplorerNew() {
                  <div className="w-20 h-20 bg-surface-container-high rounded-full flex items-center justify-center mb-6 text-slate-300">
                     <span className="material-symbols-outlined text-4xl">inventory_2</span>
                  </div>
-                 <h3 className="text-xl font-headline font-bold text-on-surface">Select a file</h3>
-                 <p className="text-sm text-slate-500 mt-2 max-w-xs">Choose a file from the list on the left to preview its content here.</p>
+                 <h3 className="text-xl font-headline font-bold text-on-surface">{t('selectAFile', 'Select a file')}</h3>
+                 <p className="text-sm text-slate-500 mt-2 max-w-xs">{t('chooseAFileFromTheListOnTheLeftToPreviewItsContentHere', 'Choose a file from the list on the left to preview its content here.')}</p>
               </div>
             ) : (
               <div id="pdf-preview-container" className="flex-1 relative h-full bg-[#F5F7F9]">
@@ -452,9 +456,8 @@ export function ExplorerNew() {
                                 renderTextLayer={false}
                                 renderAnnotationLayer={false}
                                 loading={
-                                  <div className="flex items-center justify-center p-20 text-slate-400">
-                                    <span className="material-symbols-outlined animate-spin mr-2">sync</span>
-                                    Rendering page {index + 1}...
+                                  <div className="flex items-center justify-center p-20 text-slate-400"><Trans i18nKey="spanClassnamematerialsymbolsoutlinedAnimatespinMr2syncspanRenderingPage"><span className="material-symbols-outlined animate-spin mr-2">sync</span>
+                                    Rendering page</Trans>{index + 1}{t('key', '...')}
                                   </div>
                                 }
                               />
@@ -468,8 +471,8 @@ export function ExplorerNew() {
                       <div className="w-16 h-16 bg-error/5 text-error rounded-full flex items-center justify-center mb-4">
                         <span className="material-symbols-outlined text-3xl">error_outline</span>
                       </div>
-                      <p className="text-sm font-bold text-on-surface">Preview unavailable</p>
-                      <p className="text-xs text-slate-500 mt-1">Unable to load the content of this file.</p>
+                      <p className="text-sm font-bold text-on-surface">{t('previewUnavailable', 'Preview unavailable')}</p>
+                      <p className="text-xs text-slate-500 mt-1">{t('unableToLoadTheContentOfThisFile', 'Unable to load the content of this file.')}</p>
                     </div>
                   )}
                 </div>
@@ -479,8 +482,7 @@ export function ExplorerNew() {
                   <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center space-x-2 bg-on-surface/60 backdrop-blur-xs  px-4 py-1 rounded-full border border-white/10 shadow-2xl z-20">
                     
 
-                    <span className="text-[10px] font-black text-center text-white/90 px-2 uppercase tracking-widest whitespace-nowrap">
-                      {pageCount} PAGE{pageCount > 1 ? 'S' : ''}
+                    <span className="text-[10px] font-black text-center text-white/90 px-2 uppercase tracking-widest whitespace-nowrap">{t('pagecountPage', '{{pageCount}} PAGE', { pageCount })}{pageCount > 1 ? 'S' : ''}
                     </span>
                     
                     <div className="h-4 w-px bg-white/20 mx-1"></div>
@@ -539,14 +541,14 @@ export function ExplorerNew() {
           {!activeDoc ? (
             <div className="flex flex-col items-center justify-center p-8 text-center h-full text-slate-500">
               <span className="material-symbols-outlined text-4xl mb-4 opacity-50">info</span>
-              <p className="text-sm font-bold text-on-surface">No file selected</p>
-              <p className="text-xs mt-2 max-w-[200px]">Select a file to view its properties.</p>
+              <p className="text-sm font-bold text-on-surface">{t('noFileSelected', 'No file selected')}</p>
+              <p className="text-xs mt-2 max-w-[200px]">{t('selectAFileToViewItsProperties', 'Select a file to view its properties.')}</p>
             </div>
           ) : (
           <div className="p-8 pr-3 flex flex-col h-full overflow-hidden">
             {/* Properties Section */}
             <div className="flex flex-col h-full min-h-0">
-              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6 shrink-0">File Properties</h4>
+              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6 shrink-0">{t('fileProperties', 'File Properties')}</h4>
               <div className="space-y-4 overflow-y-auto pr-2 pb-4 [scrollbar-width:thin]">
                 {isPropertiesLoading ? (
                    <div className="flex flex-col space-y-4 animate-pulse">
@@ -558,7 +560,7 @@ export function ExplorerNew() {
                 ) : fileProperties && Object.keys(fileProperties).length > 0 ? (
                    Object.entries(fileProperties).map(([key, value], index) => {
                      const isCategory = key === 'ClassName';
-                     const displayKey = isCategory ? 'Category' : key;
+                     const displayKey = isCategory ? t('category', 'Category') : t(key.toLowerCase(), key);
                      
                      return (
                        <div key={index} className="flex flex-col xl:flex-row xl:justify-between xl:items-center pb-3 border-b border-gray-100 gap-1">
@@ -578,15 +580,15 @@ export function ExplorerNew() {
                 ) : (
                   <>
                     <div className="flex justify-between items-center pb-3 border-b border-slate-50">
-                      <span className="text-sm font-medium text-slate-500 shrink-0 pr-4">Name</span>
+                      <span className="text-sm font-medium text-slate-500 shrink-0 pr-4">{t('name', 'Name')}</span>
                       <span className="text-sm font-bold text-on-surface truncate">{(activeDoc as any)?.Title || (activeDoc as any)?.title || '-'}</span>
                     </div>
                     <div className="flex justify-between items-center pb-3 border-b border-slate-50">
-                      <span className="text-sm font-medium text-slate-500 shrink-0 pr-4">Type</span>
-                      <span className="text-sm font-bold text-on-surface truncate">{(activeDoc as any)?.Class !== undefined ? `Class ID: ${(activeDoc as any).Class}` : ((activeDoc as any)?.class !== undefined ? `Class ID: ${(activeDoc as any).class}` : '-')}</span>
+                      <span className="text-sm font-medium text-slate-500 shrink-0 pr-4">{t('type', 'Type')}</span>
+                      <span className="text-sm font-bold text-on-surface truncate">{(activeDoc as any)?.Class !== undefined ? t('classIdClass', 'Class ID: {{Class}}', { Class: (activeDoc as any).Class }) : ((activeDoc as any)?.class !== undefined ? t('classIdClass2', 'Class ID: {{class}}', { class: (activeDoc as any).class }) : '-')}</span>
                     </div>
                     <div className="flex justify-between items-center pb-3 border-b border-slate-50">
-                      <span className="text-sm font-medium text-slate-500 shrink-0 pr-4">Size</span>
+                      <span className="text-sm font-medium text-slate-500 shrink-0 pr-4">{t('size', 'Size')}</span>
                       <span className="text-sm font-bold text-on-surface truncate">
                         {((activeDoc as any)?.Files?.[0]?.Size || (activeDoc as any)?.files?.[0]?.size) 
                            ? formatSize((activeDoc as any)?.Files?.[0]?.Size || (activeDoc as any)?.files?.[0]?.size) 
@@ -594,7 +596,7 @@ export function ExplorerNew() {
                       </span>
                     </div>
                     <div className="flex justify-between items-center pb-3 border-b border-slate-50">
-                      <span className="text-sm font-medium text-slate-500 shrink-0 pr-4">Version</span>
+                      <span className="text-sm font-medium text-slate-500 shrink-0 pr-4">{t('version', 'Version')}</span>
                       <div className="flex items-center text-on-surface font-bold text-sm truncate">
                         v{(activeDoc as any)?.ObjVer?.Version || (activeDoc as any)?.objVer?.version || 1}
                       </div>

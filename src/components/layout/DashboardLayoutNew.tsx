@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { HeaderNew } from './HeaderNew';
 import { SidebarNew } from './SidebarNew';
+import { useTranslation } from 'react-i18next'
 
 interface DashboardLayoutNewProps {
   children: React.ReactNode;
@@ -9,6 +10,7 @@ interface DashboardLayoutNewProps {
 }
 
 export function DashboardLayoutNew({ children, isFullWidth = false }: DashboardLayoutNewProps) {
+  const { t } = useTranslation();
   return (
     <div className="bg-surface text-on-surface selection:bg-primary/20 h-screen overflow-hidden flex flex-col">
       <HeaderNew />
@@ -25,36 +27,36 @@ export function DashboardLayoutNew({ children, isFullWidth = false }: DashboardL
       {/* BottomNavBar (Mobile) */}
       <nav className="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center pt-3 pb-8 px-4 bg-white/90 backdrop-blur-md border-t border-slate-100 shadow-[0_-4px_20px_rgba(0,0,0,0.04)] z-50 rounded-t-3xl font-body text-[10px] uppercase tracking-widest">
         <NavLink 
-          to="/history-new" 
+          to="/history" 
           className={({ isActive }) => 
             `flex flex-col items-center transition-all ${isActive ? 'text-slate-900 scale-110' : 'text-slate-400 opacity-80'}`
           }
         >
           <span className="material-symbols-outlined mb-1">home</span>
-          Home
+          {t('menu.home', 'Home')}
         </NavLink>
         <NavLink 
-          to="/process-new" 
+          to="/process" 
           className={({ isActive }) => 
             `flex flex-col items-center transition-all ${isActive ? 'text-slate-900 scale-110' : 'text-slate-400 opacity-80'}`
           }
         >
           <span className="material-symbols-outlined mb-1">description</span>
-          Files
+          {t('menu.files', 'Files')}
         </NavLink>
         <NavLink 
           to="#" 
           className="flex flex-col items-center text-slate-400 opacity-80"
         >
           <span className="material-symbols-outlined mb-1">folder_shared</span>
-          Shared
+          {t('menu.shared', 'Shared')}
         </NavLink>
         <NavLink 
           to="#" 
           className="flex flex-col items-center text-slate-400 opacity-80"
         >
           <span className="material-symbols-outlined mb-1">search</span>
-          Search
+          {t('menu.search', 'Search')}
         </NavLink>
       </nav>
     </div>

@@ -19,8 +19,10 @@ import {
 import { fileStorage } from '../utils/fileStorage';
 import type { StagedFileMetadata } from '../store/docs/docsSlice';
 import type { UploadResponse } from '../types/documents';
+import { useTranslation } from 'react-i18next'
 
 export function ProcessNew() {
+  const { t } = useTranslation()
   const dispatch = useDispatch();
   const { stagedFiles: stagedMetadata, activeSessions } = useSelector((state: RootState) => state.docs);
   const [stagedFiles, setStagedFiles] = useState<File[]>([]);
@@ -105,10 +107,10 @@ export function ProcessNew() {
 
   return (
     <DashboardLayoutNew>
-      <header className="mb-10 px-15">
-        <h2 className="text-4xl font-extrabold tracking-tight text-on-surface mb-2 font-headline">Ingest Documents</h2>
+      <header className="mb-10 mt-10 px-15">
+        <h2 className="text-4xl font-extrabold tracking-tight text-on-surface mb-2 font-headline">{t('ingestDocuments', 'Ingest Documents')}</h2>
         <p className="text-on-surface-variant font-body max-w-2xl leading-relaxed">
-          Securely process your intellectual assets. Our system automatically classifies and inserts into M-Files each entry.
+          {t('securelyProcessYourIntellectualAssetsOurSystemAutomaticallyClassifiesAndInsertsIntoMfilesEachEntry', 'Securely process your intellectual assets. Our system automatically classifies and inserts into M-Files each entry.')}
         </p>
       </header>
 
@@ -126,19 +128,29 @@ export function ProcessNew() {
             
             <div className="flex self-end w-fit items-center justify-end gap-3 px-2">
               <button 
-                className="px-8 w-max whitespace-nowrap py-4 bg-surface-container-highest text-on-surface font-bold text-sm rounded-xl hover:bg-surface-container-high transition-colors"
+                className="px-8 cursor-pointer w-max whitespace-nowrap py-2.5 bg-surface-container-highest text-on-surface font-bold text-sm rounded-xl hover:bg-surface-container-high transition-colors"
                 onClick={clearStaged}
                 disabled={isUploading}
               >
-                Clear All
+                {t('clearAll', 'Clear All')}
               </button>
+              {/* <Button
+                variant="lightSolid"
+                onClick={clearStaged}
+                disabled={isUploading}
+                className=''
+              >
+                {t('clearAll', 'Clear All')}
+              </Button> */}
               <Button 
                 onClick={handleSend}
                 disabled={isUploading}
                 icon={isUploading ? 'sync' : 'send'}
-                className={`w-auto px-10 shadow-xl shadow-slate-900/10 ${isUploading ? 'opacity-70' : 'bg-slate-900'}`}
+                variant="solid"
+                className={`w-auto px-10  shadow-xl shadow-slate-900/10 ${isUploading ? 'opacity-70' : 'bg-slate-900'}`}
+                btnClass={`rounded-md -py-2 text-[15px]`}
               >
-                {isUploading ? 'Sending...' : 'Send to Vault'}
+                {isUploading ? 'Sending...' : t('sendToVault', 'Send to Vault')}
               </Button>
             </div>
           </div>
@@ -147,8 +159,8 @@ export function ProcessNew() {
         {sessionsList.length > 0 && (
           <div className="flex flex-col gap-4">
             <div>
-              <h3 className="text-xl font-bold font-headline text-on-surface">Monitoring Session</h3>
-              <p className="text-sm text-on-surface-variant">Real-time status of documents processing</p>
+              <h3 className="text-xl font-bold font-headline text-on-surface">{t('monitoringSession', 'Monitoring Session')}</h3>
+              <p className="text-sm text-on-surface-variant">{t('realtimeStatusOfDocumentsProcessing', 'Real-time status of documents processing')}</p>
             </div>
             {sessionsList.map(session => (
               <SessionMonitor 

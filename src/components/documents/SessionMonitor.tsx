@@ -6,6 +6,7 @@ import { updateSessionStatus } from '../../store/docs/docsSlice';
 import { ProcessingStatus } from '../../types/documents';
 import { DocumentTable } from './DocumentTable';
 import { DocumentRow } from './DocumentRow';
+import { useTranslation } from 'react-i18next'
 
 interface SessionMonitorProps {
   sessionId: string;
@@ -13,6 +14,7 @@ interface SessionMonitorProps {
 }
 
 export function SessionMonitor({ sessionId, onClose }: SessionMonitorProps) {
+  const { t } = useTranslation()
   const dispatch = useDispatch();
   const sessionData = useSelector((state: RootState) => state.docs.activeSessions[sessionId]);
   const [isExpanded, setIsExpanded] = useState(true);
@@ -29,7 +31,7 @@ export function SessionMonitor({ sessionId, onClose }: SessionMonitorProps) {
     
     const baseUrl = import.meta.env.VITE_BASE_URL || '';
     const rootUrl = baseUrl.replace(/\/api\/?$/, '');
-    const hubUrl = `${rootUrl}/events/external/status/${sessionId}`;
+    const hubUrl = t('rooturleventsexternalstatussessionid', '{{rootUrl}}/events/external/status/{{sessionId}}', { rootUrl, sessionId });
 
     const connection = new signalR.HubConnectionBuilder()
       .withUrl(hubUrl)
@@ -72,7 +74,7 @@ export function SessionMonitor({ sessionId, onClose }: SessionMonitorProps) {
   if (!sessionData) return null;
 
   return (
-    <section className="flex flex-col gap-4 bg-surface-container-lowest border border-outline-variant/20 rounded-3xl p-5 transition-all shadow-sm">
+    <section className="flex flex-col gap-4 bg-surface-container-lowest border border-outline-variant/20 rounded-md p-5 transition-all shadow-sm">
       <div 
         className="flex flex-wrap transition-all duration-300 items-center justify-between gap-4 cursor-pointer select-none"
         onClick={() => setIsExpanded(!isExpanded)}
@@ -84,21 +86,17 @@ export function SessionMonitor({ sessionId, onClose }: SessionMonitorProps) {
             </span>
           </span>
           <div>
-            <h4 className="px-3 py-1 bg-surface-container-high rounded-md text-[10px] font-mono text-outline font-medium tracking-tight border border-outline-variant/20">
-              ID: {sessionData.session.id}
-            </h4>
-            <p className="text-xs text-on-surface-variant">{sessionData.files.length} documents</p>
+            <h4 className="px-3 py-1 bg-surface-container-high rounded-md text-[10px] font-mono text-outline font-medium tracking-tight border border-outline-variant/20">{t('idId', 'ID: {{id}}', { id: sessionData.session.id })}</h4>
+            <p className="text-xs text-on-surface-variant">{t('lengthDocuments2', '{{length}} documents', { length: sessionData.files.length })}</p>
           </div>
         </div>
         
         <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
-          <span className="px-3 py-1 bg-surface-container-high rounded-md text-[10px] font-mono text-outline font-medium tracking-tight border border-outline-variant/20 uppercase">
-            STATUS: {sessionData.session.status}
-          </span>
+          <span className="px-3 py-1 bg-surface-container-high rounded-md text-[10px] font-mono text-outline font-medium tracking-tight border border-outline-variant/20 uppercase">{t('statusStatus', 'STATUS: {{status}}', { status: sessionData.session.status })}</span>
           <button 
             className="p-2 text-error hover:bg-error-container/10 rounded-full transition-colors flex items-center justify-center" 
             onClick={onClose}
-            title="Close Session view"
+            title={t('closeSessionView', 'Close Session view')}
           >
             <span className="material-symbols-outlined text-sm">close</span>
           </button>
@@ -133,7 +131,7 @@ export function SessionMonitor({ sessionId, onClose }: SessionMonitorProps) {
                 <td colSpan={3} className="px-6 py-10 text-center">
                   <div className="flex flex-col items-center gap-2">
                     <span className="material-symbols-outlined animate-spin text-primary">sync</span>
-                    <p className="text-sm text-on-surface-variant italic">Connecting to session and retrieving document status...</p>
+                    <p className="text-sm text-on-surface-variant italic">{t('connectingToSessionAndRetrievingDocumentStatus', 'Connecting to session and retrieving document status...')}</p>
                   </div>
                 </td>
               </tr>
@@ -141,12 +139,12 @@ export function SessionMonitor({ sessionId, onClose }: SessionMonitorProps) {
           </DocumentTable>
 
           {sessionData.session.status === ProcessingStatus.COMPLETED && (
-            <div className="mt-2 p-2 bg-tertiary-container/30 rounded-2xl border border-tertiary/20 flex items-start gap-2">
+            <div className="mt-2 p-2 bg-tertiary-container/30 rounded-md border border-tertiary/20 flex items-start gap-2">
               <span className="material-symbols-outlined text-tertiary text-xl mt-0.5">verified_user</span>
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-wider text-tertiary mb-1">Session Complete</p>
+                <p className="text-[11px] font-bold uppercase tracking-wider text-tertiary mb-1">{t('sessionComplete', 'Session Complete')}</p>
                 <p className="text-[12px] text-on-surface leading-relaxed opacity-80">
-                  All documents have been processed and successfully ingested into the vault.
+                  {t('allDocumentsHaveBeenProcessedAndSuccessfullyIngestedIntoTheVault', 'All documents have been processed and successfully ingested into the vault.')}
                 </p>
               </div>
             </div>

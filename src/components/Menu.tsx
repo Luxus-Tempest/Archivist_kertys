@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next'
 
 export interface MenuItem {
   label: string;
@@ -30,6 +31,7 @@ export function Menu({
   variant = 'light',
   align = 'right' 
 }: MenuProps) {
+  const { t } = useTranslation()
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -56,24 +58,19 @@ export function Menu({
   const isDark = variant === 'dark';
   const alignmentClass = align === 'right' ? 'right-0 origin-top-right' : 'left-0 origin-top-left';
   
-  const bgClass = isDark ? 'bg-slate-900/95 backdrop-blur-md border-white/15 shadow-2xl' : 'bg-white border-slate-200 shadow-xs';
+  const bgClass = isDark ? t('bgslate90095BackdropblurmdBorderwhite15Shadow2xl', 'bg-slate-900/95 backdrop-blur-md border-white/15 shadow-2xl') : t('bgwhiteBorderslate200Shadowxs', 'bg-white border-slate-200 shadow-xs');
   const headerTextClass = isDark ? 'text-white/40' : 'text-slate-400';
   const headerBorderClass = isDark ? 'border-white/10' : 'border-slate-300';
 
   return (
     <div 
       ref={menuRef}
-      className={`absolute ${alignmentClass} mt-3 w-56 rounded-xl border py-2 z-[100] transition-all ${bgClass} ${className}`}
+      className={`absolute ${alignmentClass} mt-3 w-56 rounded-xl border py-2 z-50 transition-all ${bgClass} ${className}`}
       style={{
         animation: 'menu-appear 0.2s cubic-bezier(0.16, 1, 0.3, 1)'
       }}
     >
-      <style>{`
-        @keyframes menu-appear {
-          from { opacity: 0; transform: scale(0.95) translateY(-10px); }
-          to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-      `}</style>
+      <style>{t('keyframesMenuappearFromOpacity0TransformScale095Translatey10pxToOpacity1TransformScale1Translatey0', '@keyframes menu-appear {\n          from { opacity: 0; transform: scale(0.95) translateY(-10px); }\n          to { opacity: 1; transform: scale(1) translateY(0); }\n        }')}</style>
 
       {header && (
         <div className={`px-6 py-2 border-b ${headerBorderClass} mb-1`}>

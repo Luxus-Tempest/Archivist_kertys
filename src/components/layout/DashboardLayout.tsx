@@ -2,12 +2,14 @@ import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Sidebar } from './Sidebar';
+import { useTranslation } from 'react-i18next'
 
 interface DashboardLayoutProps {
   children: ReactNode;
 }
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
+  const { t } = useTranslation()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -19,7 +21,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       <main className="flex-1 flex flex-col min-w-0 bg-[#FAFAFA] h-full overflow-hidden">
         {/* Mobile Header */}
         <header className="md:hidden h-14 border-b border-zinc-200 bg-white flex items-center px-4 justify-between shrink-0">
-          <span className="font-semibold text-base text-zinc-900">Gestion Documentaire</span>
+          <span className="font-semibold text-base text-zinc-900">{t('gestionDocumentaire', 'Gestion Documentaire')}</span>
           <button 
             className="text-zinc-500 hover:text-zinc-700 transition"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

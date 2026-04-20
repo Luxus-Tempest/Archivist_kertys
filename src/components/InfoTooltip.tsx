@@ -1,23 +1,24 @@
 import * as React from 'react';
 import { Tooltip, Box, Typography, styled, type TooltipProps } from '@mui/material';
+import i18next from 'i18next'
 
 // Styled version for a more premium look consistent with the Archivist design system
 const StyledTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
 ))(() => ({
   [`& .MuiTooltip-tooltip`]: {
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    backgroundColor: i18next.t('rgba255255255095', 'rgba(255, 255, 255, 0.95)'),
     color: '#1e293b',
-    boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
-    border: '1px solid rgba(226, 232, 240, 1)',
+    boxShadow: i18next.t('010px25px5pxRgba0000108px10px6pxRgba00001', '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)'),
+    border: i18next.t('1pxSolidRgba2262322401', '1px solid rgba(226, 232, 240, 1)'),
     borderRadius: '12px',
     padding: '8px',
     backdropFilter: 'blur(8px)',
   },
   [`& .MuiTooltip-arrow`]: {
-    color: 'rgba(255, 255, 255, 0.95)',
+    color: i18next.t('rgba255255255095', 'rgba(255, 255, 255, 0.95)'),
     '&::before': {
-      border: '1px solid rgba(226, 232, 240, 1)',
+      border: i18next.t('1pxSolidRgba2262322401', '1px solid rgba(226, 232, 240, 1)'),
     },
   },
 }));

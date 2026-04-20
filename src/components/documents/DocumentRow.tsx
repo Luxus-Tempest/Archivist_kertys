@@ -1,5 +1,6 @@
 import { StatusBadge } from './StatusBadge';
 import { ProcessingStatus } from '../../types/documents';
+import { useTranslation } from 'react-i18next'
 
 interface DocumentRowProps {
   name: string;
@@ -11,20 +12,21 @@ interface DocumentRowProps {
 }
 
 export function DocumentRow({ name, size, status, category, action }: DocumentRowProps) {
+  const { t } = useTranslation()
   const fileExtension = name.split('.').pop();
   
   const formatSize = (bytes?: number) => {
     if (bytes === undefined) return null;
-    if (bytes < 1024) return `${bytes} B`;
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(2)} KB`;
-    return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+    if (bytes < 1024) return t('bytesB', '{{bytes}} B', { bytes });
+    if (bytes < 1024 * 1024) return t('valKb', '{{val}} KB', { val: (bytes / 1024).toFixed(2) });
+    return t('valMb', '{{val}} MB', { val: (bytes / (1024 * 1024)).toFixed(2) });
   };
 
   return (
     <tr className="group hover:bg-surface-container-lowest transition-colors">
-      <td className="px-6 py-5">
+      <td className="px-6 py-3">
         <div className="flex items-center gap-4">
-          <div className="relative w-12 h-16 bg-white rounded-lg border border-outline-variant/30 flex items-center justify-center overflow-hidden shadow-sm shrink-0">
+          <div className="relative w-12 h-12 bg-white rounded-lg border border-outline-variant/30 flex items-center justify-center overflow-hidden shadow-sm shrink-0">
             <span className="material-symbols-outlined text-outline/30 text-2xl">description</span>
             <div className="absolute inset-x-2 top-2 h-0.5 bg-slate-100 rounded"></div>
             <div className="absolute inset-x-2 top-4 h-0.5 bg-slate-100 rounded w-4/5"></div>
