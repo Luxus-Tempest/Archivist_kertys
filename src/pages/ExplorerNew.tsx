@@ -2,15 +2,18 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { DashboardLayoutNew } from '../components/layout/DashboardLayoutNew';
 import { useMFilesDocsHook, type MFilesDocumentDto } from '../hooks/useMFilesDocsHook';
-import { Document, Page, pdfjs } from 'react-pdf';
+import { Page, Document, pdfjs } from 'react-pdf';
 import { SvgIcon } from '../components/SvgIcon';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
+import { SearchTag } from '../components/search/SearchTag';
+import { MUIMenu } from '../components/MUIMenu';
+import { InfoTooltip } from '../components/InfoTooltip';
 
 // Initialize PDF worker
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 export function ExplorerNew() {
-  const { documents, isLoading, fetchDocuments, getFileContent, getFileProperties } = useMFilesDocsHook();
+  const { documents, isLoading, fetchDocuments, getFileContent, getFileProperties, fetchVaultClasses } = useMFilesDocsHook();
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeDoc, setActiveDoc] = useState<MFilesDocumentDto | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -20,10 +23,31 @@ export function ExplorerNew() {
   const [searchQuery, setSearchQuery] = useState('');
   const [fileProperties, setFileProperties] = useState<Record<string, any> | null>(null);
   const [isPropertiesLoading, setIsPropertiesLoading] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<any | null>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const showSuggestions = Boolean(anchorEl);
+
+  const [categories, setCategories] = useState<{id: number, name: string}[]>([]);
 
   useEffect(() => {
-    fetchDocuments();
-  }, [fetchDocuments]);
+    const classId = searchParams.get('class');
+    fetchDocuments(classId ? parseInt(classId) : undefined);
+    
+    async function getCategories() {
+      const data = await fetchVaultClasses();
+      if (data) {
+        setCategories(data);
+        // If there's a classId in URL, set the selected category object for the UI
+        if (classId) {
+          const matched = data.find(c => String(c.id) === classId);
+          if (matched) {
+            setSelectedCategory({ id: matched.id, label: matched.name });
+          }
+        }
+      }
+    }
+    getCategories();
+  }, [fetchDocuments, fetchVaultClasses]); // We don't include searchParams here to avoid infinite loops, we just want initial load
 
   useEffect(() => {
     if (documents.length > 0) {
@@ -50,7 +74,10 @@ export function ExplorerNew() {
     const files = doc.Files || doc.files || [];
     if (files.length > 0) {
       const fileId = String(files[0].ID || files[0].id);
-      setSearchParams({ oid: objId, fid: fileId }, { replace: true });
+      const newParams = new URLSearchParams(searchParams);
+      newParams.set('oid', objId);
+      newParams.set('fid', fileId);
+      setSearchParams(newParams, { replace: true });
     }
     setActiveDoc(doc);
   };
@@ -148,8 +175,8 @@ export function ExplorerNew() {
   };
 
   const filteredDocs = documents.filter((doc: any) => {
-    const rawTitle = doc.Title || doc.title || '';
-    return rawTitle.toLowerCase().includes(searchQuery.toLowerCase());
+    const rawTitle = (doc.Title || doc.title || '').toLowerCase();
+    return rawTitle.includes(searchQuery.toLowerCase());
   });
 
   return (
@@ -160,18 +187,108 @@ export function ExplorerNew() {
           {/* Header Action Bar */}
           <div className="p-4 pt-0 shrink-0 border-b border-surface">
             <div className="flex items-center gap-2">
-              <div className="flex-1 flex items-center justify-between border border-outline-variant/30 rounded-lg px-3 py-2 bg-white">
-                <input 
-                  type="text" 
-                  placeholder="Search by name..." 
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="text-[13px] font-medium border-none bg-transparent outline-none w-full text-on-surface placeholder:text-outline" 
+              <div className={`flex-1 flex items-center bg-white border rounded-xl px-2 py-1 transition-all relative ${showSuggestions ? 'ring-2 ring-primary/20 border-primary shadow-lg' : 'border-outline-variant/30 hover:border-outline-variant/60 shadow-sm'}`}>
+                <InfoTooltip 
+                  header="Conseils de recherche"
+                  items={[
+                    <>Tapez le <strong>nom du fichier</strong> pour filtrer par titre.</>,
+                    <>Tapez <strong>'/'</strong> pour choisir une <strong>catégorie</strong>.</>
+                  ]}
+                  footer="Vous pouvez combiner : si une catégorie est active, la recherche s'applique uniquement à celle-ci."
+                  placement="top-start"
+                >
+                  <span className="material-symbols-outlined text-[18px] text-outline-variant shrink-0 mr-3 cursor-help">search</span>
+                </InfoTooltip>
+                
+                <div className="flex flex-wrap items-center gap-2 flex-1 min-w-0">
+                  {selectedCategory && (
+                    <SearchTag 
+                      label={selectedCategory.label} 
+                        onRemove={() => {
+                          setSelectedCategory(null);
+                          const newParams = new URLSearchParams(searchParams);
+                          newParams.delete('class');
+                          newParams.delete('oid');
+                          newParams.delete('fid');
+                          setSearchParams(newParams, { replace: true });
+                          setActiveDoc(null);
+                          setPreviewUrl(null);
+                          fetchDocuments();
+                        }}
+                    />
+                  )}
+                  
+                  <input 
+                    type="text" 
+                    placeholder={selectedCategory ? "Search within category..." : "Search by name or type '/' for categories..."} 
+                    value={searchQuery}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setSearchQuery(val);
+                      if (val.endsWith('/')) {
+                        setAnchorEl(e.currentTarget.parentElement);
+                      } else if (showSuggestions) {
+                        setAnchorEl(null);
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Backspace' && searchQuery === '' && selectedCategory) {
+                        setSelectedCategory(null);
+                        const newParams = new URLSearchParams(searchParams);
+                        newParams.delete('class');
+                        newParams.delete('oid');
+                        newParams.delete('fid');
+                        setSearchParams(newParams, { replace: true });
+                        setActiveDoc(null);
+                        setPreviewUrl(null);
+                        fetchDocuments();
+                      }
+                      if (e.key === 'Escape') {
+                        setAnchorEl(null);
+                      }
+                    }}
+                    className="flex-1 text-[13px] font-medium border-none bg-transparent outline-none py-1 text-on-surface placeholder:text-outline-variant/60 min-w-[50px]" 
+                  />
+                </div>
+
+                {/* {showSuggestions && (
+                  <div className="shrink-0 flex items-center justify-center px-1.5 py-0.5 rounded-md bg-surface-container-high border border-outline-variant/30 text-[9px] font-black text-outline uppercase tracking-widest ml-2 animate-in fade-in duration-300">
+                    ESC
+                  </div>
+                )} */}
+
+                <MUIMenu 
+                  anchorEl={anchorEl}
+                  isOpen={showSuggestions}
+                  onClose={() => setAnchorEl(null)}
+                  variant="light"
+                  align="left"
+                  width="100%"
+                  items={categories.map(cat => ({
+                    label: cat.name,
+                    onClick: () => {
+                      setSelectedCategory({ id: cat.id, label: cat.name });
+                      setSearchQuery(prev => prev.replace('/', ''));
+                      setAnchorEl(null);
+                      
+                      const newParams = new URLSearchParams(searchParams);
+                      newParams.set('class', String(cat.id));
+                      newParams.delete('oid');
+                      newParams.delete('fid');
+                      setSearchParams(newParams, { replace: true });
+                      
+                      setActiveDoc(null);
+                      setPreviewUrl(null);
+                      fetchDocuments(cat.id);
+                    }
+                  }))}
                 />
-                <span className="material-symbols-outlined text-[18px] text-outline-variant">search</span>
               </div>
               <button 
-                onClick={() => fetchDocuments()}
+                onClick={() => {
+                  const classId = searchParams.get('class');
+                  fetchDocuments(classId ? parseInt(classId) : undefined);
+                }}
                 disabled={isLoading}
                 className="shrink-0 w-9 h-9 flex items-center justify-center bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed group"
                 title="Refresh list"
@@ -320,14 +437,14 @@ export function ExplorerNew() {
                       <Document
                         file={previewUrl}
                         onLoadSuccess={({ numPages }) => {
-                          setPageCount(numPages);
+                          setPageCount(typeof numPages === 'number' ? numPages : 0);
                           setIsPreviewLoading(false);
                         }}
                         onLoadError={() => setIsPreviewLoading(false)}
                         loading={null}
                       >
                         <div className="flex flex-col gap-6 align-middle transition-transform duration-200">
-                          {Array.from({ length: pageCount }).map((_, index) => (
+                          {Array.from({ length: Number.isFinite(pageCount) ? pageCount : 0 }).map((_, index) => (
                             <div key={`page_${index + 1}`} className="bg-white shadow-xl">
                               <Page 
                                 pageNumber={index + 1} 
@@ -418,7 +535,7 @@ export function ExplorerNew() {
       </section>
 
         {/* Right Pane: Metadata Sidebar */}
-        <section className="w-full md:w-[320px] lg:w-[360px] shrink-0 bg-surface-container-lowest border-l border-slate-100 hidden lg:flex flex-col h-full relative overflow-hidden">
+        <section className="w-full md:w-[320px] lg:w-[360px] shrink-0 bg-white border-l border-slate-100 hidden lg:flex flex-col h-full relative overflow-hidden">
           {!activeDoc ? (
             <div className="flex flex-col items-center justify-center p-8 text-center h-full text-slate-500">
               <span className="material-symbols-outlined text-4xl mb-4 opacity-50">info</span>
@@ -446,7 +563,7 @@ export function ExplorerNew() {
                      return (
                        <div key={index} className="flex flex-col xl:flex-row xl:justify-between xl:items-center pb-3 border-b border-gray-100 gap-1">
                          <span className="text-[13px] font-medium self-start text-slate-500 shrink-0 pr-4">{displayKey}</span>
-                         <span className="text-sm font-bold text-on-surface xl:text-right" title={String(value)}>
+                         <span className="text-xs font-light text-on-surface xl:text-right" title={String(value)}>
                            {isCategory ? (
                              <span className="px-2 py-0.5 bg-surface-container text-on-surface-variant text-[10px] font-black rounded uppercase tracking-widest border border-outline-variant/20">
                                {String(value)}

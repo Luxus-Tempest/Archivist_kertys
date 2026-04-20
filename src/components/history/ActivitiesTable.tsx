@@ -101,7 +101,7 @@ export function ActivitiesTable() {
             </button>
           </div>
 
-          <div className="h-4 w-[1px] bg-outline-variant/20 mx-2"></div>
+          <div className="h-4 w-px bg-outline-variant/20 mx-2"></div>
 
           <div className="flex gap-2">
             <button 
@@ -290,7 +290,7 @@ export function ActivitiesTable() {
           </button>
           
           <div className="flex items-center px-4 gap-4">
-            <div className="h-4 w-[1px] bg-outline-variant/20"></div>
+            <div className="h-4 w-px bg-outline-variant/20"></div>
             <div className="flex items-center gap-2 text-[13px] font-bold tracking-tight">
               <span className="text-primary">{startRange} - {endRange}</span>
               <span className="text-outline-variant">/</span>

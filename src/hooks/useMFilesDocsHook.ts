@@ -44,11 +44,14 @@ export function useMFilesDocsHook() {
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState<boolean>(false);
 
-  const fetchDocuments = useCallback(async (): Promise<MFilesItemsResponseDto | null> => {
+  const fetchDocuments = useCallback(async (classId?: number): Promise<MFilesItemsResponseDto | null> => {
     setIsLoading(true);
     setError(null);
     try {
-      const data: any = await fetchAuth('/MFilesDocs/getDocuments', {
+      const url = classId !== undefined
+        ? `/MFilesDocs/getDocuments?class=${classId}`
+        : '/MFilesDocs/getDocuments';
+      const data: any = await fetchAuth(url, {
         method: 'GET'
       });
       
@@ -90,6 +93,18 @@ export function useMFilesDocsHook() {
     }
   }, []);
 
+  const fetchVaultClasses = useCallback(async (): Promise<{id: number, name: string}[] | null> => {
+    try {
+      const data = await fetchAuth('/MFilesDocs/get-vault-classes', {
+        method: 'GET'
+      });
+      return data;
+    } catch (err) {
+      console.error("useMFilesDocsHook fetchVaultClasses error:", err);
+      return null;
+    }
+  }, []);
+
   return {
     documents,
     isLoading,
@@ -97,6 +112,7 @@ export function useMFilesDocsHook() {
     hasMore,
     fetchDocuments,
     getFileContent,
-    getFileProperties
+    getFileProperties,
+    fetchVaultClasses
   };
 }

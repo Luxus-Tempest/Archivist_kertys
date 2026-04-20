@@ -10,8 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@hookform/resolvers": "^5.2.2",
     "@microsoft/signalr": "^10.0.0",
+    "@mui/material": "^9.0.0",
     "@reduxjs/toolkit": "^2.11.2",
     "@syncfusion/ej2-react-pdfviewer": "^33.1.49",
     "idb": "^8.0.3",

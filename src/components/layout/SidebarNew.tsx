@@ -8,6 +8,7 @@ export function SidebarNew() {
   ];
 
   return (
+    // <aside className="hidden md:flex flex-col p-4 -mt-2 border-r border-outline-variant/45 gap-2 h-[calc(100vh-80px)] w-64 fixed left-0 bg-[#EEF2F5] font-body text-sm font-medium">
     <aside className="hidden md:flex flex-col p-4 -mt-2 border-r border-outline-variant/45 gap-2 h-[calc(100vh-80px)] w-64 fixed left-0 bg-surface font-body text-sm font-medium">
       <nav className="flex flex-col gap-1">
         {navItems.map((item) => (
