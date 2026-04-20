@@ -50,13 +50,17 @@ export function SidebarNew({ isCollapsed, setIsCollapsed }: SidebarProps) {
         ))}
       </nav>
 
-      {/* Toggle Button */}
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
-        className="absolute cursor-pointer -right-3 bottom-8 w-6 h-6 rounded-md bg-white border border-outline-variant shadow-md flex items-center justify-center text-slate-500 hover:text-slate-900 hover:scale-110 transition-all z-50"
+        className={`absolute cursor-pointer -right-[17px] top-1/2 -translate-y-1/2 
+                   w-4 h-14 bg-surface 
+                   border-y border-r border-outline-variant/45 
+                   rounded-r-xl flex items-center justify-center 
+                   text-slate-400 hover:text-slate-900 transition-all z-50
+                   hover:w-5 hover:-right-[21px] group-hover:border-outline-variant`}
         title={isCollapsed ? t('sidebar.expand', 'Expand') : t('sidebar.collapse', 'Collapse')}
       >
-        <span className="material-symbols-outlined text-[16px] font-bold">
+        <span className="material-symbols-outlined text-[18px] font-light">
           {isCollapsed ? 'chevron_right' : 'chevron_left'}
         </span>
       </button>
