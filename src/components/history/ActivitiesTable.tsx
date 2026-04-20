@@ -110,7 +110,7 @@ export function ActivitiesTable() {
 
           <div className="flex gap-2">
             <button 
-              onClick={() => navigate('/process-new')}
+              onClick={() => navigate('/process')}
               className="px-4 py-2 text-sm font-semibold bg-primary text-on-primary rounded-lg shadow-sm flex items-center gap-2 hover:bg-primary-dim transition-colors cursor-pointer"
             >
               {t('uploadNewFiles')}

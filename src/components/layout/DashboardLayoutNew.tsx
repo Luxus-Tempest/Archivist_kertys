@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { HeaderNew } from './HeaderNew';
 import { SidebarNew } from './SidebarNew';
@@ -8,18 +8,30 @@ interface DashboardLayoutNewProps {
   children: React.ReactNode;
   isFullWidth?: boolean;
 }
-
 export function DashboardLayoutNew({ children, isFullWidth = false }: DashboardLayoutNewProps) {
   const { t } = useTranslation();
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+    const saved = localStorage.getItem('sidebar_collapsed');
+    return saved === 'true';
+  });
+
+  const handleToggleSidebar = (value: boolean) => {
+    setIsSidebarCollapsed(value);
+    localStorage.setItem('sidebar_collapsed', String(value));
+  };
+
   return (
     <div className="bg-surface text-on-surface selection:bg-primary/20 h-screen overflow-hidden flex flex-col">
       <HeaderNew />
       
       <div className="flex flex-1 pt-16 min-h-0 overflow-hidden">
-        <SidebarNew />
+        <SidebarNew 
+          isCollapsed={isSidebarCollapsed} 
+          setIsCollapsed={handleToggleSidebar} 
+        />
         
         {/* Main Content Area */}
-        <main className={`flex-1 md:ml-64 min-w-0 overflow-x-hidden ${isFullWidth ? 'pb-0 pt-0' : 'p-2 lg:p-2 pb-0 max-w-7xl mx-auto w-full'}`}>
+        <main className={`flex-1 ${isSidebarCollapsed ? 'md:ml-16' : 'md:ml-64'} transition-all duration-300 ease-in-out min-w-0 overflow-x-hidden w-full ${isFullWidth ? 'pb-0 pt-0' : 'p-2 lg:p-2 pb-0 mx-auto w-full'}`}>
           {children}
         </main>
       </div>

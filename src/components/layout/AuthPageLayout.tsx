@@ -38,7 +38,8 @@ export function AuthPageLayout({
 
       {/* Main Content */}
       <main className="grow flex items-center justify-center px-6 pt-24 pb-12">
-        <div className="w-full max-w-[1100px] grid md:grid-cols-2 bg-surface-container-lowest rounded-3xl overflow-hidden shadow-editorial min-h-[600px]">
+      {/* <main className="grow flex items-center justify-center px-6 pt-24 pb-12"> */}
+        <div className="w-full max-w-[1100px] grid md:grid-cols-2 bg-surface-container-lowest rounded-3xl overflow-hidden shadow-editorial h-max">
           {/* Left Side: Visual/Branding */}
           <div className="relative hidden md:flex flex-col justify-end p-12 bg-primary overflow-hidden">
             <img 
@@ -58,9 +59,9 @@ export function AuthPageLayout({
           </div>
 
           {/* Right Side: Form Content */}
-          <div className="flex flex-col justify-center p-6 md:p-10 lg:p-12">
-            <div className="max-w-md w-full mx-auto space-y-10">
-              <div className="space-y-2">
+          <div className="flex flex-col justify-center p-4 md:p-10 lg:p-12">
+            <div className="max-w-md w-full mx-auto space-y-6">
+              <div className="space-y-1">
                 <h2 className="font-headline text-3xl font-bold text-on-surface tracking-tight">{title}</h2>
                 <p className="text-on-surface-variant font-body">{subtitle}</p>
               </div>
@@ -71,11 +72,11 @@ export function AuthPageLayout({
       </main>
 
       {/* Footer */}
-      <footer className="p-8 text-center text-on-surface">
+      {/* <footer className="p-8 text-center text-on-surface">
         <p className="text-xs text-outline-variant tracking-widest font-body uppercase">
           {t('2024DocmeDocumentSystemsSecurePrivateEditorial', '© 2024 DocMe Document Systems. Secure. Private. Editorial.')}
         </p>
-      </footer>
+      </footer> */}
     </div>
   );
 }

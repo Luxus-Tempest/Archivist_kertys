@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -11,7 +11,7 @@ import { AuthPageLayout } from '../components/layout/AuthPageLayout';
 import { useTranslation, Trans } from 'react-i18next'
 
 export function Login() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate();
   const { login, isLoading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
@@ -19,16 +19,23 @@ export function Login() {
   const {
     register,
     handleSubmit,
+    trigger,
     formState: { errors },
   } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(loginSchema(t)),
   });
+
+  useEffect(() => {
+    if (Object.keys(errors).length > 0) {
+      trigger();
+    }
+  }, [i18n.language, trigger, errors]);
 
   const onSubmit = async (data: LoginFormData) => {
     toast.promise(login(data), {
       loading: t('signingIn', 'Signing in...'),
       success: () => {
-        navigate('/process-new');
+        navigate('/process');
         return t('successfullySignedIn', 'Successfully signed in.');
       },
       error: (err: any) => err || t('incorrectEmailOrPassword', 'Incorrect email or password.'),
@@ -41,16 +48,16 @@ export function Login() {
       subtitle={t('welcomeBackEnterYourCredentialsToAccessYourLibrary', 'Welcome back. Enter your credentials to access your library.')}
       imageAlt={t('modernMinimalistArchitecturalDetails', 'Modern minimalist architectural details')}
       imageSrc="https://lh3.googleusercontent.com/aida-public/AB6AXuAVmvP0nNUNNLIrcGB5yQOTmZepG9Iq80ckhRKYj_ITI7PIvxq1CtZn4_iZb-l1vhI0TFE6yZgREZomjh2L5S-0UyAT6apBw2RVzRc83plgfgl_nqbwFXLI7MuCR1JRoP715RpRUiYE4vqwgl_gYnacAy5GH8XBGbAYq3tuxRrjLpaNzKln8Y5ha9nfrOFG2YpO2J7hTFQ0Y8TBnyYHEwKwxWqdx59zFAy64nZy9JmpuJiRUfqhev2uFnSvnUsUNCkXYi6rJFDaHNo"
-      headline={<><Trans i18nKey="preservingTheBrfutureOfDocumentation">Preserving the <br/>Future of Documentation.</Trans></>}
+      headline={t('preservingTheBrfutureOfDocumentation', 'Preserving the <br/>Future of Documentation.')}
       description={t('experienceTheQuietAuthorityOfSecureHighendDocumentManagementDesignedForProfessionals', 'Experience the quiet authority of secure, high-end document management designed for professionals.')}
     >
       <form className="space-y-3" onSubmit={handleSubmit(onSubmit)}>
-        <div className="space-y-3">
+        <div className="space-y-4">
           <Input 
             id="email"
-            label="Email" 
+            label={t('email')} 
             type="email" 
-            placeholder="name@test.com" 
+            placeholder={t('nameAtCompanyCom')} 
             icon="mail"
             {...register('Email')}
             error={errors.Email?.message}
@@ -58,7 +65,7 @@ export function Login() {
           
           <Input 
             id="password"
-            label="Password" 
+            label={t('password')} 
             type={showPassword ? 'text' : 'password'} 
             placeholder="••••••••" 
             icon="lock"
@@ -79,20 +86,20 @@ export function Login() {
 
           <div className="flex justify-end ml-1 -mt-2">
             <a href="#" className="text-xs font-medium text-primary hover:underline transition-all">
-              {t('forgotPassword', 'Forgot password?')}
+              {t('forgotPassword')}
             </a>
           </div>
         </div>
 
         <div className="pt-4">
           <Button type="submit" variant="solid" icon="arrow_forward" disabled={isLoading}>
-            {isLoading ? t('authenticating', 'Authenticating...') : t('authenticate', 'Authenticate')}
+            {isLoading ? t('authenticating') : t('authenticate')}
           </Button>
         </div>
       </form>
 
       <p className="text-center text-sm text-on-surface-variant pt-4">
-        {t('newToDocme', 'New to DocMe?')} <Link to="/signup" className="text-primary font-semibold hover:underline">{t('createAnDocmeAccount', 'Create an DocMe account')}</Link>
+        {t('newToDocme')} <Link to="/signup" className="text-primary font-semibold hover:underline">{t('createAnDocmeAccount')}</Link>
       </p>
     </AuthPageLayout>
   );
