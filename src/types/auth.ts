@@ -1,10 +1,21 @@
+export type UserRole = 'USER' | 'ADMIN';
+
+export type UserStatus = 'PENDING' | 'ACTIVE' | 'BLOCKED';
+export const UserStatusEnum = {
+  PENDING: 'PENDING',
+  ACTIVE: 'ACTIVE',
+  BLOCKED: 'BLOCKED',
+} as const;
 export interface User {
-  id?: string;
+  id: string;
   email: string;
   fullName: string;
-  fileCount: number;
-  totalSize: number;
-  pendingSessions: number;
+  role: UserRole;
+  status: UserStatus;
+  organizationId: string;
+  fileCount?: number;
+  totalSize?: number;
+  pendingSessions?: number;
 }
 
 export interface AuthState {

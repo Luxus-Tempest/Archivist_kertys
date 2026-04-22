@@ -130,5 +130,12 @@
   "nameAtCompanyCom": "name@company.com",
   "invalidEmail": "Invalid email address",
   "passwordTooShort": "Password must be at least 4 characters",
-  "nameTooShort": "Name is too short"
+  "nameTooShort": "Name is too short",
+  "pendingApproval": "Pending Approval",
+  "pendingMessageHead": "Your account is under review by the administrator.",
+  "userStatus": {
+    "pending": "Pending",
+    "active": "Active",
+    "blocked": "Blocked"
+  }
 }

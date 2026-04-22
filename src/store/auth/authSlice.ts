@@ -26,10 +26,15 @@ export const signupUser = createAsyncThunk<
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
+      const errorData = await response.json().catch(() => ({}));
       return thunkAPI.rejectWithValue(errorData.message || 'Erreur lors de la création du compte.');
     }
-    return await response.json();
+    
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      return await response.json();
+    }
+    return { message: 'Signup successful' } as any;
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error.message || 'Erreur de connexion au serveur.');
   }
@@ -53,10 +58,15 @@ export const fetchMe = createAsyncThunk<
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
+      const errorData = await response.json().catch(() => ({}));
       return thunkAPI.rejectWithValue(errorData.message || 'Erreur lors de la récupération du profil.');
     }
-    return await response.json();
+
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      return await response.json();
+    }
+    throw new Error('Format de réponse invalide du serveur.');
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error.message || 'Erreur de connexion au serveur.');
   }
@@ -75,10 +85,15 @@ export const loginUser = createAsyncThunk<
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
+      const errorData = await response.json().catch(() => ({}));
       return thunkAPI.rejectWithValue(errorData.message || 'Email ou mot de passe incorrect.');
     }
-    return await response.json();
+
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      return await response.json();
+    }
+    throw new Error('La réponse du serveur n\'est pas au format JSON.');
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error.message || 'Erreur de connexion au serveur.');
   }

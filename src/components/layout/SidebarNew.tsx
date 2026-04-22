@@ -25,8 +25,8 @@ export function SidebarNew({ isCollapsed, setIsCollapsed }: SidebarProps) {
             className={({ isActive }) =>
               `relative flex items-center group/item ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-4'} py-3 transition-all duration-200 rounded-lg ${
                 isActive && item.path !== '#'
-                  ? 'text-slate-900 bg-slate-50 shadow-sm'
-                  : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50/50'
+                  ? 'text-slate-900 bg-white shadow-sm'
+                  : 'text-slate-500 hover:text-slate-700 hover:bg-gray-200'
               }`
             }
           >

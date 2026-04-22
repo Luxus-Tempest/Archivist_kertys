@@ -122,5 +122,12 @@
 ,
   "invalidEmail": "L'adresse email est invalide",
   "passwordTooShort": "Le mot de passe doit contenir au moins 4 caractères",
-  "nameTooShort": "Le nom est trop court"
+  "nameTooShort": "Le nom est trop court",
+  "pendingApproval": "En attente d'approbation",
+  "pendingMessageHead": "Votre compte est en cours de révision par l'administrateur.",
+  "userStatus": {
+    "pending": "En attente",
+    "active": "Actif",
+    "blocked": "Bloqué"
+  }
 }
