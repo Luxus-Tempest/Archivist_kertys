@@ -8,7 +8,7 @@ import { loginSchema, type LoginFormData } from '../utils/validations';
 import { useAuth } from '../hooks/useAuth';
 import { toast } from 'sonner';
 import { AuthPageLayout } from '../components/layout/AuthPageLayout';
-import { useTranslation, Trans } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 
 export function Login() {
   const { t, i18n } = useTranslation()
