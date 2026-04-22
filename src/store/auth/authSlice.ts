@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import type { AuthState, LoginResponse, User } from '../../types/auth';
+import type { AuthState, LoginResponse, User, CreateOrganizationPayload } from '../../types/auth';
 import type { LoginFormData, SignupFormData } from '../../utils/validations';
 import i18next from 'i18next'
 
@@ -35,6 +35,33 @@ export const signupUser = createAsyncThunk<
       return await response.json();
     }
     return { message: 'Signup successful' } as any;
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(error.message || 'Erreur de connexion au serveur.');
+  }
+});
+
+export const createOrganization = createAsyncThunk<
+  { message: string },
+  CreateOrganizationPayload,
+  { rejectValue: string }
+>('auth/createOrganization', async (data, thunkAPI) => {
+  try {
+    const response = await fetch(`${API_URL}/organization`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      return thunkAPI.rejectWithValue(errorData.message || 'Erreur lors de la création de l\'organisation.');
+    }
+    
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      return await response.json();
+    }
+    return { message: 'Organization created successfully' } as any;
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error.message || 'Erreur de connexion au serveur.');
   }
@@ -124,6 +151,20 @@ const authSlice = createSlice({
       state.error = null;
     });
     builder.addCase(signupUser.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload || 'Erreur inconnue';
+    });
+
+    // Create Organization
+    builder.addCase(createOrganization.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(createOrganization.fulfilled, (state) => {
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(createOrganization.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.payload || 'Erreur inconnue';
     });

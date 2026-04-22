@@ -34,3 +34,12 @@ export interface ErrorResponse {
   message?: string;
   [key: string]: any;
 }
+
+export interface CreateOrganizationPayload {
+  orgName: string;
+  orgDomain: string;
+  orgEmail: string;
+  adminEmail: string;
+  adminFullName: string;
+  adminPassword: string;
+}

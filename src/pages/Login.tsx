@@ -25,11 +25,9 @@ export function Login() {
     resolver: zodResolver(loginSchema(t)),
   });
 
-  useEffect(() => {
-    if (Object.keys(errors).length > 0) {
-      trigger();
-    }
-  }, [i18n.language, trigger, errors]);
+//   useEffect(() => {
+//   trigger();
+// }, [i18n.language, trigger]);
 
   const onSubmit = async (data: LoginFormData) => {
     toast.promise(login(data), {

@@ -10,6 +10,7 @@ interface AuthPageLayoutProps {
   imageSrc: string;
   headline: React.ReactNode;
   description: string;
+  stepIndicator?: React.ReactNode;
 }
 
 export function AuthPageLayout({
@@ -20,6 +21,7 @@ export function AuthPageLayout({
   imageSrc,
   headline,
   description,
+  stepIndicator,
 }: AuthPageLayoutProps) {
   const { t } = useTranslation()
   return (
@@ -61,7 +63,8 @@ export function AuthPageLayout({
           {/* Right Side: Form Content */}
           <div className="flex flex-col justify-center p-4 md:p-10 lg:p-12">
             <div className="max-w-md w-full mx-auto space-y-6">
-              <div className="space-y-1">
+              <div className="space-y-2">
+                {stepIndicator}
                 <h2 className="font-headline text-3xl font-bold text-on-surface tracking-tight">{title}</h2>
                 <p className="text-on-surface-variant font-body">{subtitle}</p>
               </div>

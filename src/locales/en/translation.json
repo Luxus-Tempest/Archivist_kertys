@@ -137,5 +137,15 @@
     "pending": "Pending",
     "active": "Active",
     "blocked": "Blocked"
-  }
+  },
+  "organizationName": "Organization Name",
+  "professionalEmail": "Professional Email",
+  "domain": "Domain",
+  "egArchivistGlobal": "e.g. Archivist Global",
+  "nameAtOrganizationCom": "name@organization.com",
+  "egMycompanyCom": "e.g. mycompany.com",
+  "organizationDetails": "Organization Details",
+  "enterYourOrganizationInfo": "Enter your organization information to get started.",
+  "continue": "Continue"
+
 }
