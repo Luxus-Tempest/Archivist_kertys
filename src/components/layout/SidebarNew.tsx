@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next'
+import { useAuth } from '../../hooks/useAuth';
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -8,11 +9,14 @@ interface SidebarProps {
 
 export function SidebarNew({ isCollapsed, setIsCollapsed }: SidebarProps) {
   const { t } = useTranslation()
+  const { user } = useAuth();
+  
   const navItems = [
     { name: t('sidebar.explorer', 'Explorer'), icon: 'folder', path: '/explorer' },
     { name: t('sidebar.history', 'History'), icon: 'history', path: '/history' },
     { name: t('sidebar.process', 'Process'), icon: 'add', path: '/process' },
-  ];
+    { name: t('sidebar.members', 'Members'), icon: 'group', path: '/members', adminOnly: true },
+  ].filter(item => !item.adminOnly || user?.role === 'ADMIN');
 
   return (
     // <aside className="hidden md:flex flex-col p-4 -mt-2 border-r border-outline-variant/45 gap-2 h-[calc(100vh-80px)] w-64 fixed left-0 bg-[#EEF2F5] font-body text-sm font-medium">

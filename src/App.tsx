@@ -7,6 +7,7 @@ import { Process } from './pages/Process';
 import { HistoryNew } from './pages/HistoryNew';
 import { ProcessNew } from './pages/ProcessNew';
 import { ExplorerNew } from './pages/ExplorerNew';
+import { Members } from './pages/Members';
 import { DashboardLayout } from './components/layout/DashboardLayout';
 import { useAuth } from './hooks/useAuth';
 import './index.css';
@@ -26,6 +27,25 @@ function GuestRoute({ children }: { children: React.ReactNode }) {
   if (isAuthenticated) {
     return <Navigate to="/explorer" replace />;
   }
+  return <>{children}</>;
+}
+
+// Admin Route wrapper component (restricts access to ADMIN role)
+function AdminRoute({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated, user, isLoading } = useAuth();
+  
+  if (isLoading) {
+    return <div>Loading...</div>; // Or a proper loading spinner
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (user?.role !== 'ADMIN') {
+    return <Navigate to="/explorer" replace />;
+  }
+
   return <>{children}</>;
 }
 
@@ -70,6 +90,11 @@ function App() {
           <ProtectedRoute>
             <ExplorerNew />
           </ProtectedRoute>
+        } />
+        <Route path="/members" element={
+          <AdminRoute>
+            <Members />
+          </AdminRoute>
         } />
 
         {/* Existing Dashboard Routes (Preserved) */}

@@ -85,25 +85,25 @@ export function Signup() {
   };
 
   const stepTitle = step === 1 
-    ? t('organizationDetails', 'Organization Details')
-    : t('createAccount', 'Create Account');
+    ? t('signupPage.organizationDetails')
+    : t('signupPage.createAccount');
   
   const stepSubtitle = step === 1
-    ? t('enterYourOrganizationInfo', 'Enter your organization information to get started.')
-    : t('joinDocmeToStartManagingYourDocumentsWithEditorialPrecision', 'Join DocMe to start managing your documents with editorial precision.');
+    ? t('signupPage.enterYourOrganizationInfo')
+    : t('signupPage.joinDocme');
 
   return (
     <AuthPageLayout
       title={stepTitle}
       subtitle={stepSubtitle}
-      imageAlt={t('modernArchitecturalDetailsWithCleanLines', 'Modern architectural details with clean lines')}
+      imageAlt={t('signupPage.modernArchitecturalDetailsWithCleanLines')}
       imageSrc="https://lh3.googleusercontent.com/aida-public/AB6AXuAVmvP0nNUNNLIrcGB5yQOTmZepG9Iq80ckhRKYj_ITI7PIvxq1CtZn4_iZb-l1vhI0TFE6yZgREZomjh2L5S-0UyAT6apBw2RVzRc83plgfgl_nqbwFXLI7MuCR1JRoP715RpRUiYE4vqwgl_gYnacAy5GH8XBGbAYq3tuxRrjLpaNzKln8Y5ha9nfrOFG2YpO2J7hTFQ0Y8TBnyYHEwKwxWqdx59zFAy64nZy9JmpuJiRUfqhev2uFnSvnUsUNCkXYi6rJFDaHNo"
-      headline={t('theQuietAuthorityBrofSecureDesign')}
-      description={t('experienceTheFutureOfProfessionalDocumentManagementMinimalistSecureAndBuiltForExcellence')}
+      headline={t('signupPage.theQuietAuthorityBrofSecureDesign')}
+      description={t('signupPage.experienceTheFutureOfProfessionalDocumentManagementMinimalistSecureAndBuiltForExcellence')}
       stepIndicator={
         <div className="flex items-center gap-3">
           <span className="text-xs font-semibold uppercase tracking-widest text-outline-variant">
-            {t('stepOf', 'Step {{current}} of {{total}}', { current: step, total: 2 })}
+            {t('signupPage.stepOf', { current: step, total: 2 })}
           </span>
           <div className="flex gap-1.5">
             <div className={`h-1.5 w-8 rounded-full transition-all duration-300 ${
@@ -132,9 +132,9 @@ export function Signup() {
             <div className="space-y-4">
               <Input 
                 id="orgName"
-                label={t('organizationName', 'Organization Name')} 
+                label={t('signupPage.organizationName')} 
                 type="text" 
-                placeholder={t('egArchivistGlobal', 'e.g. Archivist Global')} 
+                placeholder={t('signupPage.egArchivistGlobal')} 
                 icon="apartment"
                 {...register('OrgName')}
                 error={errors.OrgName?.message}
@@ -142,9 +142,9 @@ export function Signup() {
 
               <Input 
                 id="orgEmail"
-                label={t('professionalEmail', 'Professional Email')} 
+                label={t('signupPage.orgEmail')} 
                 type="email" 
-                placeholder={t('nameAtOrganizationCom', 'name@organization.com')} 
+                placeholder={t('signupPage.orgEmailPlaceholder')} 
                 icon="mail"
                 {...register('OrgEmail')}
                 error={errors.OrgEmail?.message}
@@ -152,9 +152,9 @@ export function Signup() {
 
               <Input 
                 id="domain"
-                label={t('domainName', 'Domain')} 
+                label={t('signupPage.domain')} 
                 type="text" 
-                placeholder={t('egMycompanyCom', 'e.g. mycompany.com')} 
+                placeholder={t('signupPage.egMycompanyCom')} 
                 icon="language"
                 {...register('Domain')}
                 error={errors.Domain?.message}
@@ -163,7 +163,7 @@ export function Signup() {
 
             <div className="pt-4">
               <Button type="button" variant="solid" icon="arrow_forward" onClick={handleContinue}>
-                {t('continueToAccount', 'Continue')}
+                {t('signupPage.continueToAccount')}
               </Button>
             </div>
           </div>
@@ -182,9 +182,9 @@ export function Signup() {
             <div className="space-y-4">
               <Input 
                 id="fullName"
-                label={t('fullName')} 
+                label={t('signupPage.fullName')} 
                 type="text" 
-                placeholder={t('jeanDupont')} 
+                placeholder={t('signupPage.JDoe')} 
                 icon="person"
                 {...register('FullName')}
                 error={errors.FullName?.message}
@@ -192,9 +192,9 @@ export function Signup() {
 
               <Input 
                 id="email"
-                label={t('workEmail', 'Work Email')} 
+                label={t('signupPage.userEmail')} 
                 type="email" 
-                placeholder={t('nameAtCompanyCom', 'name@company.com')} 
+                placeholder={t('signupPage.userEmailPlaceholder')} 
                 icon="mail"
                 {...register('Email')}
                 error={errors.Email?.message}
@@ -202,7 +202,7 @@ export function Signup() {
               
               <Input 
                 id="password"
-                label={t('password')} 
+                label={t('signupPage.password')} 
                 type={showPassword ? 'text' : 'password'} 
                 placeholder="••••••••" 
                 icon="lock"
@@ -255,7 +255,7 @@ export function Signup() {
                 {t('back', 'Back')}
               </Button>
               <Button type="submit" btnClass="w-max text-md px-4 " variant="solid" icon="arrow_forward" disabled={isLoading}>
-                {isLoading ? t('creatingAccount2', 'Creating Account...') : t('createAccount', 'Create Account')}
+                {isLoading ? t('signupPage.creatingAccount2') : t('signupPage.createAccount')}
               </Button>
             </div>
           </div>
@@ -263,7 +263,7 @@ export function Signup() {
       </form>
 
       <p className="text-center text-sm text-on-surface-variant">
-        {t('alreadyHaveAnAccount', 'Already have an account?')} <Link to="/login" className="text-primary font-semibold hover:underline">{t('signIn', 'Sign In')}</Link>
+        {t('signupPage.alreadyHaveAnAccount')} <Link to="/login" className="text-primary font-semibold hover:underline">{t('signupPage.signIn')}</Link>
       </p>
     </AuthPageLayout>
   );

@@ -29,8 +29,7 @@
   "classIdClass": "Class ID: {{Class}}",
   "classIdClass2": "Class ID: {{class}}",
   "renderingPage": "Rendering page",
-  "securelyProcessYourIntellectualAssetsOurSystemAutomaticallyClassifiesAndInsertsIntoMfilesEachEntry": "Securely process your intellectual assets. Our system automatically classifies and inserts into M-Files each entry.",
-  "realtimeStatusOfDocumentsProcessing": "Real-time status of documents processing",
+  "securelyProcessYourIntellectualAssetsOurSystemAutomaticallyClassifiesAndInsertsIntoMfilesEachEntry": "Securely process your intellectual assets.",
   "welcomeBackEnterYourCredentialsToAccessYourLibrary": "Welcome back. Enter your credentials to access your library.",
   "modernMinimalistArchitecturalDetails": "Modern minimalist architectural details",
   "authenticating": "Authenticating...",
@@ -80,6 +79,7 @@
   "browseLocalFiles": "Browse Local Files",
   "processing": "Processing...",
   "stagedFiles": "Staged Files",
+  "clearAll": "Clear All",
   "reviewDocumentsBeforeSendingToVault": "Review documents before sending to vault",
   "readyForProcessing": "Ready for processing",
   "idId": "ID: {{id}}",
@@ -99,7 +99,8 @@
   "sidebar": {
     "explorer": "Explorer",
     "history": "History",
-    "process": "Process"
+    "process": "Process",
+    "members": "Members"
   },
   "account": "Account",
   "settings": "Settings",
@@ -110,7 +111,7 @@
   "newToDocme": "New to DocMe?",
   "createAnDocmeAccount": "Create an DocMe account",
   "preservingTheBrfutureOfDocumentation": "Preserving the Future of Documentation.",
-  "experienceTheQuietAuthorityOfSecureHighendDocumentManagementDesignedForProfessionals": "Experience the quiet authority of secure, high-end document management designed for professionals.",
+  "experienceTheQuietAuthorityOfSecureHighendDocumentManagementDesignedForProfessionals": "Log in to DocMe to manage your documents securely and with precision.",
   "about": "About",
   "2024DocmeDocumentSystemsSecurePrivateEditorial": "© 2024 DocMe Document Systems. Secure. Private. Editorial.",
   "createAccount": "Create Account",
@@ -146,6 +147,54 @@
   "egMycompanyCom": "e.g. mycompany.com",
   "organizationDetails": "Organization Details",
   "enterYourOrganizationInfo": "Enter your organization information to get started.",
-  "continue": "Continue"
-
+  "continue": "Continue",
+  "members": {
+    "title": "Members",
+    "subtitle": "Manage your team and their permissions.",
+    "inviteMember": "Invite Team Member",
+    "searchPlaceholder": "Search by name or email...",
+    "tabs": {
+      "general": "General Information",
+      "staff": "Staff & Permissions",
+      "accounts": "Accounts & Payouts"
+    },
+    "table": {
+      "user": "User",
+      "status": "Status",
+      "role": "Role",
+      "permissionGroup": "Permission Group",
+      "location": "Location",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "inviteSent": "Invite Sent",
+      "inactive": "Inactive"
+    }
+  },
+  "signupPage": {
+    "organizationDetails": "Organization Details",
+    "createAccount": "Create an Account",
+    "enterYourOrganizationInfo": "Enter your organization information to get started.",
+    "joinDocme": "Join DocMe to start managing your documents with precision.",
+    "modernArchitecturalDetailsWithCleanLines": "Modern architectural details with clean lines",
+    "theQuietAuthorityBrofSecureDesign": "The quiet authority of secure design.",
+    "experienceTheFutureOfProfessionalDocumentManagementMinimalistSecureAndBuiltForExcellence": "Experience the future of professional document management. Minimalist, secure, and built for excellence.",
+    "stepOf": "Step {{current}} of {{total}}",
+    "egArchivistGlobal": "e.g. Archivist Global",
+    "organizationName": "Organization Name",
+    "orgEmail": "Organization Email",
+    "orgEmailPlaceholder": "company@company.com",
+    "domain": "Domain",
+    "egMycompanyCom": "e.g. mycompany.com",
+    "continueToAccount": "Continue",
+    "fullName": "Full Name",
+    "JDoe": "John Doe",
+    "userEmail": "User Email",
+    "userEmailPlaceholder": "john@doe.com",
+    "password": "Password",
+    "creatingAccount2": "Creating account...",
+    "alreadyHaveAnAccount": "Already have an account?",
+    "signIn": "Sign In"
+  }
 }

@@ -29,8 +29,7 @@
   "classIdClass": "ID Classe : {{Class}}",
   "classIdClass2": "ID Classe : {{class}}",
   "renderingPage": "Rendu de la page",
-  "securelyProcessYourIntellectualAssetsOurSystemAutomaticallyClassifiesAndInsertsIntoMfilesEachEntry": "Traitez vos actifs intellectuels en toute sécurité. Notre système classifie et insère automatiquement chaque entrée dans M-Files.",
-  "realtimeStatusOfDocumentsProcessing": "Statut en temps réel du traitement des documents",
+  "securelyProcessYourIntellectualAssetsOurSystemAutomaticallyClassifiesAndInsertsIntoMfilesEachEntry": "Traitez vos actifs intellectuels en toute sécurité.",
   "welcomeBackEnterYourCredentialsToAccessYourLibrary": "Bon retour. Entrez vos identifiants pour accéder à votre bibliothèque.",
   "modernMinimalistArchitecturalDetails": "Détails architecturaux minimalistes modernes",
   "authenticating": "Authentification...",
@@ -71,6 +70,7 @@
   "pdfDocxXlsxHighresImagesEtcUpTo25mb": "PDF, DOCX, XLSX, images haute résolution, etc... jusqu'à 25 Mo",
   "browseLocalFiles": "Parcourir les fichiers locaux",
   "stagedFiles": "Fichiers en attente",
+  "clearAll": "Tout effacer",
   "reviewDocumentsBeforeSendingToVault": "Passez en revue les documents avant de les envoyer au coffre-fort",
   "readyForProcessing": "Prêt pour le traitement",
   "idId": "ID : {{id}}",
@@ -90,7 +90,8 @@
   "sidebar": {
     "explorer": "Explorateur",
     "history": "Historique",
-    "process": "Téléverser"
+    "process": "Téléverser",
+    "members": "Membres"
   },
   "account": "Compte",
   "settings": "Paramètres",
@@ -101,7 +102,7 @@
   "newToDocme": "Nouveau sur DocMe ?",
   "createAnDocmeAccount": "Créer un compte DocMe",
   "preservingTheBrfutureOfDocumentation": "Préserver le futur de la documentation.",
-  "experienceTheQuietAuthorityOfSecureHighendDocumentManagementDesignedForProfessionals": "Découvrez l'autorité tranquille d'une gestion documentaire sécurisée et haut de gamme, conçue pour les professionnels.",
+  "experienceTheQuietAuthorityOfSecureHighendDocumentManagementDesignedForProfessionals": "Connectez-vous à DocMe pour gérer vos documents en toute sécurité et avec précision.",
   "about": "À propos",
   "2024DocmeDocumentSystemsSecurePrivateEditorial": "© 2024 DocMe Document Systems. Sécurisé. Privé. Éditorial.",
   "createAccount": "Créer un compte",
@@ -129,5 +130,30 @@
     "pending": "En attente",
     "active": "Actif",
     "blocked": "Bloqué"
+  },
+ "signupPage": {
+    "organizationDetails": "Détails de l’organisation",
+    "createAccount": "Créer un compte",
+    "enterYourOrganizationInfo": "Entrez les informations de votre organisation pour commencer.",
+    "joinDocme": "Rejoignez DocMe pour commencer à gérer vos documents avec précision.",
+    "modernArchitecturalDetailsWithCleanLines": "Détails architecturaux modernes aux lignes épurées",
+    "theQuietAuthorityBrofSecureDesign": "L’autorité discrète d’un design sécurisé.",
+    "experienceTheFutureOfProfessionalDocumentManagementMinimalistSecureAndBuiltForExcellence": "Découvrez l’avenir de la gestion documentaire professionnelle. Minimaliste, sécurisé et conçu pour l’excellence.",
+    "stepOf": "Étape {{current}} sur {{total}}",
+    "egArchivistGlobal": "ex : Archivist Global",
+    "organizationName": "Nom de l’organisation",
+    "orgEmail": "Email de l’organisation",
+    "orgEmailPlaceholder": "entreprise@entreprise.com",
+    "domain": "Domaine",
+    "egMycompanyCom": "ex : monentreprise.com",
+    "continueToAccount": "Continuer",
+    "fullName": "Nom complet",
+    "JDoe": "Jean Dupont",
+    "userEmail": "Email de l’utilisateur",
+    "userEmailPlaceholder": "jean@dupont.com",
+    "password": "Mot de passe",
+    "creatingAccount2": "Création du compte...",
+    "alreadyHaveAnAccount": "Vous avez déjà un compte ?",
+    "signIn": "Se connecter"
   }
 }
