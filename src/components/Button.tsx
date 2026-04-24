@@ -1,5 +1,4 @@
 import { type ButtonHTMLAttributes, type ReactNode } from 'react';
-import { useTranslation } from 'react-i18next'
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'solid' | 'outline' | 'ghost' | 'lightSolid';
@@ -19,7 +18,6 @@ export function Button({
   children, 
   ...props 
 }: ButtonProps) {
-  const { t } = useTranslation()
   const baseStyles = `w-full py-2 font-semibold transition-all duration-300 flex justify-center items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed ${btnClass}`;
   
   const variants = {

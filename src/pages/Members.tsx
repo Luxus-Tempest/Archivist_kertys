@@ -8,7 +8,6 @@ import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 
 
-/* ─── Types ─── */
 type Status = 'Active' | 'Pending' | 'Blocked';
 
 interface Member {
@@ -20,7 +19,6 @@ interface Member {
   avatar?: string;
 }
 
-/* ─── Helpers ─── */
 const mapAdminUserToMember = (user: AdminUser): Member => {
   const statusMap: Record<string, Status> = {
     'ACTIVE': 'Active',
@@ -43,7 +41,6 @@ const mapAdminUserToMember = (user: AdminUser): Member => {
   };
 };
 
-/* ─── Status config ─── */
 const STATUS_CONFIG: Record<
   Status,
   { label: string; bg: string; color: string }
@@ -86,7 +83,6 @@ const ACTION_CONFIG: Record<
   },
 };
 
-/* ─── Sub-components using pure HTML/Tailwind ─── */
 
 function StatusBadge({ status }: { status: Status }) {
   const cfg = STATUS_CONFIG[status];
@@ -118,9 +114,7 @@ function ActionButton({
       className="px-4 py-2 rounded-lg bg-transparent text-sm font-semibold cursor-pointer transition-all duration-200 border-none hover:bg-opacity-10"
       style={{
         color: cfg.color,
-        backgroundColor: 'transparent',
-        // We use hover state via standard CSS or Tailwind if preferred
-        fontFamily: 'Inter, sans-serif'
+        backgroundColor: 'transparent'
       }}
       onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = cfg.hoverBg; }}
       onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
@@ -150,7 +144,7 @@ function MemberRow({ member, onUpdateStatus }: { member: Member; onUpdateStatus:
               className={`w-8 h-8 rounded-sm object-cover shadow-sm ${isBlocked ? 'grayscale opacity-60' : ''}`}
             />
           ) : (
-            <div className={`w-8 h-8 rounded-sm bg-surface-container-high flex items-center justify-center text-xs font-bold ${isBlocked ? 'opacity-50' : ''}`}>
+            <div className={`w-8 h-8 capitalize rounded-sm bg-surface-container-high flex items-center justify-center text-xs font-bold ${isBlocked ? 'opacity-50' : ''}`}>
                {member.name[0]}
             </div>
           )}
@@ -174,7 +168,7 @@ function MemberRow({ member, onUpdateStatus }: { member: Member; onUpdateStatus:
 
       {/* Role */}
       <td className="px-6 py-4">
-        <span className={`text-xs font-medium text-on-surface ${isBlocked ? 'opacity-50' : ''}`} style={{ fontFamily: 'Inter, sans-serif' }}>
+        <span className={`text-xs font-medium uppercase text-on-surface ${isBlocked ? 'opacity-50' : ''}`} style={{ fontFamily: 'Inter, sans-serif' }}>
           {member.role}
         </span>
       </td>
@@ -267,7 +261,7 @@ export function Members() {
           </div>
 
           {/* ── Search & Filter Bar (HTML Style) ── */}
-          <div className="bg-surface-container-low rounded-full px-8 py-4 mb-8 flex flex-col md:flex-row items-center gap-4 shadow-sm border-none">
+          <div className="bg-surface-container-low rounded-md px-8 py-2 mb-5 flex flex-col md:flex-row items-center gap-4 shadow-sm border-none">
             <div className="flex-1 flex items-center gap-4 w-full">
               <SearchRoundedIcon className="text-outline" />
               <input 
@@ -292,7 +286,6 @@ export function Members() {
             </div>
           </div>
 
-          {/* ── Error Message ── */}
           {error && (
             <div className="mb-6 p-4 bg-red-50 text-red-800 rounded-lg flex items-center gap-2 border border-red-100 text-sm">
               <ErrorRoundedIcon sx={{ fontSize: 18 }} />
@@ -300,9 +293,7 @@ export function Members() {
             </div>
           )}
 
-          {/* ── Table Container (HTML Style) ── */}
-          <div className="bg-surface-container-lowest rounded-md shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden relative min-h-[200px]">
-            {/* Loading Overlay */}
+          <div className="bg-surface-container-lowest rounded-md shadow-sm overflow-hidden relative min-h-[200px]">
             {isLoading && (
               <div className="absolute inset-0 bg-white bg-opacity-60 z-10 flex items-center justify-center">
                  <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
@@ -310,9 +301,9 @@ export function Members() {
             )}
 
             <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
+              <table className="w-full text-left border-collapse border-surface-container-highest overflow-hidden">
                 <thead>
-                  <tr className="bg-surface-container-highest text-on-surface-variant uppercase text-[11px] tracking-[0.15em] font-bold">
+                  <tr className="bg-surface-container-low text-on-surface-variant uppercase border-b-3 border-surface-container-highest text-[11px] tracking-[0.15em] font-bold ">
                     <th className="px-8 py-3">Full Name</th>
                     <th className="px-8 py-3">Email</th>
                     <th className="px-8 py-3">Status</th>
@@ -341,7 +332,7 @@ export function Members() {
             </div>
 
             {/* ── Pagination Footer (HTML Style) ── */}
-            <div className="px-8 py-3 bg-surface-container-highest flex justify-between items-center border-t border-surface-container-low">
+            <div className="px-8 py-3 border-t-3 border-surface-container-highest bg-surface-container-low flex justify-between items-center">
               <p className="text-on-surface-variant text-sm font-semibold" style={{ fontFamily: 'Inter, sans-serif' }}>
                  Showing {filtered.length} of {totalCount} Identities
               </p>

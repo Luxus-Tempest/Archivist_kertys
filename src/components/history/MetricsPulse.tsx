@@ -51,7 +51,7 @@ export function MetricsPulse() {
               <SkeletonValue />
             ) : (
               <span className="text-3xl font-headline font-extrabold text-on-surface">
-                {formatSize(user.totalSize)}
+                {formatSize(user.totalSize || 0)}
               </span>
             )}
           </div>
