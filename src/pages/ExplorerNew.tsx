@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { Panel, Group, Separator } from 'react-resizable-panels';
 import { useSearchParams } from 'react-router-dom';
 import { DashboardLayoutNew } from '../components/layout/DashboardLayoutNew';
 import { useMFilesDocsHook, type MFilesDocumentDto, type MFilesObjectPropertiesDto } from '../hooks/useMFilesDocsHook';
@@ -273,9 +274,11 @@ export function ExplorerNew() {
   return (
     <DashboardLayoutNew isFullWidth>
       <div className="flex flex-col md:flex-row h-full overflow-hidden w-full m-0 p-0 ">
-        {/* Left Pane: Document List */}
-        <section className="w-full pt-2  md:w-[320px] lg:w-[350px] shrink-0 bg-white border-r border-slate-100 flex flex-col h-full overflow-hidden">
-          {/* Header Action Bar */}
+        <Group orientation="horizontal">
+          <Panel defaultSize="25%" minSize="15%" maxSize="40%" className="flex flex-col h-full min-w-0">
+            {/* Left Pane: Document List */}
+            <section className="w-full pt-2 bg-white flex flex-col h-full overflow-hidden">
+              {/* Header Action Bar */}
           <div className="p-4 pt-0 shrink-0 border-b border-surface">
             <div className="flex items-center gap-2">
               <div className={`flex-1 flex items-center bg-white border rounded-xl px-2 py-1 transition-all relative ${showSuggestions ? 'ring-2 ring-primary/20 border-primary shadow-lg' : 'border-outline-variant/30 hover:border-outline-variant/60 shadow-sm'}`}>
@@ -486,9 +489,15 @@ export function ExplorerNew() {
             </table>
           </div>
         </section>
+        </Panel>
+        
+        <Separator className="w-1.5 transition-colors hover:bg-primary/20 active:bg-primary/40 group flex flex-col justify-center items-center cursor-col-resize">
+          <div className="h-8 w-1 rounded-full bg-slate-200 group-hover:bg-primary group-active:bg-primary transition-colors"></div>
+        </Separator>
 
-        {/* Center Pane: Preview Area */}
-        <section className="flex-1 min-w-0 bg-surface flex flex-col h-full overflow-hidden">
+        <Panel defaultSize="42%" minSize="30%" className="flex flex-col h-full min-w-0">
+          {/* Center Pane: Preview Area */}
+          <section className="flex-1 min-w-0 bg-surface flex flex-col h-full overflow-hidden">
 
           <div className="flex-1 p-2 overflow-hidden flex flex-col">
             <div className="flex-1 relative rounded-xs overflow-hidden shadow-editorial border border-slate-100/50 bg-[#F5F7F9] min-h-0 flex flex-col">
@@ -611,10 +620,16 @@ export function ExplorerNew() {
           </div>
         </div>
       </section>
+      </Panel>
 
-        {/* Right Pane: Metadata Sidebar */}
-        <section className="w-full md:w-[320px] lg:w-[360px] shrink-0 bg-white border-l border-slate-100 hidden lg:flex flex-col h-full relative overflow-hidden">
-          {!activeDoc ? (
+      <Separator className="w-1.5 transition-colors hover:bg-primary/20 active:bg-primary/40 group flex-col justify-center items-center cursor-col-resize hidden lg:flex">
+          <div className="h-8 w-1 rounded-full bg-slate-200 group-hover:bg-primary group-active:bg-primary transition-colors"></div>
+        </Separator>
+
+        <Panel defaultSize="33%" minSize="15%" maxSize="40%" className="hidden lg:flex flex-col h-full min-w-0">
+          {/* Right Pane: Metadata Sidebar */}
+          <section className="w-full bg-white flex flex-col h-full relative overflow-hidden">
+            {!activeDoc ? (
             <div className="flex flex-col items-center justify-center p-8 text-center h-full text-slate-500">
               <InfoRoundedIcon className="mb-4 opacity-50" sx={{ fontSize: 40 }} />
               <p className="text-sm font-bold text-on-surface">{t('noFileSelected', 'No file selected')}</p>
@@ -639,8 +654,8 @@ export function ExplorerNew() {
                    <>
                      {fileProperties.className && (
                         <div className="flex flex-col xl:flex-row xl:justify-between xl:items-center pb-3 border-b border-gray-100 gap-1">
-                          <span className="text-[13px] font-medium self-start text-slate-500 shrink-0 pr-4">{t('category', 'Category')}</span>
-                          <span className="px-2 py-0.5 bg-surface-container text-on-surface-variant text-[10px] font-black rounded uppercase tracking-widest border border-outline-variant/20">
+                          <span className="truncate text-[13px] font-medium self-start text-slate-500 shrink-0 pr-4">{t('category', 'Category')}</span>
+                          <span className=" truncate whitespace-nowrap text-ellipsis px-2 py-0.5 bg-surface-container text-on-surface-variant text-[10px] font-black rounded uppercase tracking-widest border border-outline-variant/20">
                             {fileProperties.className}
                           </span>
                         </div>
@@ -749,6 +764,8 @@ export function ExplorerNew() {
           </div>
           )}
         </section>
+        </Panel>
+        </Group>
       </div>
     </DashboardLayoutNew>
   );
