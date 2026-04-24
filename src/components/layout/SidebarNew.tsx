@@ -25,8 +25,7 @@ export function SidebarNew({ isCollapsed, setIsCollapsed }: SidebarProps) {
   ].filter(item => !item.adminOnly || user?.role === 'ADMIN');
 
   return (
-    // <aside className="hidden md:flex flex-col p-4 -mt-2 border-r border-outline-variant/45 gap-2 h-[calc(100vh-80px)] w-64 fixed left-0 bg-[#EEF2F5] font-body text-sm font-medium">
-    <aside className={`hidden md:flex flex-col p-3 -mt-2 border-r border-outline-variant/45 gap-2 h-[calc(100vh-80px)] ${isCollapsed ? 'w-16' : 'w-64'} fixed left-0 bg-surface font-body text-sm font-medium transition-all duration-300 ease-in-out z-40 group`}>
+    <aside className={`hidden md:flex flex-col p-3 mt-0 border-r border-outline-variant/45 gap-2 h-[calc(100vh-80px)] ${isCollapsed ? 'w-16' : 'w-64'} fixed left-0 bg-surface font-body text-sm font-medium transition-all duration-300 ease-in-out z-40 group`}>
       <nav className="flex flex-col gap-1">
         {navItems.map((item) => (
           <NavLink

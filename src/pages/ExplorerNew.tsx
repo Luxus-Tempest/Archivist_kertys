@@ -273,7 +273,7 @@ export function ExplorerNew() {
 
   return (
     <DashboardLayoutNew isFullWidth>
-      <div className="flex flex-col md:flex-row h-full overflow-hidden w-full m-0 p-0 ">
+      <div className="flex flex-col md:flex-row gap-0 h-full overflow-hidden w-full m-0 p-0 ">
         <Group orientation="horizontal">
           <Panel defaultSize="25%" minSize="15%" maxSize="40%" className="flex flex-col h-full min-w-0">
             {/* Left Pane: Document List */}
@@ -460,7 +460,7 @@ export function ExplorerNew() {
                       <tr 
                         key={displayId}
                         onClick={() => handleRowClick(doc)}
-                        className={`group cursor-pointer transition-colors ${
+                        className={`group cursor-default transition-colors ${
                           isActive 
                             ? 'bg-primary/5 hover:bg-primary/10 relative overflow-hidden'
                             : 'hover:bg-surface-container-high'
@@ -495,7 +495,7 @@ export function ExplorerNew() {
           <div className="h-8 w-1 rounded-full bg-slate-200 group-hover:bg-primary group-active:bg-primary transition-colors"></div>
         </Separator>
 
-        <Panel defaultSize="42%" minSize="30%" className="flex flex-col h-full min-w-0">
+        <Panel defaultSize="42%" minSize="20%" className="flex flex-col h-full min-w-0">
           {/* Center Pane: Preview Area */}
           <section className="flex-1 min-w-0 bg-surface flex flex-col h-full overflow-hidden">
 
@@ -596,7 +596,7 @@ export function ExplorerNew() {
                     
                     <button 
                       onClick={() => {
-                        const viewer = document.getElementById('pdf-viewer');
+                        const viewer = document.getElementById('pdf-preview-container');
                         if (viewer) viewer.requestFullscreen().catch(() => {});
                       }}
                       className="p-1.5 hover:bg-white/10 rounded-full transition-colors flex items-center justify-center cursor-pointer text-white"
@@ -626,7 +626,7 @@ export function ExplorerNew() {
           <div className="h-8 w-1 rounded-full bg-slate-200 group-hover:bg-primary group-active:bg-primary transition-colors"></div>
         </Separator>
 
-        <Panel defaultSize="33%" minSize="15%" maxSize="40%" className="hidden lg:flex flex-col h-full min-w-0">
+        <Panel defaultSize="33%" minSize="18%" maxSize="40%" className="hidden lg:flex flex-col h-full min-w-0">
           {/* Right Pane: Metadata Sidebar */}
           <section className="w-full bg-white flex flex-col h-full relative overflow-hidden">
             {!activeDoc ? (
@@ -731,9 +731,9 @@ export function ExplorerNew() {
                     onClick={handleEditClick}
                     icon={<EditRoundedIcon sx={{ fontSize: 12 }} />}
                     iconPosition="left"
-                    btnClass="!w-auto px-4 !text-[12px] !uppercase !tracking-[0.1em] !rounded-lg !bg-surface-container-low !border !border-outline-variant/30 text-slate-600"
+                    btnClass="!w-auto px-4 !text-[10px]  !tracking-[0.1em] !rounded-lg !bg-surface-container-low !border !border-outline-variant/30 text-slate-600"
                   >
-                    {t('edit', 'Edit')}
+                    {t('explorerPage.edit')}
                   </Button>
                 ) : (
                   <div className="flex items-center gap-3">
@@ -743,7 +743,7 @@ export function ExplorerNew() {
                       disabled={isSaving}
                       btnClass="!w-auto px-6 py-0 !text-[10px] !uppercase !tracking-[0.1em] !rounded-lg"
                     >
-                      {t('cancel', 'Cancel')}
+                      {t('explorerPage.cancel')}
                     </Button>
                     <Button 
                       variant="solid"
@@ -753,7 +753,7 @@ export function ExplorerNew() {
                       iconPosition="left"
                       btnClass="!w-auto px-8 py-0 !text-[10px] !uppercase !tracking-[0.1em] !rounded-lg"
                     >
-                      {isSaving ? t('saving', 'Saving...') : t('save', 'Save')}
+                      {isSaving ? t('explorerPage.saving') : t('explorerPage.save')}
                     </Button>
                   </div>
                 )}

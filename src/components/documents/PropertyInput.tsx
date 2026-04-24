@@ -1,5 +1,6 @@
 import React from 'react';
 import { MFDataType } from '../../types/documents';
+import { useTranslation } from 'react-i18next';
 
 interface PropertyInputProps {
   dataType: MFDataType;
@@ -9,6 +10,7 @@ interface PropertyInputProps {
 }
 
 export function PropertyInput({ dataType, value, onChange, className = "" }: PropertyInputProps) {
+  const { t } = useTranslation();
   const baseClass = "w-full bg-surface-container-low border border-outline-variant/30 rounded px-2 py-1 text-xs outline-none focus:border-primary/50 transition-all " + className;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -55,6 +57,17 @@ export function PropertyInput({ dataType, value, onChange, className = "" }: Pro
           value={String(value || '')} 
           onChange={handleChange}
           className={baseClass}
+        />
+      );
+      case MFDataType.Lookup:
+      return (
+        <input 
+          type="text" 
+          disabled={true}
+          value={String(value || '')} 
+          onChange={handleChange}
+          className={`${baseClass} cursor-not-allowed`}
+          title={t('explorerPage.notEditable')}
         />
       );
     default:

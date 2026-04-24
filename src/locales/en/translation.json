@@ -196,5 +196,12 @@
     "creatingAccount2": "Creating account...",
     "alreadyHaveAnAccount": "Already have an account?",
     "signIn": "Sign In"
+  },
+  "explorerPage": {
+    "notEditable": "Not Editable",
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "saving": "Saving..."
   }
 }

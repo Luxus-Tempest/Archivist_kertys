@@ -155,5 +155,12 @@
     "creatingAccount2": "Création du compte...",
     "alreadyHaveAnAccount": "Vous avez déjà un compte ?",
     "signIn": "Se connecter"
+  },
+  "explorerPage": {
+    "notEditable": "Non modifiable",
+    "edit": "Modifier",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "saving": "Enregistrement..."
   }
 }
