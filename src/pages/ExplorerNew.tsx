@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { DashboardLayoutNew } from '../components/layout/DashboardLayoutNew';
-import { useMFilesDocsHook, type MFilesDocumentDto } from '../hooks/useMFilesDocsHook';
+import { useMFilesDocsHook, type MFilesDocumentDto, type MFilesObjectPropertiesDto } from '../hooks/useMFilesDocsHook';
 import { Page, Document, pdfjs } from 'react-pdf';
 import { SvgIcon } from '../components/SvgIcon';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
@@ -23,7 +23,7 @@ export function ExplorerNew() {
   const [zoomLevel, setZoomLevel] = useState(100);
   const [pageCount, setPageCount] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
-  const [fileProperties, setFileProperties] = useState<Record<string, any> | null>(null);
+  const [fileProperties, setFileProperties] = useState<MFilesObjectPropertiesDto | null>(null);
   const [isPropertiesLoading, setIsPropertiesLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<any | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -557,26 +557,32 @@ export function ExplorerNew() {
                      <div className="h-4 bg-slate-200/50 rounded w-full"></div>
                      <div className="h-4 bg-slate-200/50 rounded w-5/6"></div>
                    </div>
-                ) : fileProperties && Object.keys(fileProperties).length > 0 ? (
-                   Object.entries(fileProperties).map(([key, value], index) => {
-                     const isCategory = key === 'ClassName';
-                     const displayKey = isCategory ? t('category', 'Category') : t(key.toLowerCase(), key);
-                     
-                     return (
-                       <div key={index} className="flex flex-col xl:flex-row xl:justify-between xl:items-center pb-3 border-b border-gray-100 gap-1">
-                         <span className="text-[13px] font-medium self-start text-slate-500 shrink-0 pr-4">{displayKey}</span>
-                         <span className="text-xs font-light text-on-surface xl:text-right" title={String(value)}>
-                           {isCategory ? (
-                             <span className="px-2 py-0.5 bg-surface-container text-on-surface-variant text-[10px] font-black rounded uppercase tracking-widest border border-outline-variant/20">
-                               {String(value)}
-                             </span>
-                           ) : (
-                             String(value) || '-'
-                           )}
-                         </span>
-                       </div>
-                     );
-                   })
+                ) : fileProperties && (fileProperties.className || (fileProperties.properties && fileProperties.properties.length > 0)) ? (
+                   <>
+                     {fileProperties.className && (
+                        <div className="flex flex-col xl:flex-row xl:justify-between xl:items-center pb-3 border-b border-gray-100 gap-1">
+                          <span className="text-[13px] font-medium self-start text-slate-500 shrink-0 pr-4">{t('category', 'Category')}</span>
+                          <span className="px-2 py-0.5 bg-surface-container text-on-surface-variant text-[10px] font-black rounded uppercase tracking-widest border border-outline-variant/20">
+                            {fileProperties.className}
+                          </span>
+                        </div>
+                     )}
+                     {fileProperties.properties && Array.isArray(fileProperties.properties) && fileProperties.properties.map((propObj, index) => {
+                       const key = Object.keys(propObj)[0];
+                       const propData = propObj[key];
+                       const value = propData?.value;
+                       const displayKey = t(key.toLowerCase(), key);
+                       
+                       return (
+                         <div key={index} className="flex flex-col xl:flex-row xl:justify-between xl:items-center pb-3 border-b border-gray-100 gap-1">
+                           <span className="text-[13px] font-medium self-start text-slate-500 shrink-0 pr-4">{displayKey}</span>
+                           <span className="text-xs font-light text-on-surface xl:text-right" title={String(value)}>
+                             {String(value) || '-'}
+                           </span>
+                         </div>
+                       );
+                     })}
+                   </>
                 ) : (
                   <>
                     <div className="flex justify-between items-center pb-3 border-b border-slate-50">

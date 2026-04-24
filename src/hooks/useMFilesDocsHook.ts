@@ -39,6 +39,19 @@ export interface MFilesItemsResponseDto {
   MoreResults: boolean;
 }
 
+export interface MFilesPropertyDataDto {
+  value: any;
+  propertyDef: number;
+  dataType: number;
+}
+
+export interface MFilesObjectPropertiesDto {
+  className: string;
+  classId: number;
+  objectId: number;
+  properties: Array<Record<string, MFilesPropertyDataDto>>;
+}
+
 export function useMFilesDocsHook() {
   const [documents, setDocuments] = useState<MFilesDocumentDto[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -84,10 +97,10 @@ export function useMFilesDocsHook() {
     }
   }, []);
 
-  const getFileProperties = useCallback(async (objectId: number): Promise<any | null> => {
+  const getFileProperties = useCallback(async (objectId: number): Promise<MFilesObjectPropertiesDto | null> => {
     try {
       const data = await fetchAuth(`/MFilesDocs/get-file-properties/${objectId}`);
-      return data;
+      return data as MFilesObjectPropertiesDto;
     } catch (err) {
       console.error("useMFilesDocsHook getFileProperties error:", err);
       return null;
