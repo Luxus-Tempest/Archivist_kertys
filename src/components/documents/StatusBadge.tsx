@@ -1,5 +1,8 @@
-import { ProcessingStatus } from '../../types/documents';
 import { useTranslation } from 'react-i18next'
+import SellRoundedIcon from '@mui/icons-material/SellRounded';
+import CloudDoneRoundedIcon from '@mui/icons-material/CloudDoneRounded';
+import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
+import { ProcessingStatus } from '../../types/documents';
 
 interface StatusBadgeProps {
   status: ProcessingStatus | string;
@@ -17,21 +20,21 @@ export function StatusBadge({ status }: StatusBadgeProps) {
     case ProcessingStatus.CLASSIFIED:
       return (
         <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-tertiary-container/30 border border-tertiary/20 text-tertiary text-[10px] font-extrabold uppercase tracking-widest">
-          <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>sell</span>
+          <SellRoundedIcon sx={{ fontSize: 14 }} />
           {t('classify', 'Classify')}
         </span>
       );
     case ProcessingStatus.UPLOADED:
       return (
         <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary-container/30 border border-secondary/20 text-secondary text-[10px] font-extrabold uppercase tracking-widest">
-          <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>cloud_done</span>
+          <CloudDoneRoundedIcon sx={{ fontSize: 14 }} />
           {t('uploaded', 'Uploaded')}
         </span>
       );
     case ProcessingStatus.COMPLETED:
       return (
         <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-success-container/30 border border-success/20 text-success text-[10px] font-extrabold uppercase tracking-widest">
-          <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+          <CheckCircleRoundedIcon sx={{ fontSize: 14 }} />
           {t('completed', 'Completed')}
         </span>
       );

@@ -1,6 +1,8 @@
 import { DocumentTable } from './DocumentTable';
 import { DocumentRow } from './DocumentRow';
 import { useTranslation } from 'react-i18next'
+import DeleteSweepRoundedIcon from '@mui/icons-material/DeleteSweepRounded';
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 
 interface StagedListProps {
   files: File[];
@@ -27,7 +29,7 @@ export function StagedList({ files, onRemove, onClear, isUploading }: StagedList
             disabled={isUploading}
             title={t('clearAll', 'Clear All')}
           >
-            <span className="material-symbols-outlined">delete_sweep</span>
+             <DeleteSweepRoundedIcon sx={{ fontSize: 24 }} />
           </button>
         </div>
       </div>
@@ -45,7 +47,7 @@ export function StagedList({ files, onRemove, onClear, isUploading }: StagedList
                 onClick={() => onRemove(index)}
                 disabled={isUploading}
               >
-                <span className="material-symbols-outlined text-lg">delete</span>
+                 <DeleteRoundedIcon sx={{ fontSize: 20 }} />
               </button>
             }
           />

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -9,18 +9,22 @@ import { useAuth } from '../hooks/useAuth';
 import { toast } from 'sonner';
 import { AuthPageLayout } from '../components/layout/AuthPageLayout';
 import { useTranslation } from 'react-i18next'
+import MailRoundedIcon from '@mui/icons-material/MailRounded';
+import LockRoundedIcon from '@mui/icons-material/LockRounded';
+import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
+import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
+import VisibilityOffRoundedIcon from '@mui/icons-material/VisibilityOffRounded';
 
 export function Login() {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const navigate = useNavigate();
   const { login, isLoading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   
   const {
+    formState: { errors },
     register,
     handleSubmit,
-    trigger,
-    formState: { errors },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema(t)),
   });
@@ -56,7 +60,7 @@ export function Login() {
             label={t('email')} 
             type="email" 
             placeholder={t('nameAtCompanyCom')} 
-            icon="mail"
+            icon={<MailRoundedIcon sx={{ fontSize: 18 }} />}
             {...register('Email')}
             error={errors.Email?.message}
           />
@@ -66,18 +70,20 @@ export function Login() {
             label={t('password')} 
             type={showPassword ? 'text' : 'password'} 
             placeholder="••••••••" 
-            icon="lock"
+            icon={<LockRoundedIcon sx={{ fontSize: 18 }} />}
             {...register('Password')}
             error={errors.Password?.message}
             rightElement={
               <button 
                 type="button" 
                 onClick={() => setShowPassword(!showPassword)}
-                className="text-outline hover:text-on-surface-variant transition-colors"
+                className="text-outline hover:text-on-surface-variant transition-colors flex items-center justify-center p-1"
               >
-                <span className="material-symbols-outlined text-lg">
-                  {showPassword ? 'visibility_off' : 'visibility'}
-                </span>
+                {showPassword ? (
+                  <VisibilityOffRoundedIcon sx={{ fontSize: 18 }} />
+                ) : (
+                  <VisibilityRoundedIcon sx={{ fontSize: 18 }} />
+                )}
               </button>
             }
           />
@@ -90,7 +96,7 @@ export function Login() {
         </div>
 
         <div className="pt-4">
-          <Button type="submit" variant="solid" icon="arrow_forward" disabled={isLoading}>
+          <Button type="submit" variant="solid" icon={<ArrowForwardRoundedIcon sx={{ fontSize: 18 }} />} disabled={isLoading}>
             {isLoading ? t('authenticating') : t('authenticate')}
           </Button>
         </div>

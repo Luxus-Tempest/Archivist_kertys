@@ -120,6 +120,19 @@ export function useMFilesDocsHook() {
     }
   }, []);
 
+  const updateFileProperties = useCallback(async (objectId: number, properties: any[]): Promise<boolean> => {
+    try {
+      await fetchAuth(`/MFilesDocs/update-properties/${objectId}`, {
+        method: 'POST',
+        body: JSON.stringify(properties)
+      });
+      return true;
+    } catch (err) {
+      console.error("useMFilesDocsHook updateFileProperties error:", err);
+      return false;
+    }
+  }, []);
+
   return {
     documents,
     isLoading,
@@ -128,6 +141,7 @@ export function useMFilesDocsHook() {
     fetchDocuments,
     getFileContent,
     getFileProperties,
-    fetchVaultClasses
+    fetchVaultClasses,
+    updateFileProperties
   };
 }

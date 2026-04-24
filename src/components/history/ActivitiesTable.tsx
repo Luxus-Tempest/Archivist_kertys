@@ -2,6 +2,17 @@ import { useTranslation } from 'react-i18next'
 import { useState, useEffect, Fragment } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDocument } from '../../hooks/useDocument';
+import ViewAgendaRoundedIcon from '@mui/icons-material/ViewAgendaRounded';
+import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import AnalyticsRoundedIcon from '@mui/icons-material/AnalyticsRounded';
+import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
+import PictureAsPdfRoundedIcon from '@mui/icons-material/PictureAsPdfRounded';
+import TableChartRoundedIcon from '@mui/icons-material/TableChartRounded';
+import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
+import FolderOffRoundedIcon from '@mui/icons-material/FolderOffRounded';
+import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
+import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 
 const formatDate = (dateString: string, lng: string) => {
   const d = new Date(dateString.replace(' ', 'T'));
@@ -94,7 +105,7 @@ export function ActivitiesTable() {
                 groupBy === 'session' ? 'bg-white shadow-sm text-primary' : 'text-outline hover:text-on-surface'
               }`}
             >
-              <span className="material-symbols-outlined text-[18px]">view_agenda</span>
+              <ViewAgendaRoundedIcon sx={{ fontSize: 18 }} />
               {t('sessions', 'Sessions')}</button>
             <button 
               onClick={() => setGroupBy('files')}
@@ -102,7 +113,7 @@ export function ActivitiesTable() {
                 groupBy === 'files' ? 'bg-white shadow-sm text-primary' : 'text-outline hover:text-on-surface'
               }`}
             >
-              <span className="material-symbols-outlined text-[18px]">description</span>
+              <DescriptionRoundedIcon sx={{ fontSize: 18 }} />
               {t('files', 'Files')}</button>
           </div>
 
@@ -114,7 +125,7 @@ export function ActivitiesTable() {
               className="px-4 py-2 text-sm font-semibold bg-primary text-on-primary rounded-lg shadow-sm flex items-center gap-2 hover:bg-primary-dim transition-colors cursor-pointer"
             >
               {t('uploadNewFiles')}
-              <span className="material-symbols-outlined text-sm">add</span></button>
+              <AddRoundedIcon sx={{ fontSize: 18 }} /></button>
           </div>
         </div>
       </div>
@@ -153,7 +164,7 @@ export function ActivitiesTable() {
                     <td className="px-6 py-2 border-none">
                       <div className="flex items-center gap-3">
                         <div className={`p-2 rounded-lg ${expandedId === session.sessionId ? 'bg-primary-container text-primary' : 'bg-surface-container-highest text-secondary'}`}>
-                          <span className="material-symbols-outlined">analytics</span>
+                          <AnalyticsRoundedIcon sx={{ fontSize: 20 }} />
                         </div>
                         <span className="font-semibold text-on-surface text-xs leading-none">
                           {session.sessionId}
@@ -172,9 +183,7 @@ export function ActivitiesTable() {
                     </td>
                     <td className="px-6 py-5 text-on-surface-variant text-sm font-medium border-none">{formatDate(session.date, i18n.language)}</td>
                     <td className="px-6 py-5 border-none">
-                      <span className={`material-symbols-outlined transition-transform duration-300 ${expandedId === session.sessionId ? 'text-primary rotate-180' : 'text-outline-variant group-hover:text-primary'}`}>
-                        expand_more
-                      </span>
+                      <ExpandMoreRoundedIcon className={`transition-transform duration-300 ${expandedId === session.sessionId ? 'text-primary rotate-180' : 'text-outline-variant group-hover:text-primary'}`} sx={{ fontSize: 20 }} />
                     </td>
                   </tr>
 
@@ -192,9 +201,11 @@ export function ActivitiesTable() {
                             {session?.files?.length > 0 ? session?.files?.map((file, idx) => (
                               <div key={idx} className="flex items-center justify-between px-2 py-1.5 rounded-xl bg-white border border-outline-variant/15 hover:border-primary/30 transition-all group/file shadow-sm cursor-default hover:translate-x-1 duration-200">
                                 <div className="flex items-center gap-4">
-                                  <span className={`material-symbols-outlined ${file.fileName.endsWith('.pdf') ? 'text-error' : 'text-tertiary'}`}>
-                                    {file.fileName.endsWith('.pdf') ? 'picture_as_pdf' : 'table_chart'}
-                                  </span>
+                                  {file.fileName.endsWith('.pdf') ? (
+                                    <PictureAsPdfRoundedIcon className="text-error" sx={{ fontSize: 20 }} />
+                                  ) : (
+                                    <TableChartRoundedIcon className="text-tertiary" sx={{ fontSize: 20 }} />
+                                  )}
                                   <div>
                                     <p className="text-sm font-bold text-on-surface tracking-tight">{file.fileName}</p>
                                     <p className="text-[10px] text-outline uppercase tracking-widest font-bold">
@@ -208,7 +219,7 @@ export function ActivitiesTable() {
                                     </span>
                                   )}
                                   <button className="p-2 hover:bg-surface-container rounded-lg transition-colors opacity-0 group-hover/file:opacity-100 cursor-pointer">
-                                    <span className="material-symbols-outlined text-outline text-lg">download</span>
+                                    <DownloadRoundedIcon className="text-outline" sx={{ fontSize: 20 }} />
                                   </button>
                                 </div>
                               </div>
@@ -227,9 +238,11 @@ export function ActivitiesTable() {
                 <tr key={`${file.fileId}-${idx}`} className="hover:bg-surface-container-low transition-colors group">
                   <td className="px-6 py-4 border-none">
                     <div className="flex items-center gap-3">
-                      <span className={`material-symbols-outlined ${file.fileName.endsWith('.pdf') ? 'text-error' : 'text-tertiary'}`}>
-                        {file.fileName.endsWith('.pdf') ? 'picture_as_pdf' : 'table_chart'}
-                      </span>
+                      {file.fileName.endsWith('.pdf') ? (
+                        <PictureAsPdfRoundedIcon className="text-error" sx={{ fontSize: 20 }} />
+                      ) : (
+                        <TableChartRoundedIcon className="text-tertiary" sx={{ fontSize: 20 }} />
+                      )}
                       <div className="flex flex-col">
                         <span className="font-bold text-on-surface text-sm tracking-tight">{file.fileName}</span>
                         <span className="text-[10px] text-outline font-medium tracking-tighter uppercase whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">
@@ -260,7 +273,7 @@ export function ActivitiesTable() {
                   </td>
                   <td className="px-6 py-4 border-none">
                     <button className="p-2 hover:bg-surface-container-high rounded-lg transition-all opacity-0 group-hover:opacity-100 hover:scale-110 cursor-pointer">
-                      <span className="material-symbols-outlined text-outline text-lg">download</span>
+                      <DownloadRoundedIcon className="text-outline" sx={{ fontSize: 20 }} />
                     </button>
                   </td>
                 </tr>
@@ -270,7 +283,7 @@ export function ActivitiesTable() {
               <tr>
                 <td colSpan={groupBy === 'session' ? 5 : 5} className="px-6 py-24 text-center">
                   <div className="flex flex-col items-center opacity-40">
-                    <span className="material-symbols-outlined text-6xl mb-4">folder_off</span>
+                    <FolderOffRoundedIcon className="mb-4" sx={{ fontSize: 60 }} />
                     <p className="text-on-surface-variant font-bold text-lg tracking-tight">{t('noActivityHistoryFound', 'No activity history found')}</p>
                     <p className="text-sm text-outline max-w-[280px]">{t('yourProcessedFilesAndSessionsWillAppearHereAfterIngestion', 'Your processed files and sessions will appear here after ingestion.')}</p>
                   </div>
@@ -289,7 +302,7 @@ export function ActivitiesTable() {
             disabled={currentPage === 1 || history?.isLoading}
             className="w-10 h-10 flex items-center justify-center rounded-full text-outline hover:text-primary hover:bg-white transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed active:scale-90"
           >
-            <span className="material-symbols-outlined text-xl">chevron_left</span>
+            <ChevronLeftRoundedIcon sx={{ fontSize: 24 }} />
           </button>
           
           <div className="flex items-center px-4 gap-4">
@@ -307,7 +320,7 @@ export function ActivitiesTable() {
             disabled={endRange >= totalCount || history?.isLoading}
             className="w-10 h-10 flex items-center justify-center rounded-full text-outline hover:text-primary hover:bg-white transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed active:scale-90"
           >
-            <span className="material-symbols-outlined text-xl">chevron_right</span>
+            <ChevronRightRoundedIcon sx={{ fontSize: 24 }} />
           </button>
         </div>
       </div>

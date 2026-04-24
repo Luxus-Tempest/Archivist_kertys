@@ -4,6 +4,10 @@ import { UserStatusEnum } from '../../types/auth';
 import { Menu, type MenuItem } from '../Menu';
 import { useTranslation } from 'react-i18next'
 import { LanguageSelector } from '../LanguageSelector';
+import AccountBalanceWalletRoundedIcon from '@mui/icons-material/AccountBalanceWalletRounded';
+import PendingActionsRoundedIcon from '@mui/icons-material/PendingActionsRounded';
+import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
+import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 
 export function HeaderNew() {
   const { t } = useTranslation()
@@ -18,12 +22,12 @@ export function HeaderNew() {
   const profileMenuItems: MenuItem[] = [
     { 
       label: t('settings', 'Settings'), 
-      icon: 'settings', 
+      icon: <SettingsRoundedIcon sx={{ fontSize: 18 }} />, 
       onClick: () => console.log('Settings clicked') 
     },
     { 
       label: t('logout', 'Logout'), 
-      icon: 'logout', 
+      icon: <LogoutRoundedIcon sx={{ fontSize: 18 }} />, 
       onClick: () => logout(),
       variant: 'danger' 
     },
@@ -32,13 +36,13 @@ export function HeaderNew() {
   return (
     <header className="fixed top-0 w-full z-50 bg-surface/80 border-b border-outline-variant/45 flex justify-between items-center px-6 py-4">
       <div className="flex items-center gap-3">
-        <span className="material-symbols-outlined text-slate-600">account_balance_wallet</span>
+        <AccountBalanceWalletRoundedIcon className="text-slate-600" />
         <h1 className="text-xl font-bold tracking-tighter text-slate-800 font-headline">{t('docme', 'DocMe')}</h1>
       </div>
 
       {user?.status === UserStatusEnum.PENDING && (
         <div className="flex items-center gap-2 px-3 py-1 bg-amber-50/50 border border-amber-200/50 rounded-md animate-in fade-in zoom-in duration-700 mx-2">
-          <span className="material-symbols-outlined text-amber-600 text-[18px]">pending_actions</span>
+          <PendingActionsRoundedIcon className="text-amber-600" sx={{ fontSize: 18 }} />
           <div className="flex items-center gap-1.5">
             <span className="text-[10px] font-bold text-amber-900 uppercase tracking-tight whitespace-nowrap">
               {t('pendingApproval', 'Pending')}

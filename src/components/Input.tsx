@@ -2,7 +2,7 @@ import { type InputHTMLAttributes, forwardRef, type ReactNode } from 'react';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
-  icon?: string;
+  icon?: ReactNode;
   id: string;
   error?: string;
   rightElement?: ReactNode;
@@ -20,7 +20,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         </label>
         <div className="relative flex items-center">
           {icon && (
-            <span className="absolute left-4 material-symbols-outlined text-outline text-lg pointer-events-none">
+            <span className="absolute left-4 text-outline text-lg pointer-events-none flex items-center justify-center">
               {icon}
             </span>
           )}

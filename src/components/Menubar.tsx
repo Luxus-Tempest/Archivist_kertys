@@ -1,4 +1,5 @@
 import { useState, createContext, useContext, useRef, useEffect, type ReactNode } from 'react';
+import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 
 // --- Contexts ---
 
@@ -312,7 +313,7 @@ export function MenuSubmenuTrigger({ children, icon, className = '' }: MenuItemP
         )}
         <span className="text-[12px] font-bold tracking-tight">{children}</span>
       </div>
-      <span className="material-symbols-outlined text-[16px] opacity-40">chevron_right</span>
+      <ChevronRightRoundedIcon className="opacity-40" sx={{ fontSize: 16 }} />
     </div>
   );
 }

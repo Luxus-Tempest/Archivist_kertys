@@ -3,6 +3,10 @@ import { NavLink } from 'react-router-dom';
 import { HeaderNew } from './HeaderNew';
 import { SidebarNew } from './SidebarNew';
 import { useTranslation } from 'react-i18next'
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
+import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
+import FolderSharedRoundedIcon from '@mui/icons-material/FolderSharedRounded';
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 
 interface DashboardLayoutNewProps {
   children: React.ReactNode;
@@ -48,7 +52,7 @@ export function DashboardLayoutNew({ children, isFullWidth = false }: DashboardL
             `flex flex-col items-center transition-all ${isActive ? 'text-slate-900 scale-110' : 'text-slate-400 opacity-80'}`
           }
         >
-          <span className="material-symbols-outlined mb-1">home</span>
+          <HomeRoundedIcon className="mb-1" sx={{ fontSize: 24 }} />
           {t('menu.home', 'Home')}
         </NavLink>
         <NavLink 
@@ -57,21 +61,21 @@ export function DashboardLayoutNew({ children, isFullWidth = false }: DashboardL
             `flex flex-col items-center transition-all ${isActive ? 'text-slate-900 scale-110' : 'text-slate-400 opacity-80'}`
           }
         >
-          <span className="material-symbols-outlined mb-1">description</span>
+          <DescriptionRoundedIcon className="mb-1" sx={{ fontSize: 24 }} />
           {t('menu.files', 'Files')}
         </NavLink>
         <NavLink 
           to="#" 
           className="flex flex-col items-center text-slate-400 opacity-80"
         >
-          <span className="material-symbols-outlined mb-1">folder_shared</span>
+          <FolderSharedRoundedIcon className="mb-1" sx={{ fontSize: 24 }} />
           {t('menu.shared', 'Shared')}
         </NavLink>
         <NavLink 
           to="#" 
           className="flex flex-col items-center text-slate-400 opacity-80"
         >
-          <span className="material-symbols-outlined mb-1">search</span>
+          <SearchRoundedIcon className="mb-1" sx={{ fontSize: 24 }} />
           {t('menu.search', 'Search')}
         </NavLink>
       </nav>

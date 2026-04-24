@@ -10,12 +10,32 @@ import { SearchTag } from '../components/search/SearchTag';
 import { MUIMenu } from '../components/MUIMenu';
 import { InfoTooltip } from '../components/InfoTooltip';
 import { useTranslation, Trans } from 'react-i18next'
+import { MFDataType } from '../types/documents';
+import { PropertyInput } from '../components/documents/PropertyInput';
+import { Button } from '../components/Button';
+import EditRoundedIcon from '@mui/icons-material/EditRounded';
+import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+import ZoomInRoundedIcon from '@mui/icons-material/ZoomInRounded';
+import ZoomOutRoundedIcon from '@mui/icons-material/ZoomOutRounded';
+import FullscreenRoundedIcon from '@mui/icons-material/FullscreenRounded';
+import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded';
+import Inventory2RoundedIcon from '@mui/icons-material/Inventory2Rounded';
+import ErrorOutlineRoundedIcon from '@mui/icons-material/ErrorOutlineRounded';
+import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
+import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
+import PictureAsPdfRoundedIcon from '@mui/icons-material/PictureAsPdfRounded';
+import FolderZipRoundedIcon from '@mui/icons-material/FolderZipRounded';
+import TableViewRoundedIcon from '@mui/icons-material/TableViewRounded';
+import ArticleRoundedIcon from '@mui/icons-material/ArticleRounded';
+import ImageRoundedIcon from '@mui/icons-material/ImageRounded';
+import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
 
 // Initialize PDF worker
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 export function ExplorerNew() {
   const { t } = useTranslation()
-  const { documents, isLoading, fetchDocuments, getFileContent, getFileProperties, fetchVaultClasses } = useMFilesDocsHook();
+  const { documents, isLoading, fetchDocuments, getFileContent, getFileProperties, fetchVaultClasses, updateFileProperties } = useMFilesDocsHook();
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeDoc, setActiveDoc] = useState<MFilesDocumentDto | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -28,6 +48,10 @@ export function ExplorerNew() {
   const [selectedCategory, setSelectedCategory] = useState<any | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const showSuggestions = Boolean(anchorEl);
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedProperties, setEditedProperties] = useState<any[]>([]);
+  const [isSaving, setIsSaving] = useState(false);
 
   const [categories, setCategories] = useState<{id: number, name: string}[]>([]);
 
@@ -152,19 +176,20 @@ export function ExplorerNew() {
   }, [activeDoc, getFileContent]);
 
   const getFileIcon = (title: string, singleFile: boolean) => {
-    if (!singleFile) return { icon: 'folder_zip', color: 'text-tertiary' };
+    const iconSize = { fontSize: 18 };
+    if (!singleFile) return { icon: <FolderZipRoundedIcon sx={iconSize} />, color: 'text-tertiary' };
     const ext = title.split('.').pop()?.toLowerCase();
     switch (ext) {
-      case 'pdf': return { icon: 'picture_as_pdf', color: 'text-error' };
+      case 'pdf': return { icon: <PictureAsPdfRoundedIcon sx={iconSize} />, color: 'text-error' };
       case 'xlsx':
       case 'xls':
-      case 'csv': return { icon: 'table_view', color: 'text-green-600' };
+      case 'csv': return { icon: <TableViewRoundedIcon sx={iconSize} />, color: 'text-green-600' };
       case 'doc':
-      case 'docx': return { icon: 'article', color: 'text-blue-600' };
+      case 'docx': return { icon: <ArticleRoundedIcon sx={iconSize} />, color: 'text-blue-600' };
       case 'png':
       case 'jpg':
-      case 'jpeg': return { icon: 'image', color: 'text-secondary' };
-      default: return { icon: 'description', color: 'text-outline' };
+      case 'jpeg': return { icon: <ImageRoundedIcon sx={iconSize} />, color: 'text-secondary' };
+      default: return { icon: <DescriptionRoundedIcon sx={iconSize} />, color: 'text-outline' };
     }
   };
 
@@ -180,6 +205,51 @@ export function ExplorerNew() {
     
     const sizes = ['B', 'KB', 'MB', 'GB'];
     return val + ' ' + sizes[i];
+  };
+
+  const formatPropertyValue = (value: any, dataType: MFDataType) => {
+    if (value === null || value === undefined || value === '') return '-';
+    
+    switch (dataType) {
+      case MFDataType.Date:
+        return new Date(value).toLocaleDateString();
+      case MFDataType.Time:
+        return new Date(value).toLocaleTimeString();
+      case MFDataType.Timestamp:
+        return new Date(value).toLocaleString();
+      case MFDataType.Boolean:
+        return value === true || String(value).toLowerCase() === 'true' ? t('yes', 'Yes') : t('no', 'No');
+      case MFDataType.MultiLineText:
+        return <span className="whitespace-pre-wrap">{String(value)}</span>;
+      default:
+        return String(value);
+    }
+  };
+
+  const handleEditClick = () => {
+    if (fileProperties) {
+      setEditedProperties(JSON.parse(JSON.stringify(fileProperties.properties)));
+      setIsEditing(true);
+    }
+  };
+
+  const handleSaveClick = async () => {
+    if (!activeDoc || !fileProperties) return;
+    
+    const objId = (activeDoc as any)?.ObjVer?.ID || (activeDoc as any)?.objVer?.id;
+    setIsSaving(true);
+    try {
+      const success = await updateFileProperties(objId, editedProperties);
+      if (success) {
+        setFileProperties({
+          ...fileProperties,
+          properties: editedProperties
+        });
+        setIsEditing(false);
+      }
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const filteredDocs = documents.filter((doc: any) => {
@@ -205,7 +275,7 @@ export function ExplorerNew() {
                   footer="Vous pouvez combiner : si une catégorie est active, la recherche s'applique uniquement à celle-ci."
                   placement="top-start"
                 >
-                  <span className="material-symbols-outlined text-[18px] text-outline-variant shrink-0 mr-3 cursor-help">search</span>
+                  <SearchRoundedIcon className="text-outline-variant shrink-0 mr-3 cursor-help" sx={{ fontSize: 18 }} />
                 </InfoTooltip>
                 
                 <div className="flex flex-wrap items-center gap-2 flex-1 min-w-0">
@@ -301,7 +371,7 @@ export function ExplorerNew() {
                 className="shrink-0 w-9 h-9 flex items-center justify-center bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed group"
                 title={t('refreshList', 'Refresh list')}
               >
-                <span className={`material-symbols-outlined text-[18px] transition-transform ${isLoading ? 'animate-spin' : 'group-hover:rotate-180'}`}>sync</span>
+                <AutorenewRoundedIcon className={`text-[18px] transition-transform ${isLoading ? 'animate-spin' : 'group-hover:rotate-180'}`} />
               </button>
             </div>
           </div>
@@ -312,8 +382,8 @@ export function ExplorerNew() {
               <thead className="sticky top-0 bg-surface-container-lowest z-10 shadow-sm border-b border-slate-100">
                 <tr>
                   <th className="px-4 py-3 text-[10px] uppercase tracking-widest font-black text-slate-400 whitespace-nowrap">{t('name', 'Name')}</th>
-                  <th className="px-4 py-3 text-[10px] uppercase tracking-widest font-black text-slate-400 whitespace-nowrap cursor-pointer hover:text-slate-600 transition-colors">{t('creationSpanClassnamematerialsymbolsoutlinedText12pxAlignmiddleMl1unfold_morespan')}</th>
-                  <th className="px-4 py-3 text-[10px] uppercase tracking-widest font-black text-slate-400 whitespace-nowrap cursor-pointer hover:text-slate-600 transition-colors">{t('modifiedSpanClassnamematerialsymbolsoutlinedText12pxAlignmiddleMl1arrow_drop_downspan')}</th>
+                  <th className="px-4 py-3 text-[10px] uppercase tracking-widest font-black text-slate-400 whitespace-nowrap cursor-pointer hover:text-slate-600 transition-colors">{t('creation', 'Creation')}</th>
+                  <th className="px-4 py-3 text-[10px] uppercase tracking-widest font-black text-slate-400 whitespace-nowrap cursor-pointer hover:text-slate-600 transition-colors">{t('modified', 'Modified')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50">
@@ -383,7 +453,7 @@ export function ExplorerNew() {
                         <td className="px-4 py-3 max-w-[200px]">
                           {isActive && <div className="absolute inset-y-0 left-0 w-1 bg-primary"></div>}
                           <div className="flex items-center gap-3">
-                            <span className={`material-symbols-outlined text-[18px] shrink-0 ${isActive ? 'text-primary' : color}`}>{icon}</span>
+                            <span className={`shrink-0 ${isActive ? 'text-primary' : color}`}>{icon}</span>
                             <span className={`truncate text-sm ${isActive ? 'font-bold text-primary tracking-tight' : 'font-medium text-on-surface'}`} title={title}>
                               {title}
                             </span>
@@ -414,7 +484,7 @@ export function ExplorerNew() {
                 <div className="relative">
                   <div className="w-16 h-16 border-4 border-primary/10 border-t-primary rounded-full animate-spin"></div>
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="material-symbols-outlined text-primary animate-pulse text-xl">picture_as_pdf</span>
+                    <PictureAsPdfRoundedIcon className="text-primary animate-pulse text-xl" />
                   </div>
                 </div>
                 <p className="mt-4 text-xs font-bold text-primary uppercase tracking-widest animate-pulse">{t('loadingDocument', 'Loading document...')}</p>
@@ -424,7 +494,7 @@ export function ExplorerNew() {
             {!activeDoc ? (
               <div className="flex-1 flex flex-col items-center justify-center p-12 text-center">
                  <div className="w-20 h-20 bg-surface-container-high rounded-full flex items-center justify-center mb-6 text-slate-300">
-                    <span className="material-symbols-outlined text-4xl">inventory_2</span>
+                    <Inventory2RoundedIcon sx={{ fontSize: 40 }} />
                  </div>
                  <h3 className="text-xl font-headline font-bold text-on-surface">{t('selectAFile', 'Select a file')}</h3>
                  <p className="text-sm text-slate-500 mt-2 max-w-xs">{t('chooseAFileFromTheListOnTheLeftToPreviewItsContentHere', 'Choose a file from the list on the left to preview its content here.')}</p>
@@ -456,8 +526,9 @@ export function ExplorerNew() {
                                 renderTextLayer={false}
                                 renderAnnotationLayer={false}
                                 loading={
-                                  <div className="flex items-center justify-center p-20 text-slate-400"><Trans i18nKey="spanClassnamematerialsymbolsoutlinedAnimatespinMr2syncspanRenderingPage"><span className="material-symbols-outlined animate-spin mr-2">sync</span>
-                                    Rendering page</Trans>{index + 1}{t('key', '...')}
+                                  <div className="flex items-center justify-center p-20 text-slate-400">
+                                    <AutorenewRoundedIcon className="animate-spin mr-2" sx={{ fontSize: 18 }} />
+                                    {t('renderingPage', 'Rendering page')} {index + 1}...
                                   </div>
                                 }
                               />
@@ -469,7 +540,7 @@ export function ExplorerNew() {
                   ) : (
                     <div className="inline-flex flex-col items-center justify-center p-12 text-center bg-white rounded-xl shadow-sm border border-slate-100 max-w-sm align-middle">
                       <div className="w-16 h-16 bg-error/5 text-error rounded-full flex items-center justify-center mb-4">
-                        <span className="material-symbols-outlined text-3xl">error_outline</span>
+                        <ErrorOutlineRoundedIcon sx={{ fontSize: 30 }} />
                       </div>
                       <p className="text-sm font-bold text-on-surface">{t('previewUnavailable', 'Preview unavailable')}</p>
                       <p className="text-xs text-slate-500 mt-1">{t('unableToLoadTheContentOfThisFile', 'Unable to load the content of this file.')}</p>
@@ -480,8 +551,6 @@ export function ExplorerNew() {
                 {/* PDF Overlay Controls (Floating) */}
                 {previewUrl && (
                   <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center space-x-2 bg-on-surface/60 backdrop-blur-xs  px-4 py-1 rounded-full border border-white/10 shadow-2xl z-20">
-                    
-
                     <span className="text-[10px] font-black text-center text-white/90 px-2 uppercase tracking-widest whitespace-nowrap">{t('pagecountPage', '{{pageCount}} PAGE', { pageCount })}{pageCount > 1 ? 'S' : ''}
                     </span>
                     
@@ -491,32 +560,26 @@ export function ExplorerNew() {
                       onClick={() => setZoomLevel(prev => Math.max(prev - 20, 50))}
                       className="p-1.5 hover:bg-white/10 rounded-full transition-colors flex items-center justify-center cursor-pointer text-white"
                     >
-                      <span className="material-symbols-outlined text-[18px]">zoom_out</span>
+                      <ZoomOutRoundedIcon sx={{ fontSize: 18 }} />
                     </button>
-                    
-                    {/* <div className="h-4 w-px bg-white/20 mx-1"></div> */}
                     
                     <button 
                       onClick={() => setZoomLevel(prev => Math.min(prev + 10, 200))}
                       className="p-1.5 hover:bg-white/10 rounded-full transition-colors flex items-center justify-center cursor-pointer text-white"
                     >
-                      <span className="material-symbols-outlined text-[18px]">zoom_in</span>
+                      <ZoomInRoundedIcon sx={{ fontSize: 18 }} />
                     </button>
                     
                     <div className="h-4 w-px bg-white/20 mx-1"></div>
                     
                     <button 
                       onClick={() => {
-                        const elem = document.getElementById('pdf-preview-container');
-                        if (!document.fullscreenElement) {
-                          elem?.requestFullscreen().catch(() => {});
-                        } else {
-                          document.exitFullscreen().catch(() => {});
-                        }
+                        const viewer = document.getElementById('pdf-viewer');
+                        if (viewer) viewer.requestFullscreen().catch(() => {});
                       }}
                       className="p-1.5 hover:bg-white/10 rounded-full transition-colors flex items-center justify-center cursor-pointer text-white"
                     >
-                      <span className="material-symbols-outlined text-[18px]">fullscreen</span>
+                      <FullscreenRoundedIcon sx={{ fontSize: 18 }} />
                     </button>
                     
                     <div className="h-4 w-px bg-white/20 mx-1"></div>
@@ -526,7 +589,7 @@ export function ExplorerNew() {
                       download={(activeDoc as any)?.Title || (activeDoc as any)?.title || 'document.pdf'}
                       className="p-1.5 hover:bg-white/10 rounded-full transition-colors flex items-center justify-center cursor-pointer text-white"
                     >
-                      <span className="material-symbols-outlined text-[18px]">download</span>
+                      <DownloadRoundedIcon sx={{ fontSize: 18 }} />
                     </a>
                   </div>
                 )}
@@ -540,7 +603,7 @@ export function ExplorerNew() {
         <section className="w-full md:w-[320px] lg:w-[360px] shrink-0 bg-white border-l border-slate-100 hidden lg:flex flex-col h-full relative overflow-hidden">
           {!activeDoc ? (
             <div className="flex flex-col items-center justify-center p-8 text-center h-full text-slate-500">
-              <span className="material-symbols-outlined text-4xl mb-4 opacity-50">info</span>
+              <InfoRoundedIcon className="mb-4 opacity-50" sx={{ fontSize: 40 }} />
               <p className="text-sm font-bold text-on-surface">{t('noFileSelected', 'No file selected')}</p>
               <p className="text-xs mt-2 max-w-[200px]">{t('selectAFileToViewItsProperties', 'Select a file to view its properties.')}</p>
             </div>
@@ -548,8 +611,10 @@ export function ExplorerNew() {
           <div className="p-8 pr-3 flex flex-col h-full overflow-hidden">
             {/* Properties Section */}
             <div className="flex flex-col h-full min-h-0">
-              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6 shrink-0">{t('fileProperties', 'File Properties')}</h4>
-              <div className="space-y-4 overflow-y-auto pr-2 pb-4 [scrollbar-width:thin]">
+              <div className="flex items-center justify-between mb-6 shrink-0">
+                <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">{t('fileProperties', 'File Properties')}</h4>
+              </div>
+              <div className="space-y-4 overflow-y-auto pr-2 pb-4 [scrollbar-width:thin] flex-1">
                 {isPropertiesLoading ? (
                    <div className="flex flex-col space-y-4 animate-pulse">
                      <div className="h-4 bg-slate-200/50 rounded w-full"></div>
@@ -567,18 +632,38 @@ export function ExplorerNew() {
                           </span>
                         </div>
                      )}
-                     {fileProperties.properties && Array.isArray(fileProperties.properties) && fileProperties.properties.map((propObj, index) => {
+                     {(isEditing ? editedProperties : fileProperties.properties).map((propObj, index) => {
                        const key = Object.keys(propObj)[0];
                        const propData = propObj[key];
                        const value = propData?.value;
                        const displayKey = t(key.toLowerCase(), key);
                        
                        return (
-                         <div key={index} className="flex flex-col xl:flex-row xl:justify-between xl:items-center pb-3 border-b border-gray-100 gap-1">
-                           <span className="text-[13px] font-medium self-start text-slate-500 shrink-0 pr-4">{displayKey}</span>
-                           <span className="text-xs font-light text-on-surface xl:text-right" title={String(value)}>
-                             {String(value) || '-'}
-                           </span>
+                         <div key={index} className="flex flex-col xl:flex-row xl:justify-between xl:items-start pb-3 border-b border-gray-100 gap-2">
+                           <span className="text-[13px] font-medium self-start text-slate-500 shrink-0 pr-4 mt-1">{displayKey}</span>
+                           <div className="flex-1 w-full xl:text-right flex justify-end">
+                             {isEditing ? (
+                               <PropertyInput 
+                                 dataType={propData.dataType}
+                                 value={value}
+                                 onChange={(newVal) => {
+                                   const next = [...editedProperties];
+                                   next[index] = {
+                                     ...next[index],
+                                     [key]: {
+                                       ...next[index][key],
+                                       value: newVal
+                                     }
+                                   };
+                                   setEditedProperties(next);
+                                 }}
+                               />
+                             ) : (
+                               <span className="text-xs font-light text-on-surface" title={String(value)}>
+                                 {formatPropertyValue(value, propData?.dataType)}
+                               </span>
+                             )}
+                           </div>
                          </div>
                        );
                      })}
@@ -610,53 +695,44 @@ export function ExplorerNew() {
                   </>
                 )}
               </div>
+              {(fileProperties && (fileProperties.className || (fileProperties.properties && fileProperties.properties.length > 0))) && (
+              <div className={`mt-0   -mb-4 pt-1 border-t border-gray-200  flex justify-end shrink-0`}>
+                {!isEditing ? (
+                  <Button 
+                    variant="lightSolid"
+                    onClick={handleEditClick}
+                    icon={<EditRoundedIcon sx={{ fontSize: 12 }} />}
+                    iconPosition="left"
+                    btnClass="!w-auto px-4 !text-[12px] !uppercase !tracking-[0.1em] !rounded-lg !bg-surface-container-low !border !border-outline-variant/30 text-slate-600"
+                  >
+                    {t('edit', 'Edit')}
+                  </Button>
+                ) : (
+                  <div className="flex items-center gap-3">
+                    <Button 
+                      variant="outline"
+                      onClick={() => setIsEditing(false)}
+                      disabled={isSaving}
+                      btnClass="!w-auto px-6 py-0 !text-[10px] !uppercase !tracking-[0.1em] !rounded-lg"
+                    >
+                      {t('cancel', 'Cancel')}
+                    </Button>
+                    <Button 
+                      variant="solid"
+                      onClick={handleSaveClick}
+                      disabled={isSaving}
+                      icon={isSaving ? <AutorenewRoundedIcon className="animate-spin" sx={{ fontSize: 12 }} /> : <SaveRoundedIcon sx={{ fontSize: 12 }} />}
+                      iconPosition="left"
+                      btnClass="!w-auto px-8 py-0 !text-[10px] !uppercase !tracking-[0.1em] !rounded-lg"
+                    >
+                      {isSaving ? t('saving', 'Saving...') : t('save', 'Save')}
+                    </Button>
+                  </div>
+                )}
+              </div>
+              )}
+             
             </div>
-
-            {/* Version History Section */}
-            {/* <div className="shrink-0">
-              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6">Version History</h4>
-              <div className="space-y-6 relative before:absolute before:left-3 before:top-2 before:bottom-2 before:w-px before:bg-slate-100">
-                <div className="relative pl-8">
-                  <div className="absolute left-1.5 top-1.5 w-3 h-3 rounded-full bg-primary ring-4 ring-primary-container"></div>
-                  <p className="text-sm font-bold text-on-surface truncate">v{(activeDoc as any)?.ObjVer?.Version || (activeDoc as any)?.objVer?.version || 1}.0 Finalized</p>
-                  <p className="text-[11px] text-slate-500 truncate">
-                    {((activeDoc as any)?.Files?.[0]?.LastModified || (activeDoc as any)?.files?.[0]?.lastModified)
-                      ? new Date((activeDoc as any)?.Files?.[0]?.LastModified || (activeDoc as any)?.files?.[0]?.lastModified).toLocaleDateString() 
-                      : 'Aujourd\'hui'}
-                  </p>
-                  <p className="text-[11px] mt-1 text-slate-400 italic">"Updated thermal specs for north wing"</p>
-                </div>
-                <div className="relative pl-8 shrink-0">
-                  <div className="absolute left-2 top-2 w-2 h-2 rounded-full bg-slate-300"></div>
-                  <p className="text-sm font-medium text-slate-700 truncate">v3.2 Draft</p>
-                  <p className="text-[11px] text-slate-500 truncate">By Sarah K. • Yesterday</p>
-                </div>
-                <div className="relative pl-8 shrink-0">
-                  <div className="absolute left-2 top-2 w-2 h-2 rounded-full bg-slate-300"></div>
-                  <p className="text-sm font-medium text-slate-700 truncate">v3.0 Draft</p>
-                  <p className="text-[11px] text-slate-500 truncate">By Marcus V. • Oct 10</p>
-                </div>
-              </div>
-              <button className="mt-6 text-xs font-bold text-primary hover:underline transition-all cursor-pointer">View full timeline →</button>
-            </div> */}
-
-            {/* Security Section */}
-            {/* <div className="p-6 bg-surface-container-low rounded-2xl border border-slate-100 shrink-0">
-              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4">Security Status</h4>
-              <div className="flex items-start space-x-3">
-                <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-tertiary shadow-sm shrink-0">
-                  <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-on-surface">End-to-End Encrypted</p>
-                  <p className="text-[11px] text-slate-500 leading-relaxed mt-1">This file is protected with AES-256 and only accessible to verified team members.</p>
-                </div>
-              </div>
-              <div className="mt-6 space-y-3">
-                <button className="w-full py-2.5 bg-white border border-slate-200 text-on-surface rounded-xl text-xs font-bold hover:bg-slate-50 transition-colors cursor-pointer block">Manage Permissions</button>
-                <button className="w-full py-2.5 bg-white border border-slate-200 text-on-surface rounded-xl text-xs font-bold hover:bg-slate-50 transition-colors cursor-pointer block">Download Audit Log</button>
-              </div>
-            </div> */}
           </div>
           )}
         </section>

@@ -1,4 +1,5 @@
 import Menu from '@mui/material/Menu';
+import type { ReactNode } from 'react';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import { Box } from '@mui/material';
@@ -6,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 
 export interface MUIMenuItem {
   label: string;
-  icon?: string;
+  icon?: ReactNode;
   onClick: () => void;
   variant?: 'default' | 'danger';
 }
@@ -118,11 +119,14 @@ export function MUIMenu({
           {item.icon && (
             <Box
               component="span"
-              className="material-symbols-outlined"
+              className="flex items-center justify-center"
               sx={{
                 fontSize: '18px',
                 color: item.variant === 'danger' ? '#ef4444' : (isDark ? 'rgba(255,255,255,0.4)' : '#64748b'),
                 transition: 'color 0.2s',
+                '& .MuiSvgIcon-root': {
+                  fontSize: '18px',
+                },
                 '.MuiMenuItem-root:hover &': {
                   color: item.variant === 'danger' ? '#ef4444' : (isDark ? '#fff' : '#1e293b'),
                 },

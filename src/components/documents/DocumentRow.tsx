@@ -1,6 +1,7 @@
 import { StatusBadge } from './StatusBadge';
 import { ProcessingStatus } from '../../types/documents';
 import { useTranslation } from 'react-i18next'
+import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
 
 interface DocumentRowProps {
   name: string;
@@ -27,7 +28,7 @@ export function DocumentRow({ name, size, status, category, action }: DocumentRo
       <td className="px-6 py-3">
         <div className="flex items-center gap-4">
           <div className="relative w-12 h-12 bg-white rounded-lg border border-outline-variant/30 flex items-center justify-center overflow-hidden shadow-sm shrink-0">
-            <span className="material-symbols-outlined text-outline/30 text-2xl">description</span>
+            <DescriptionRoundedIcon className="text-outline/30" sx={{ fontSize: 24 }} />
             <div className="absolute inset-x-2 top-2 h-0.5 bg-slate-100 rounded"></div>
             <div className="absolute inset-x-2 top-4 h-0.5 bg-slate-100 rounded w-4/5"></div>
             <div className="absolute inset-x-2 top-6 h-0.5 bg-slate-100 rounded w-2/3"></div>

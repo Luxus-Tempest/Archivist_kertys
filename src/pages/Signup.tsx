@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -9,9 +9,19 @@ import { useAuth } from '../hooks/useAuth';
 import { toast } from 'sonner';
 import { AuthPageLayout } from '../components/layout/AuthPageLayout';
 import { useTranslation, Trans } from 'react-i18next'
+import ApartmentRoundedIcon from '@mui/icons-material/ApartmentRounded';
+import MailRoundedIcon from '@mui/icons-material/MailRounded';
+import LanguageRoundedIcon from '@mui/icons-material/LanguageRounded';
+import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
+import LockRoundedIcon from '@mui/icons-material/LockRounded';
+import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
+import VisibilityOffRoundedIcon from '@mui/icons-material/VisibilityOffRounded';
+import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
+import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
+import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 
 export function Signup() {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const navigate = useNavigate();
   const { createOrganization, isLoading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
@@ -135,7 +145,7 @@ export function Signup() {
                 label={t('signupPage.organizationName')} 
                 type="text" 
                 placeholder={t('signupPage.egArchivistGlobal')} 
-                icon="apartment"
+                icon={<ApartmentRoundedIcon sx={{ fontSize: 18 }} />}
                 {...register('OrgName')}
                 error={errors.OrgName?.message}
               />
@@ -145,7 +155,7 @@ export function Signup() {
                 label={t('signupPage.orgEmail')} 
                 type="email" 
                 placeholder={t('signupPage.orgEmailPlaceholder')} 
-                icon="mail"
+                icon={<MailRoundedIcon sx={{ fontSize: 18 }} />}
                 {...register('OrgEmail')}
                 error={errors.OrgEmail?.message}
               />
@@ -155,14 +165,14 @@ export function Signup() {
                 label={t('signupPage.domain')} 
                 type="text" 
                 placeholder={t('signupPage.egMycompanyCom')} 
-                icon="language"
+                icon={<LanguageRoundedIcon sx={{ fontSize: 18 }} />}
                 {...register('Domain')}
                 error={errors.Domain?.message}
               />
             </div>
 
             <div className="pt-4">
-              <Button type="button" variant="solid" icon="arrow_forward" onClick={handleContinue}>
+              <Button type="button" variant="solid" icon={<ArrowForwardRoundedIcon sx={{ fontSize: 18 }} />} onClick={handleContinue}>
                 {t('signupPage.continueToAccount')}
               </Button>
             </div>
@@ -185,7 +195,7 @@ export function Signup() {
                 label={t('signupPage.fullName')} 
                 type="text" 
                 placeholder={t('signupPage.JDoe')} 
-                icon="person"
+                icon={<PersonRoundedIcon sx={{ fontSize: 18 }} />}
                 {...register('FullName')}
                 error={errors.FullName?.message}
               />
@@ -195,7 +205,7 @@ export function Signup() {
                 label={t('signupPage.userEmail')} 
                 type="email" 
                 placeholder={t('signupPage.userEmailPlaceholder')} 
-                icon="mail"
+                icon={<MailRoundedIcon sx={{ fontSize: 18 }} />}
                 {...register('Email')}
                 error={errors.Email?.message}
               />
@@ -205,18 +215,20 @@ export function Signup() {
                 label={t('signupPage.password')} 
                 type={showPassword ? 'text' : 'password'} 
                 placeholder="••••••••" 
-                icon="lock"
+                icon={<LockRoundedIcon sx={{ fontSize: 18 }} />}
                 {...register('Password')}
                 error={errors.Password?.message}
                 rightElement={
                   <button 
                     type="button" 
                     onClick={() => setShowPassword(!showPassword)}
-                    className="text-outline hover:text-on-surface-variant transition-colors"
+                    className="text-outline hover:text-on-surface-variant transition-colors flex items-center justify-center p-1"
                   >
-                    <span className="material-symbols-outlined text-lg">
-                      {showPassword ? 'visibility_off' : 'visibility'}
-                    </span>
+                    {showPassword ? (
+                      <VisibilityOffRoundedIcon sx={{ fontSize: 18 }} />
+                    ) : (
+                      <VisibilityRoundedIcon sx={{ fontSize: 18 }} />
+                    )}
                   </button>
                 }
               />
@@ -225,8 +237,8 @@ export function Signup() {
             <div className="flex items-start gap-1 cursor-pointer group pt-3">
               <div className="relative flex items-center h-4 mt-0.5">
                 <input type="checkbox" className="peer sr-only " required id="terms" />
-                <div className="w-4 h-4 rounded-[4px] border border-outline-variant/30 bg-surface peer-checked:bg-primary peer-checked:border-primary peer-focus-visible:ring-2 peer-focus-visible:ring-primary/50 transition-all flex items-center justify-center peer-checked:[&>span]:opacity-100">
-                  <span className="material-symbols-outlined text-on-primary text-[10px] opacity-0 transition-opacity font-bold">check</span>
+                <div className="w-4 h-4 rounded-[4px] border border-outline-variant/30 bg-surface peer-checked:bg-primary peer-checked:border-primary peer-focus-visible:ring-2 peer-focus-visible:ring-primary/50 transition-all flex items-center justify-center peer-checked:[&>svg]:opacity-100">
+                  <CheckRoundedIcon className="text-on-primary opacity-0 transition-opacity" sx={{ fontSize: 12 }} />
                 </div>
               </div>
               <label htmlFor="terms" className="text-xs font-medium text-on-surface-variant leading-relaxed group-hover:text-on-surface transition-colors cursor-pointer">
@@ -251,10 +263,10 @@ export function Signup() {
             </div>
 
             <div className="flex justify-between pt-3 space-y-2">
-              <Button type="button" btnClass="w-max text-md px-4 border-none" variant="outline" icon="arrow_back" iconPosition="left" onClick={handleBack}>
+              <Button type="button" btnClass="w-max text-md px-4 border-none" variant="outline" icon={<ArrowBackRoundedIcon sx={{ fontSize: 18 }} />} iconPosition="left" onClick={handleBack}>
                 {t('back', 'Back')}
               </Button>
-              <Button type="submit" btnClass="w-max text-md px-4 " variant="solid" icon="arrow_forward" disabled={isLoading}>
+              <Button type="submit" btnClass="w-max text-md px-4 " variant="solid" icon={<ArrowForwardRoundedIcon sx={{ fontSize: 18 }} />} disabled={isLoading}>
                 {isLoading ? t('signupPage.creatingAccount2') : t('signupPage.createAccount')}
               </Button>
             </div>

@@ -1,9 +1,11 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import { DashboardLayoutNew } from '../components/layout/DashboardLayoutNew';
-import { CircularProgress } from '@mui/material';
 import { useAdmin } from '../hooks/useAdmin';
 import type { AdminUser } from '../types/admin';
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+import ErrorRoundedIcon from '@mui/icons-material/ErrorRounded';
+import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
+import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 
 
 /* ─── Types ─── */
@@ -194,12 +196,10 @@ function MemberRow({ member, onUpdateStatus }: { member: Member; onUpdateStatus:
 function PagerButton({
   children,
   active,
-  isNav,
   onClick,
 }: {
   children: React.ReactNode;
   active?: boolean;
-  isNav?: boolean;
   onClick?: () => void;
 }) {
   return (
@@ -209,7 +209,7 @@ function PagerButton({
         active ? 'bg-[#545f73] text-white font-bold' : 'bg-transparent text-[#566166] font-medium hover:bg-surface-container-high'
       }`}
       style={{
-        fontFamily: isNav ? "'Material Symbols Outlined'" : "Inter, sans-serif"
+        fontFamily: "Inter, sans-serif"
       }}
     >
       {children}
@@ -219,7 +219,6 @@ function PagerButton({
 
 /* ─── Main component ─── */
 export function Members() {
-  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
@@ -270,7 +269,7 @@ export function Members() {
           {/* ── Search & Filter Bar (HTML Style) ── */}
           <div className="bg-surface-container-low rounded-full px-8 py-4 mb-8 flex flex-col md:flex-row items-center gap-4 shadow-sm border-none">
             <div className="flex-1 flex items-center gap-4 w-full">
-              <span className="material-symbols-outlined text-outline">search</span>
+              <SearchRoundedIcon className="text-outline" />
               <input 
                 type="text" 
                 placeholder="Search registry by name or email..."
@@ -296,7 +295,7 @@ export function Members() {
           {/* ── Error Message ── */}
           {error && (
             <div className="mb-6 p-4 bg-red-50 text-red-800 rounded-lg flex items-center gap-2 border border-red-100 text-sm">
-              <span className="material-symbols-outlined text-lg">error</span>
+              <ErrorRoundedIcon sx={{ fontSize: 18 }} />
               {error}
             </div>
           )}
@@ -348,10 +347,9 @@ export function Members() {
               </p>
               <div className="flex items-center gap-3">
                 <PagerButton 
-                  isNav 
                   onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                 >
-                  chevron_left
+                  <ChevronLeftRoundedIcon sx={{ fontSize: 20 }} />
                 </PagerButton>
                 
                 <div className="flex items-center gap-1">
@@ -370,10 +368,9 @@ export function Members() {
                 </div>
 
                 <PagerButton 
-                  isNav 
                   onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                 >
-                  chevron_right
+                  <ChevronRightRoundedIcon sx={{ fontSize: 20 }} />
                 </PagerButton>
               </div>
             </div>

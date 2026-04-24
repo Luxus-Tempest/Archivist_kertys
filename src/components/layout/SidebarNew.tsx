@@ -1,6 +1,12 @@
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../../hooks/useAuth';
+import FolderRoundedIcon from '@mui/icons-material/FolderRounded';
+import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import GroupRoundedIcon from '@mui/icons-material/GroupRounded';
+import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
+import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -12,10 +18,10 @@ export function SidebarNew({ isCollapsed, setIsCollapsed }: SidebarProps) {
   const { user } = useAuth();
   
   const navItems = [
-    { name: t('sidebar.explorer', 'Explorer'), icon: 'folder', path: '/explorer' },
-    { name: t('sidebar.history', 'History'), icon: 'history', path: '/history' },
-    { name: t('sidebar.process', 'Process'), icon: 'add', path: '/process' },
-    { name: t('sidebar.members', 'Members'), icon: 'group', path: '/members', adminOnly: true },
+    { name: t('sidebar.explorer', 'Explorer'), icon: FolderRoundedIcon, path: '/explorer' },
+    { name: t('sidebar.history', 'History'), icon: HistoryRoundedIcon, path: '/history' },
+    { name: t('sidebar.process', 'Process'), icon: AddRoundedIcon, path: '/process' },
+    { name: t('sidebar.members', 'Members'), icon: GroupRoundedIcon, path: '/members', adminOnly: true },
   ].filter(item => !item.adminOnly || user?.role === 'ADMIN');
 
   return (
@@ -34,9 +40,7 @@ export function SidebarNew({ isCollapsed, setIsCollapsed }: SidebarProps) {
               }`
             }
           >
-            <span className={`material-symbols-outlined transition-all duration-300 ${isCollapsed ? 'text-xl' : 'text-lg'}`}>
-              {item.icon}
-            </span>
+            <item.icon className={`transition-all duration-300 ${isCollapsed ? 'text-xl' : 'text-lg'}`} sx={{ fontSize: isCollapsed ? 24 : 18 }} />
             
             {!isCollapsed && (
               <span className="truncate opacity-100 transition-opacity duration-300">
@@ -64,9 +68,11 @@ export function SidebarNew({ isCollapsed, setIsCollapsed }: SidebarProps) {
                    hover:w-5 hover:-right-[21px] group-hover:border-outline-variant`}
         title={isCollapsed ? t('sidebar.expand', 'Expand') : t('sidebar.collapse', 'Collapse')}
       >
-        <span className="material-symbols-outlined text-[18px] font-light">
-          {isCollapsed ? 'chevron_right' : 'chevron_left'}
-        </span>
+        {isCollapsed ? (
+          <ChevronRightRoundedIcon sx={{ fontSize: 18 }} />
+        ) : (
+          <ChevronLeftRoundedIcon sx={{ fontSize: 18 }} />
+        )}
       </button>
     </aside>
   );

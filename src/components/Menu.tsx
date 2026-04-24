@@ -1,9 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next'
 
 export interface MenuItem {
   label: string;
-  icon?: string;
+  icon?: ReactNode;
   onClick: () => void;
   variant?: 'default' | 'danger';
 }
@@ -97,7 +97,7 @@ export function Menu({
             }`}
           >
             {item.icon && (
-              <span className={`material-symbols-outlined text-[18px] transition-colors ${
+              <span className={`text-[18px] transition-colors flex items-center justify-center ${
                 item.variant === 'danger' 
                   ? 'text-[#B05B56]/70 group-hover:text-[#B05B56]' 
                   : isDark

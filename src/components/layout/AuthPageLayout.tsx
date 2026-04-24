@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next'
 import { LanguageSelector } from '../LanguageSelector';
+import AccountBalanceWalletRoundedIcon from '@mui/icons-material/AccountBalanceWalletRounded';
 
 interface AuthPageLayoutProps {
   children: React.ReactNode;
@@ -29,7 +30,7 @@ export function AuthPageLayout({
       {/* Header */}
       <header className="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl flex justify-between items-center px-8 py-3">
         <div className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-primary">account_balance_wallet</span>
+          <AccountBalanceWalletRoundedIcon className="text-primary" />
           <span className="text-xl font-bold tracking-tighter text-slate-800 font-headline">{t('docme', 'DocMe')}</span>
         </div>
         <div className="hidden md:flex gap-8 items-center text-sm font-medium text-on-surface-variant">

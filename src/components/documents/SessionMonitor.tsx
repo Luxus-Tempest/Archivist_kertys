@@ -7,6 +7,11 @@ import { ProcessingStatus } from '../../types/documents';
 import { DocumentTable } from './DocumentTable';
 import { DocumentRow } from './DocumentRow';
 import { useTranslation } from 'react-i18next'
+import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
+import SyncRoundedIcon from '@mui/icons-material/SyncRounded';
+import VerifiedUserRoundedIcon from '@mui/icons-material/VerifiedUserRounded';
 
 interface SessionMonitorProps {
   sessionId: string;
@@ -81,9 +86,7 @@ export function SessionMonitor({ sessionId, onClose }: SessionMonitorProps) {
       >
         <div className="flex items-center gap-3">
           <span className="p-2 bg-surface-container-highest rounded-full text-on-surface-variant flex items-center justify-center transition-transform duration-200">
-            <span className={`material-symbols-outlined transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
-              keyboard_arrow_down
-            </span>
+            <KeyboardArrowDownRoundedIcon className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} />
           </span>
           <div>
             <h4 className="px-3 py-1 bg-surface-container-high rounded-md text-[10px] font-mono text-outline font-medium tracking-tight border border-outline-variant/20">{t('idId', 'ID: {{id}}', { id: sessionData.session.id })}</h4>
@@ -98,7 +101,7 @@ export function SessionMonitor({ sessionId, onClose }: SessionMonitorProps) {
             onClick={onClose}
             title={t('closeSessionView', 'Close Session view')}
           >
-            <span className="material-symbols-outlined text-sm">close</span>
+            <CloseRoundedIcon sx={{ fontSize: 14 }} />
           </button>
         </div>
       </div>
@@ -116,11 +119,11 @@ export function SessionMonitor({ sessionId, onClose }: SessionMonitorProps) {
                   action={
                     file.status === ProcessingStatus.COMPLETED || file.status === ProcessingStatus.UPLOADED ? (
                       <button disabled className="p-2 text-outline rounded-full opacity-50 cursor-not-allowed">
-                        <span className="material-symbols-outlined text-lg">delete</span>
+                        <DeleteRoundedIcon sx={{ fontSize: 18 }} />
                       </button>
                     ) : (
                       <span className="inline-flex items-center justify-center p-2 text-primary">
-                        <span className="material-symbols-outlined text-lg animate-spin">sync</span>
+                        <SyncRoundedIcon className="animate-spin" sx={{ fontSize: 18 }} />
                       </span>
                     )
                   }
@@ -130,7 +133,7 @@ export function SessionMonitor({ sessionId, onClose }: SessionMonitorProps) {
               <tr>
                 <td colSpan={3} className="px-6 py-10 text-center">
                   <div className="flex flex-col items-center gap-2">
-                    <span className="material-symbols-outlined animate-spin text-primary">sync</span>
+                    <SyncRoundedIcon className="animate-spin text-primary" />
                     <p className="text-sm text-on-surface-variant italic">{t('connectingToSessionAndRetrievingDocumentStatus', 'Connecting to session and retrieving document status...')}</p>
                   </div>
                 </td>
@@ -140,7 +143,7 @@ export function SessionMonitor({ sessionId, onClose }: SessionMonitorProps) {
 
           {sessionData.session.status === ProcessingStatus.COMPLETED && (
             <div className="mt-2 p-2 bg-tertiary-container/30 rounded-md border border-tertiary/20 flex items-start gap-2">
-              <span className="material-symbols-outlined text-tertiary text-xl mt-0.5">verified_user</span>
+              <VerifiedUserRoundedIcon className="text-tertiary mt-0.5" sx={{ fontSize: 20 }} />
               <div>
                 <p className="text-[11px] font-bold uppercase tracking-wider text-tertiary mb-1">{t('sessionComplete', 'Session Complete')}</p>
                 <p className="text-[12px] text-on-surface leading-relaxed opacity-80">

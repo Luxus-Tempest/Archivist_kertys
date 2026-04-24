@@ -20,6 +20,8 @@ import { fileStorage } from '../utils/fileStorage';
 import type { StagedFileMetadata } from '../store/docs/docsSlice';
 import type { UploadResponse } from '../types/documents';
 import { useTranslation } from 'react-i18next'
+import SyncRoundedIcon from '@mui/icons-material/SyncRounded';
+import SendRoundedIcon from '@mui/icons-material/SendRounded';
 
 export function ProcessNew() {
   const { t } = useTranslation()
@@ -145,7 +147,7 @@ export function ProcessNew() {
               <Button 
                 onClick={handleSend}
                 disabled={isUploading}
-                icon={isUploading ? 'sync' : 'send'}
+                icon={isUploading ? <SyncRoundedIcon className="animate-spin" /> : <SendRoundedIcon />}
                 variant="solid"
                 className={`w-auto px-10  shadow-xl shadow-slate-900/10 ${isUploading ? 'opacity-70' : 'bg-slate-900'}`}
                 btnClass={`rounded-md -py-2 text-[15px]`}

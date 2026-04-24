@@ -1,5 +1,7 @@
 import { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next'
+import FileUploadRoundedIcon from '@mui/icons-material/FileUploadRounded';
+import EastRoundedIcon from '@mui/icons-material/EastRounded';
 
 interface UploadAreaNewProps {
   onFilesSelected?: (files: File[]) => void;
@@ -62,7 +64,7 @@ export function UploadAreaNew({ onFilesSelected, isUploading, disabled }: Upload
       
       <div className="relative z-10 flex flex-col items-center text-center">
         <div className="w-16 h-16 mb-4 rounded-3xl bg-primary-container/50 flex items-center justify-center text-primary-dim group-hover:scale-110 transition-transform duration-300">
-          <span className="material-symbols-outlined text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>upload_file</span>
+          <FileUploadRoundedIcon sx={{ fontSize: 30 }} />
         </div>
         <h3 className="text-[16px] font-bold mb-2 font-headline text-on-surface">
           {isUploading ? t('uploadingDocuments', 'Uploading documents...') : t('clickToUploadOrDragDrop', 'Click to upload or drag & drop')}
@@ -70,7 +72,7 @@ export function UploadAreaNew({ onFilesSelected, isUploading, disabled }: Upload
         <p className="text-on-surface-variant text-[12px] font-body mb-6">{t('pdfDocxXlsxHighresImagesEtcUpTo25mb', 'PDF, DOCX, XLSX, high-res images etc... up to 25MB')}</p>
         <button className="px-6 py-2 cursor-pointer bg-primary text-on-primary rounded-full font-semibold text-sm flex items-center gap-2 hover:bg-primary-dim active:scale-95 transition-all shadow-lg shadow-primary/10">
           {isUploading ? t('processing', 'Processing...') : t('browseLocalFiles', 'Browse Local Files')}
-          <span className="material-symbols-outlined text-xs">east</span>
+          <EastRoundedIcon sx={{ fontSize: 14 }} />
         </button>
       </div>
     </div>
