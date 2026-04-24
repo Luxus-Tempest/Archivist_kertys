@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { fetchAuth, fetchAuthBlob } from '../utils/api';
 import i18next from 'i18next'
+import type { MFDataType } from '../types/documents';
 
 export interface MFilesObjVerDto {
   Version: number;
@@ -42,7 +43,7 @@ export interface MFilesItemsResponseDto {
 export interface MFilesPropertyDataDto {
   value: any;
   propertyDef: number;
-  dataType: number;
+  dataType: MFDataType;
 }
 
 export interface MFilesObjectPropertiesDto {
