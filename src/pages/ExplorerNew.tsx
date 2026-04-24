@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { useSearchParams } from 'react-router-dom';
 import { DashboardLayoutNew } from '../components/layout/DashboardLayoutNew';
 import { useMFilesDocsHook, type MFilesDocumentDto, type MFilesObjectPropertiesDto } from '../hooks/useMFilesDocsHook';
@@ -110,6 +111,8 @@ export function ExplorerNew() {
 
   useEffect(() => {
     async function loadProperties() {
+      setIsEditing(false); // Reset edit mode on refresh/doc change
+      
       if (!activeDoc) {
         setFileProperties(null);
         return;
@@ -236,17 +239,27 @@ export function ExplorerNew() {
   const handleSaveClick = async () => {
     if (!activeDoc || !fileProperties) return;
     
-    const objId = (activeDoc as any)?.ObjVer?.ID || (activeDoc as any)?.objVer?.id;
     setIsSaving(true);
     try {
-      const success = await updateFileProperties(objId, editedProperties);
-      if (success) {
+      const payload = {
+        objectId: fileProperties.objectId,
+        classId: fileProperties.classId,
+        properties: editedProperties
+      };
+      
+      const response = await updateFileProperties(payload);
+      if (response.success) {
+        toast.success(response.message || t('documentUpdatedSuccessfully', 'Document updated successfully'));
         setFileProperties({
           ...fileProperties,
           properties: editedProperties
         });
         setIsEditing(false);
+      } else {
+        toast.error(response.message || t('errorUpdatingDocument', 'Error updating document properties'));
       }
+    } catch (err) {
+      toast.error(t('errorUpdatingDocument', 'Error updating document properties'));
     } finally {
       setIsSaving(false);
     }

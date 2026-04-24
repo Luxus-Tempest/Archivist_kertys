@@ -120,16 +120,16 @@ export function useMFilesDocsHook() {
     }
   }, []);
 
-  const updateFileProperties = useCallback(async (objectId: number, properties: any[]): Promise<boolean> => {
+  const updateFileProperties = useCallback(async (payload: { objectId: number; classId: number; properties: any[] }): Promise<{ success: boolean; message?: string }> => {
     try {
-      await fetchAuth(`/MFilesDocs/update-properties/${objectId}`, {
+      const data = await fetchAuth(`/MFilesDocs/update-document-properties`, {
         method: 'POST',
-        body: JSON.stringify(properties)
+        body: JSON.stringify(payload)
       });
-      return true;
-    } catch (err) {
+      return { success: true, message: data?.message || "Document mis à jour avec succès" };
+    } catch (err: any) {
       console.error("useMFilesDocsHook updateFileProperties error:", err);
-      return false;
+      return { success: false, message: err.message || "Erreur lors de la mise à jour des propriétés" };
     }
   }, []);
 
