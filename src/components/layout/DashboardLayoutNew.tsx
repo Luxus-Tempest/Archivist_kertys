@@ -11,8 +11,9 @@ import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 interface DashboardLayoutNewProps {
   children: React.ReactNode;
   isFullWidth?: boolean;
+  isChildPaddingBottom?: boolean;
 }
-export function DashboardLayoutNew({ children, isFullWidth = false }: DashboardLayoutNewProps) {
+export function DashboardLayoutNew({ children, isFullWidth = false, isChildPaddingBottom = true }: DashboardLayoutNewProps) {
   const { t } = useTranslation();
 
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
@@ -26,7 +27,7 @@ export function DashboardLayoutNew({ children, isFullWidth = false }: DashboardL
   };
 
   return (
-    <div className="bg-surface text-on-surface selection:bg-primary/20 h-screen overflow-hidden flex flex-col">
+    <div className="bg-white text-on-surface selection:bg-primary/20 h-screen overflow-hidden flex flex-col">
       <HeaderNew />
       
       <div className="flex flex-1 pt-16 min-h-0 overflow-hidden relative">
@@ -38,7 +39,7 @@ export function DashboardLayoutNew({ children, isFullWidth = false }: DashboardL
         {/* Main Content Area */}
         <main className={`flex-1 flex flex-col bg-white ${isSidebarCollapsed ? 'md:ml-16' : 'md:ml-64'} transition-all duration-300 ease-in-out min-w-0 overflow-hidden w-full ${isFullWidth ? 'pb-0 pt-0' : 'p-2 lg:p-2 pb-0 mx-auto w-full'}`}>
 
-          <div className="flex-1 overflow-y-auto pb-16 bg-white">
+          <div className={`flex-1 overflow-y-auto ${isChildPaddingBottom ? 'pb-16' : ''} bg-white`}>
             {children}
           </div>
         </main>

@@ -40,10 +40,8 @@ export function UserCreationModal({ open, onClose, onSubmitSuccess }: ModalProps
       const promise = createUserByAdmin(data);
       toast.promise(promise, {
         loading: t('members.createUserModal.creatingUser'),
-        success: (res: any) => {
-          return t('members.createUserModal.success', 'User created successfully!');
-        },
-        error: (err: any) => err || t('errorCreatingUser', 'Error creating user'),
+        success: () => t('members.createUserModal.success'),
+        error: (err: any) => err || t('members.createUserModal.error'),
       });
 
       await promise;
@@ -69,15 +67,15 @@ export function UserCreationModal({ open, onClose, onSubmitSuccess }: ModalProps
       width="100%"
       footer={
         <div className="flex w-full gap-3">
-          <Button variant="outline" className="flex-1" onClick={handleClose} type="button">
+          <Button variant="outline" className="flex-1 text-sm" onClick={handleClose} type="button">
             {t('members.createUserModal.cancel')}
           </Button>
           <Button 
-            className="flex-[2]" 
+            className="flex-1" 
             icon={<SendRoundedIcon sx={{ fontSize: 18 }} />} 
             onClick={handleSubmit(onSubmit)}
             type="button"
-            btnClass='rounded-lg w-content'
+            btnClass='rounded-lg w-content text-sm'
             disabled={isActionLoading}
           >
             {isActionLoading ? t('members.createUserModal.creatingUser') : t('members.createUserModal.createUser')}
@@ -112,7 +110,7 @@ export function UserCreationModal({ open, onClose, onSubmitSuccess }: ModalProps
         <div className="grid grid-cols-2 gap-4">
           <SelectField
             id="role"
-            label={t('securityRole', 'Security Role')}
+            label={t('members.createUserModal.role')}
             options={[
               { label: 'USER', value: 'USER' },
               { label: 'ADMIN', value: 'ADMIN' },
@@ -134,7 +132,7 @@ export function UserCreationModal({ open, onClose, onSubmitSuccess }: ModalProps
           id="password"
           label={t('members.createUserModal.password')}
           type="password"
-          placeholder="e.g. ••••••••••"
+          placeholder={t('members.createUserModal.passwordPlaceholder')}
           icon={<LockRoundedIcon sx={{ fontSize: 18 }} />}
           {...register('Password')}
           error={errors.Password?.message}

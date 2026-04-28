@@ -3,5 +3,78 @@
   "login": "Iniciar sesión",
   "signup": "Registrarse",
   "email": "Correo electrónico",
-  "password": "Contraseña"
+  "password": "Contraseña",
+  "members": {
+    "title": "Miembros",
+    "subtitle": "Gestiona tu equipo y sus permisos.",
+    "searchPlaceholder": "Buscar por nombre o email...",
+    "clear": "Limpiar",
+    "noMembersFound": "No se encontraron miembros.",
+    "groupButtons": {
+      "createUser": "Crear miembro",
+      "inviteMember": "Invitar miembro"
+    },
+    "table": {
+      "user": "Usuario",
+      "email": "Email",
+      "status": "Estado",
+      "role": "Rol",
+      "actions": "Acciones"
+    },
+    "roles": {
+      "admin": "Admin",
+      "user": "Usuario"
+    },
+    "statusLabels": {
+      "active": "Activo",
+      "pending": "Pendiente",
+      "blocked": "Bloqueado"
+    },
+    "actionLabels": {
+      "block": "Bloquear",
+      "approve": "Aprobar",
+      "unblock": "Desbloquear"
+    },
+    "pagination": {
+      "noResults": "Sin resultados",
+      "showingResults": "Mostrando {{startItem}}–{{endItem}} de {{totalCount}} usuarios"
+    },
+    "createUserModal": {
+      "label": "Crear un Nuevo Usuario",
+      "fullName": "Nombre Completo",
+      "fullNamePlaceholder": "Juan Pérez",
+      "email": "Correo Electrónico",
+      "emailPlaceholder": "juan@perez.com",
+      "password": "Contraseña",
+      "passwordPlaceholder": "••••••••",
+      "role": "Rol",
+      "status": "Estado Inicial",
+      "createUserInfoText": "El usuario creado recibirá un correo electrónico automático con sus credenciales para conectarse a su organización.",
+      "creatingUser": "Creando usuario...",
+      "createUser": "Crear Usuario",
+      "cancel": "Cancelar",
+      "success": "¡Usuario creado con éxito!",
+      "error": "Error al crear el usuario"
+    },
+    "inviteUserModal": {
+      "label": "Invitar Nuevo Usuario",
+      "emailLabel": "Dirección de Correo",
+      "emailPlaceholder": "ej. nombre@empresa.com",
+      "securityRole": "Rol de Seguridad",
+      "initialStatus": "Estado Inicial",
+      "infoText": "El usuario invitado recibirá un enlace seguro automático por correo electrónico para completar la configuración de su perfil y la autenticación de seguridad.",
+      "sending": "Enviando invitación...",
+      "send": "Enviar Invitación",
+      "cancel": "Cancelar",
+      "success": "¡Invitación enviada con éxito!",
+      "successWithLink": "¡Invitación enviada! El enlace se ha copiado al portapapeles.",
+      "error": "Error al enviar la invitación"
+    },
+    "messages": {
+      "blocked": "La cuenta de {{name}} ha sido bloqueada",
+      "activated": "La cuenta de {{name}} ha sido activada",
+      "reactivated": "La cuenta de {{name}} ha sido reactivada",
+      "error": "Error al actualizar el estado del usuario. {{err}}"
+    }
+  }
 }

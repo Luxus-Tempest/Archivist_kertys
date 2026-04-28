@@ -34,7 +34,7 @@ export function HeaderNew() {
   ];
 
   return (
-    <header className="fixed top-0 w-full z-50 bg-surface/80 border-b border-outline-variant/45 flex justify-between items-center px-6 py-4">
+    <header className="fixed top-0 w-full z-50 bg-surface border-b border-outline-variant/45 flex justify-between items-center px-6 py-4">
       <div className="flex items-center gap-3">
         <AccountBalanceWalletRoundedIcon className="text-slate-600" />
         <h1 className="text-xl font-bold tracking-tighter text-slate-800 font-headline">{t('docme', 'DocMe')}</h1>

@@ -36,15 +36,15 @@ export function UserInviteModal({ open, onClose, onSubmitSuccess }: UserInviteMo
     try {
       const promise = inviteUser(data);
       toast.promise(promise, {
-        loading: t('sendingInvitation', 'Sending invitation...'),
+        loading: t('members.inviteUserModal.sending'),
         success: (res: any) => {
           if (res?.Link) {
             navigator.clipboard.writeText(res.Link);
-            return t('invitationSentWithLink', 'Invitation sent! Link copied to clipboard.');
+            return t('members.inviteUserModal.successWithLink');
           }
-          return t('invitationSent', 'Invitation sent successfully!');
+          return t('members.inviteUserModal.success');
         },
-        error: (err: any) => err || t('errorSendingInvitation', 'Error sending invitation'),
+        error: (err: any) => err || t('members.inviteUserModal.error'),
       });
 
       await promise;
@@ -70,18 +70,18 @@ export function UserInviteModal({ open, onClose, onSubmitSuccess }: UserInviteMo
       width="100%"
       footer={
         <div className="flex w-full gap-3">
-          <Button variant="outline" className="flex-1" onClick={handleClose} type="button">
-            {t('cancel', 'Cancel')}
+          <Button variant="outline" className="flex-1 text-sm" onClick={handleClose} type="button">
+            {t('members.inviteUserModal.cancel')}
           </Button>
           <Button 
-            className="flex-[2]" 
+            className="flex-1" 
             icon={<SendRoundedIcon sx={{ fontSize: 18 }} />} 
             onClick={handleSubmit(onSubmit)}
             type="button"
-            btnClass='rounded-lg w-content'
+            btnClass='rounded-lg w-content text-sm'
             disabled={isActionLoading}
           >
-            {isActionLoading ? t('sendingInvitation', 'Sending invitation...') : t('sendInvitation', 'Send Invitation')}
+            {isActionLoading ? t('members.inviteUserModal.sending') : t('members.inviteUserModal.send')}
           </Button>
         </div>
       }
@@ -90,9 +90,9 @@ export function UserInviteModal({ open, onClose, onSubmitSuccess }: UserInviteMo
         {/* Email Input */}
         <Input 
           id="email"
-          label={t('emailAddress', 'Email Address')}
+          label={t('members.inviteUserModal.emailLabel')}
           type="email"
-          placeholder="e.g. name@company.com"
+          placeholder={t('members.inviteUserModal.emailPlaceholder')}
           icon={<MailRoundedIcon sx={{ fontSize: 18 }} />}
           {...register('email')}
           error={errors.email?.message}
@@ -103,7 +103,7 @@ export function UserInviteModal({ open, onClose, onSubmitSuccess }: UserInviteMo
         <div className="grid grid-cols-2 gap-4">
           <SelectField
             id="role"
-            label={t('securityRole', 'Security Role')}
+            label={t('members.inviteUserModal.securityRole')}
             options={[
               { label: 'USER', value: 'USER' },
               { label: 'ADMIN', value: 'ADMIN' },
@@ -112,7 +112,7 @@ export function UserInviteModal({ open, onClose, onSubmitSuccess }: UserInviteMo
           />
           <SelectField
             id="status"
-            label={t('initialStatus', 'Initial Status')}
+            label={t('members.inviteUserModal.initialStatus')}
             options={[
               { label: 'ACTIVE', value: 'ACTIVE' },
               { label: 'PENDING', value: 'PENDING' },
@@ -126,7 +126,7 @@ export function UserInviteModal({ open, onClose, onSubmitSuccess }: UserInviteMo
         <div className="bg-surface-container-low/50 p-4 rounded-xl border-[0.5px] border-primary/30 flex gap-3 items-start">
           <InfoRoundedIcon className="text-primary/60 shrink-0" sx={{ fontSize: 20 }} />
           <p className="text-xs text-on-surface-variant leading-relaxed">
-            {t('inviteInfoText', 'The invited user will receive an automated secure link via email to complete their profile setup and security authentication.')}
+            {t('members.inviteUserModal.infoText')}
           </p>
         </div>
       </form>

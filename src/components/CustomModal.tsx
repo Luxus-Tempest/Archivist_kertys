@@ -50,7 +50,7 @@ export function CustomModal({
         >
           <div className="bg-white rounded-xl shadow-2xl flex flex-col overflow-hidden">
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-2 border-b border-gray-200">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
               <h4 className="text-sm font-semibold uppercase tracking-widest text-on-surface-variant">{title}</h4>
 
               <IconButton
@@ -68,7 +68,7 @@ export function CustomModal({
 
             {/* Footer */}
             {footer && (
-              <div className="px-4 py-2 border-t border-gray-200 flex justify-end gap-3">
+              <div className="px-4 py-3 border-t border-gray-200 flex justify-end gap-3">
                 {footer}
               </div>
             )}

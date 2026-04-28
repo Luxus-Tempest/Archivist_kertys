@@ -10,6 +10,7 @@ import { GroupButton } from '../components/GroupButton';
 import { UserInviteModal } from '../components/UserInviteModal';
 import { UserCreationModal } from '../components/UserCreationModal';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 
 
 type Status = 'Active' | 'Pending' | 'Blocked';
@@ -29,30 +30,26 @@ const mapAdminUserToMember = (user: AdminUser): Member => {
     'PENDING': 'Pending',
     'BLOCKED': 'Blocked'
   };
-  const roleMap: Record<string, string> = {
-    'ADMIN': 'Admin',
-    'USER': 'User'
-  };
   return {
     id: user.id,
     name: user.fullname,
     email: user.email,
     status: statusMap[user.status] || 'Pending',
-    role: roleMap[user.role] || user.role,
+    role: user.role, // Keep raw role for translation
     avatar: user.avatar
   };
 };
 
-const STATUS_CONFIG: Record<Status, { label: string; bg: string; color: string }> = {
-  Active:  { label: 'Active',   bg: '#91feef', color: '#006259' },
-  Pending: { label: 'Pending',  bg: '#d3e4fe', color: '#435368' },
-  Blocked: { label: 'Blocked',  bg: '#fe8983', color: '#752121' },
+const STATUS_CONFIG: Record<Status, { labelKey: string; bg: string; color: string }> = {
+  Active:  { labelKey: 'members.statusLabels.active',   bg: '#91feef', color: '#006259' },
+  Pending: { labelKey: 'members.statusLabels.pending',  bg: '#d3e4fe', color: '#435368' },
+  Blocked: { labelKey: 'members.statusLabels.blocked',  bg: '#fe8983', color: '#752121' },
 };
 
-const ACTION_CONFIG: Record<Status, { label: string; color: string; hoverBg: string; borderColor: string }> = {
-  Active:  { label: 'Block',    color: '#9f403d', hoverBg: 'rgba(159,64,61,0.08)',  borderColor: 'rgba(159,64,61,0.25)' },
-  Pending: { label: 'Approve',  color: '#006b62', hoverBg: 'rgba(0,107,98,0.08)',   borderColor: 'rgba(0,107,98,0.25)'  },
-  Blocked: { label: 'Unblock',  color: '#545f73', hoverBg: 'rgba(84,95,115,0.08)', borderColor: 'rgba(84,95,115,0.25)' },
+const ACTION_CONFIG: Record<Status, { labelKey: string; color: string; hoverBg: string; borderColor: string }> = {
+  Active:  { labelKey: 'members.actionLabels.block',    color: '#9f403d', hoverBg: 'rgba(159,64,61,0.08)',  borderColor: 'rgba(159,64,61,0.25)' },
+  Pending: { labelKey: 'members.actionLabels.approve',  color: '#006b62', hoverBg: 'rgba(0,107,98,0.08)',   borderColor: 'rgba(0,107,98,0.25)'  },
+  Blocked: { labelKey: 'members.actionLabels.unblock',  color: '#545f73', hoverBg: 'rgba(84,95,115,0.08)', borderColor: 'rgba(84,95,115,0.25)' },
 };
 
 // ─── Avatar colour palette (deterministic by initial) ───────────────────────
@@ -72,51 +69,63 @@ function getAvatarPalette(name: string) {
 
 // ─── StatusBadge — UNCHANGED ─────────────────────────────────────────────────
 function StatusBadge({ status }: { status: Status }) {
+  const { t } = useTranslation();
   const cfg = STATUS_CONFIG[status];
   return (
     <span
       className="inline-flex items-center px-3 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase"
       style={{ backgroundColor: cfg.bg, color: cfg.color, fontFamily: 'Inter, sans-serif' }}
     >
-      {cfg.label}
+      {t(cfg.labelKey)}
     </span>
   );
 }
 
 // ─── ActionButton — bordered ghost style ─────────────────────────────────────
-function ActionButton({ status, onClick }: { status: Status; onClick?: () => void }) {
+function ActionButton({ status, onClick, loading }: { status: Status; onClick?: () => void; loading?: boolean }) {
+  const { t } = useTranslation();
   const cfg = ACTION_CONFIG[status];
   const [hovered, setHovered] = useState(false);
   return (
     <button
       onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
+      disabled={loading}
+      onMouseEnter={() => !loading && setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="px-3 py-1.5 rounded-md text-xs font-semibold cursor-pointer transition-all duration-150 border"
+      className="px-3 py-1.5 rounded-md text-xs font-semibold cursor-pointer transition-all duration-150 border flex items-center gap-2"
       style={{
         color: cfg.color,
         backgroundColor: hovered ? cfg.hoverBg : 'transparent',
         borderColor: hovered ? cfg.borderColor : 'transparent',
+        opacity: loading ? 0.7 : 1,
         fontFamily: 'Inter, sans-serif',
         letterSpacing: '0.02em',
       }}
     >
-      {cfg.label}
+      {loading && (
+        <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
+      )}
+      {t(cfg.labelKey)}
     </button>
   );
 }
 
 // ─── MemberRow ────────────────────────────────────────────────────────────────
-function MemberRow({ member, onUpdateStatus }: { member: Member; onUpdateStatus: (id: string, status: string) => void }) {
+function MemberRow({ member, onUpdateStatus, updatingId }: { 
+  member: Member; 
+  onUpdateStatus: (member: Member, status: string) => void;
+  updatingId: string | null;
+}) {
+  const { t } = useTranslation();
   const isBlocked = member.status === 'Blocked';
-  const palette   = getAvatarPalette(member.name);
-
+  const isUpdating = updatingId === member.id;
+  
   return (
     <tr
       className="group transition-colors duration-150 hover:bg-[#f0f4f8]"
       style={{ borderBottom: '1px solid #eaecef' }}
     >
-      {/* User */}
+      {/* ... (rest of row content same as before) */}
       <td className="px-6 py-3.5">
         <div className="flex items-center gap-3">
           {member.avatar ? (
@@ -127,13 +136,7 @@ function MemberRow({ member, onUpdateStatus }: { member: Member; onUpdateStatus:
               style={{ opacity: isBlocked ? 0.45 : 1, filter: isBlocked ? 'grayscale(1)' : 'none' }}
             />
           ) : (
-            <div
-              className="w-8 h-8 bg-surface-container-low rounded-md flex items-center justify-center text-xs font-bold uppercase ring-2 ring-white shadow-sm flex-shrink-0"
-              // style={{
-              //   backgroundColor: isBlocked ? '#e5e7eb' : palette.bg,
-              //   color:           isBlocked ? '#9ca3af' : palette.color,
-              // }}
-            >
+            <div className="w-8 h-8 bg-surface-container-low rounded-md flex items-center justify-center text-xs font-bold uppercase ring-2 ring-white shadow-sm flex-shrink-0">
               {member.name[0]}
             </div>
           )}
@@ -148,7 +151,6 @@ function MemberRow({ member, onUpdateStatus }: { member: Member; onUpdateStatus:
         </div>
       </td>
 
-      {/* Email */}
       <td className="px-6 py-3.5">
         <span
           className="text-[12.5px] text-[#4b5563] truncate"
@@ -158,12 +160,10 @@ function MemberRow({ member, onUpdateStatus }: { member: Member; onUpdateStatus:
         </span>
       </td>
 
-      {/* Status */}
       <td className="px-6 py-3.5">
         <StatusBadge status={member.status} />
       </td>
 
-      {/* Role */}
       <td className="px-6 py-3.5">
         <span
           className="text-[11px] font-bold tracking-wider uppercase"
@@ -176,14 +176,14 @@ function MemberRow({ member, onUpdateStatus }: { member: Member; onUpdateStatus:
         </span>
       </td>
 
-      {/* Actions */}
       <td className="px-6 py-3.5">
         <div className="flex justify-end">
           <ActionButton
             status={member.status}
+            loading={isUpdating}
             onClick={() => {
               const nextStatus = member.status === 'Active' ? 'BLOCKED' : 'ACTIVE';
-              onUpdateStatus(member.id, nextStatus);
+              onUpdateStatus(member, nextStatus);
             }}
           />
         </div>
@@ -255,12 +255,30 @@ export function Members() {
   const pageSize = 10;
 
   const { users, totalCount, isLoading, error, getUsers, updateUserStatus } = useAdmin();
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
 
   useEffect(() => {
     const offset = (currentPage - 1) * pageSize;
     getUsers({ limit: pageSize, offset });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage]);
+
+  const handleUpdateStatus = async (member: Member, nextStatus: string) => {
+    setUpdatingId(member.id);
+    try {
+      await updateUserStatus(member.id, nextStatus);
+      
+      let messageKey = 'activated';
+      if (nextStatus === 'BLOCKED') messageKey = 'blocked';
+      else if (member.status === 'Blocked') messageKey = 'reactivated';
+      
+      toast.success(t(`members.messages.${messageKey}`, { name: member.name }));
+    } catch (err: any) {
+      toast.error(t('members.messages.error', { err: err.message }));
+    } finally {
+      setUpdatingId(null);
+    }
+  };
 
   const normalizedMembers = useMemo(() => users.map(mapAdminUserToMember), [users]);
 
@@ -392,7 +410,12 @@ export function Members() {
                     </tr>
                   ) : (
                     filtered.map((member) => (
-                      <MemberRow key={member.id} member={member} onUpdateStatus={updateUserStatus} />
+                      <MemberRow 
+                        key={member.id} 
+                        member={member} 
+                        onUpdateStatus={handleUpdateStatus} 
+                        updatingId={updatingId}
+                      />
                     ))
                   )}
                 </tbody>
@@ -403,8 +426,8 @@ export function Members() {
             <div className="px-6 py-3 border-t border-[#eaecef] bg-[#f9fafb] flex justify-between items-center">
               <p className="text-[12px] text-[#8b95a1] font-medium" style={{ fontFamily: 'Inter, sans-serif' }}>
                 {totalCount === 0
-                  ? 'No results'
-                  : `Showing ${startItem}–${endItem} of ${totalCount} users`}
+                  ? t('members.pagination.noResults')
+                  : t('members.pagination.showingResults', { startItem, endItem, totalCount })}
               </p>
 
               <div className="flex items-center gap-1">

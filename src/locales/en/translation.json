@@ -151,31 +151,37 @@
   "members": {
     "title": "Members",
     "subtitle": "Manage your team and their permissions.",
-    "inviteMember": "Invite Team Member",
     "searchPlaceholder": "Search by name or email...",
     "clear": "Clear",
-    "tabs": {
-      "general": "General Information",
-      "staff": "Staff & Permissions",
-      "accounts": "Accounts & Payouts"
-    },
-    "table": {
-      "user": "User",
-      "status": "Status",
-      "role": "Role",
-      "email": "Email",
-      "permissionGroup": "Permission Group",
-      "location": "Location",
-      "actions": "Actions"
-    },
-    "status": {
-      "active": "Active",
-      "inviteSent": "Invite Sent",
-      "inactive": "Inactive"
-    },
+    "noMembersFound": "No members found.",
     "groupButtons": {
       "createUser": "Create member",
       "inviteMember": "Invite member"
+    },
+    "table": {
+      "user": "User",
+      "email": "Email",
+      "status": "Status",
+      "role": "Role",
+      "actions": "Actions"
+    },
+    "roles": {
+      "admin": "Admin",
+      "user": "User"
+    },
+    "statusLabels": {
+      "active": "Active",
+      "pending": "Pending",
+      "blocked": "Blocked"
+    },
+    "actionLabels": {
+      "block": "Block",
+      "approve": "Approve",
+      "unblock": "Unblock"
+    },
+    "pagination": {
+      "noResults": "No results",
+      "showingResults": "Showing {{startItem}}–{{endItem}} of {{totalCount}} users"
     },
     "createUserModal": {
       "label": "Create a New User",
@@ -190,7 +196,29 @@
       "createUserInfoText": "The created user will receive an automated email with his credentials to connect to your organization.",
       "creatingUser": "Creating user...",
       "createUser": "Create User",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "success": "User created successfully!",
+      "error": "Error creating user"
+    },
+    "inviteUserModal": {
+      "label": "Invite New User",
+      "emailLabel": "Email Address",
+      "emailPlaceholder": "e.g. name@company.com",
+      "securityRole": "Security Role",
+      "initialStatus": "Initial Status",
+      "infoText": "The invited user will receive an automated secure link via email to complete their profile setup and security authentication.",
+      "sending": "Sending invitation...",
+      "send": "Send Invitation",
+      "cancel": "Cancel",
+      "success": "Invitation sent successfully!",
+      "successWithLink": "Invitation sent! Link copied to clipboard.",
+      "error": "Error sending invitation"
+    },
+    "messages": {
+      "blocked": "Account of {{name}} has been blocked",
+      "activated": "Account of {{name}} has been activated",
+      "reactivated": "Account of {{name}} has been reactivated",
+      "error": "Error updating user status. {{err}}"
     }
   },
   "signupPage": {

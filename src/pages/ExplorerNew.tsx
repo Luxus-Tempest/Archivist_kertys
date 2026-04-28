@@ -272,10 +272,11 @@ export function ExplorerNew() {
   });
 
   return (
-    <DashboardLayoutNew isFullWidth>
-      <div className="flex flex-col md:flex-row gap-0 h-full overflow-hidden w-full m-0 p-0 ">
-        <Group orientation="horizontal">
-          <Panel defaultSize="25%" minSize="15%" maxSize="40%" className="flex flex-col h-full min-w-0">
+    <DashboardLayoutNew isFullWidth isChildPaddingBottom={false}>
+      <div className="flex flex-col md:flex-row gap-0 h-full overflow-hidden w-full m-0 p-0 -pb-16! ">
+        <Group orientation="horizontal"  >
+        
+        <Panel defaultSize="25%" minSize="15%" maxSize="40%" className="flex flex-col h-full min-w-0 border-r border-outline-variant/40 shadow-card">
             {/* Left Pane: Document List */}
             <section className="w-full pt-2 bg-white flex flex-col h-full overflow-hidden">
               {/* Header Action Bar */}
@@ -495,7 +496,7 @@ export function ExplorerNew() {
           <div className="h-8 w-1 rounded-full bg-slate-200 group-hover:bg-primary group-active:bg-primary transition-colors"></div>
         </Separator>
 
-        <Panel defaultSize="42%" minSize="20%" className="flex flex-col h-full min-w-0">
+        <Panel defaultSize="42%" minSize="20%" className="flex flex-col h-full min-w-0 border border-outline-variant/40 shadow-card">
           {/* Center Pane: Preview Area */}
           <section className="flex-1 min-w-0 bg-surface flex flex-col h-full overflow-hidden">
 

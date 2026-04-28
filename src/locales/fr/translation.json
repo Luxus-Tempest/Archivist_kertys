@@ -172,5 +172,78 @@
     "completedAccount": "Compte finalisé avec succès !",
     "errorCompleting": "Erreur lors de la finalisation du compte.",
     "completeAccount": "Finaliser le compte"
+  },
+  "members": {
+    "title": "Membres",
+    "subtitle": "Gérez votre équipe et leurs permissions.",
+    "searchPlaceholder": "Rechercher par nom ou email...",
+    "clear": "Effacer",
+    "noMembersFound": "Aucun membre trouvé.",
+    "groupButtons": {
+      "createUser": "Créer un membre",
+      "inviteMember": "Inviter un membre"
+    },
+    "table": {
+      "user": "Utilisateur",
+      "email": "Email",
+      "status": "Statut",
+      "role": "Rôle",
+      "actions": "Actions"
+    },
+    "roles": {
+      "admin": "Admin",
+      "user": "Utilisateur"
+    },
+    "statusLabels": {
+      "active": "Actif",
+      "pending": "En attente",
+      "blocked": "Bloqué"
+    },
+    "actionLabels": {
+      "block": "Bloquer",
+      "approve": "Approuver",
+      "unblock": "Débloquer"
+    },
+    "pagination": {
+      "noResults": "Aucun résultat",
+      "showingResults": "Affichage de {{startItem}}–{{endItem}} sur {{totalCount}} utilisateurs"
+    },
+    "createUserModal": {
+      "label": "Créer un nouvel utilisateur",
+      "fullName": "Nom complet",
+      "fullNamePlaceholder": "Jean Dupont",
+      "email": "Adresse email",
+      "emailPlaceholder": "jean@dupont.com",
+      "password": "Mot de passe",
+      "passwordPlaceholder": "••••••••",
+      "role": "Rôle",
+      "status": "Status initial",
+      "createUserInfoText": "L'utilisateur créé recevra un email automatique avec ses identifiants pour se connecter à votre organisation.",
+      "creatingUser": "Création de l'utilisateur...",
+      "createUser": "Créer l'utilisateur",
+      "cancel": "Annuler",
+      "success": "Utilisateur créé avec succès !",
+      "error": "Erreur lors de la création de l'utilisateur"
+    },
+    "inviteUserModal": {
+      "label": "Inviter un nouvel utilisateur",
+      "emailLabel": "Adresse email",
+      "emailPlaceholder": "ex : nom@entreprise.com",
+      "securityRole": "Rôle de sécurité",
+      "initialStatus": "Status initial",
+      "infoText": "L'utilisateur invité recevra un lien sécurisé automatisé par email pour finaliser la configuration de son profil et son authentification.",
+      "sending": "Envoi de l'invitation...",
+      "send": "Envoyer l'invitation",
+      "cancel": "Annuler",
+      "success": "Invitation envoyée avec succès !",
+      "successWithLink": "Invitation envoyée ! Lien copié dans le presse-papiers.",
+      "error": "Erreur lors de l'envoi de l'invitation"
+    },
+    "messages": {
+      "blocked": "Le compte de {{name}} a été bloqué",
+      "activated": "Le compte de {{name}} a été activé",
+      "reactivated": "Le compte de {{name}} a été réactivé",
+      "error": "Erreur lors de la mise à jour du statut. {{err}}"
+    }
   }
 }
