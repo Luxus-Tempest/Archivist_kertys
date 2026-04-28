@@ -10,6 +10,7 @@ const initialState: AdminState = {
   offset: 0,
   limit: 10,
   isLoading: false,
+  isActionLoading: false,
   error: null,
 };
 
@@ -139,6 +140,7 @@ const adminSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    // Fetch Users (Full table load)
     builder.addCase(fetchUsers.pending, (state) => {
       state.isLoading = true;
       state.error = null;
@@ -156,13 +158,13 @@ const adminSlice = createSlice({
       state.error = action.payload || 'Erreur inconnue';
     });
 
-    // Update User Status
+    // Update User Status (Background action)
     builder.addCase(updateUserStatus.pending, (state) => {
-      state.isLoading = true;
+      state.isActionLoading = true;
       state.error = null;
     });
     builder.addCase(updateUserStatus.fulfilled, (state, action) => {
-      state.isLoading = false;
+      state.isActionLoading = false;
       state.error = null;
       const user = state.users.find((u) => u.id === action.payload.id);
       if (user) {
@@ -170,35 +172,35 @@ const adminSlice = createSlice({
       }
     });
     builder.addCase(updateUserStatus.rejected, (state, action) => {
-      state.isLoading = false;
+      state.isActionLoading = false;
       state.error = action.payload || 'Erreur inconnue';
     });
 
     // Invite User
     builder.addCase(inviteUser.pending, (state) => {
-      state.isLoading = true;
+      state.isActionLoading = true;
       state.error = null;
     });
     builder.addCase(inviteUser.fulfilled, (state) => {
-      state.isLoading = false;
+      state.isActionLoading = false;
       state.error = null;
     });
     builder.addCase(inviteUser.rejected, (state, action) => {
-      state.isLoading = false;
+      state.isActionLoading = false;
       state.error = action.payload || 'Erreur inconnue';
     });
 
     // Create User By Admin
     builder.addCase(createUserByAdmin.pending, (state) => {
-      state.isLoading = true;
+      state.isActionLoading = true;
       state.error = null;
     });
     builder.addCase(createUserByAdmin.fulfilled, (state) => {
-      state.isLoading = false;
+      state.isActionLoading = false;
       state.error = null;
     });
     builder.addCase(createUserByAdmin.rejected, (state, action) => {
-      state.isLoading = false;
+      state.isActionLoading = false;
       state.error = action.payload || 'Erreur inconnue';
     });
   },

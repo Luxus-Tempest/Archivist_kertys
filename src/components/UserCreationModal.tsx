@@ -22,7 +22,7 @@ export interface ModalProps {
 
 export function UserCreationModal({ open, onClose, onSubmitSuccess }: ModalProps) {
   const { t } = useTranslation();
-  const { createUserByAdmin, isLoading } = useAdmin();
+  const { createUserByAdmin, isActionLoading } = useAdmin();
   
   const { register, handleSubmit, reset, formState: { errors } } = useForm<CreateUserByAdminFormData>({
     resolver: zodResolver(createUserByAdminSchema(t)),
@@ -78,9 +78,9 @@ export function UserCreationModal({ open, onClose, onSubmitSuccess }: ModalProps
             onClick={handleSubmit(onSubmit)}
             type="button"
             btnClass='rounded-lg w-content'
-            disabled={isLoading}
+            disabled={isActionLoading}
           >
-            {isLoading ? t('members.createUserModal.creatingUser') : t('members.createUserModal.createUser')}
+            {isActionLoading ? t('members.createUserModal.creatingUser') : t('members.createUserModal.createUser')}
           </Button>
         </div>
       }

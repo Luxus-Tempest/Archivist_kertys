@@ -100,42 +100,83 @@ export function GroupButton({
       </div>
 
       <Popper
-        // sx={{ zIndex: 50 }}
-        open={open}
-        anchorEl={anchorRef.current}
-        transition
-        disablePortal
-        className='z-50 w-inherit'
+  open={open}
+  anchorEl={anchorRef.current}
+  transition
+  disablePortal
+  className='z-50'
+  // ↓ on récupère la largeur du parent pour l'appliquer au menu
+  style={{ minWidth: anchorRef.current?.offsetWidth }}
+>
+  {({ TransitionProps, placement }) => (
+    <Grow
+      {...TransitionProps}
+      style={{
+        transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom',
+      }}
+    >
+<Paper 
+  className="shadow-card! border! px-1.5! border-outline-variant/40! rounded-md! mt-1!" 
+  style={{ minWidth: '100%' }}
+  // sx={{
+  //   // borderRadius: '12px',
+  //   // border: '1px solid #e2e6ea',
+  //   // boxShadow: '0 8px 24px rgba(0,0,0,0.10)',
+  //   py: 0,
+  //   mt: 0.5,
+  // }}
+>        <ClickAwayListener onClickAway={handleClose}>
+          <MenuList className='text-sm' autoFocusItem>
+  {options.map((option, index) => (
+        <React.Fragment key={option.value}>
+      <MenuItem
+        disabled={option.disabled}
+        selected={index === selectedIndex}
+        onClick={() => handleMenuItemClick(index)}
+        className='text-start! rounded-sm! px-2! py-2!'
+        sx={{
+          fontSize: '13px',
+          fontWeight: 500,
+          color: '#1e2a32',
+          borderRadius: '8px',
+          mx: 0.5,
+          my: 0.25,
+          transition: 'all 0.15s ease',
+          '&:hover': {
+            backgroundColor: '#f0f4f8',
+            color: '#1e2a32',
+          },
+          '&.Mui-selected': {
+            backgroundColor: '#e8edf2',
+            fontWeight: 700,
+            '&:hover': { backgroundColor: '#dde4eb' },
+          },
+          '&.Mui-disabled': { opacity: 0.4 },
+        }}
       >
-        {({ TransitionProps, placement }) => (
-          <Grow
-            {...TransitionProps}
-            style={{
-              transformOrigin:
-                placement === 'bottom'
-                  ? 'center top'
-                  : 'center bottom',
-            }}
-          >
-            <Paper className="rounded-xl shadow-xl">
-              <ClickAwayListener onClickAway={handleClose}>
-                <MenuList className='text-sm' autoFocusItem>
-                  {options.map((option, index) => (
-                    <MenuItem
-                      key={option.value}
-                      disabled={option.disabled}
-                      selected={index === selectedIndex}
-                      onClick={() => handleMenuItemClick(index)}
-                    >
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </MenuList>
-              </ClickAwayListener>
-            </Paper>
-          </Grow>
-        )}
-      </Popper>
+        {option.label}
+      </MenuItem>
+
+      {/* Séparateur entre chaque item sauf le dernier */}
+      {index < options.length - 1 && (
+        <div
+        className=' mx-2 h-[0.5px]  my-0.5 bg-outline-variant/40'   
+          // style={{
+          //   height: '1px',
+          //   backgroundColor: 'rgba(169, 180, 185, 0.18)',
+          //   // mx: 1,
+          // }}
+        />
+      )}
+    </React.Fragment>
+
+  ))}
+</MenuList>
+        </ClickAwayListener>
+      </Paper>
+    </Grow>
+  )}
+</Popper>
     </>
   );
 }

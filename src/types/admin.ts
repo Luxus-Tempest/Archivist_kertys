@@ -23,6 +23,7 @@ export interface AdminState {
   offset: number;
   limit: number;
   isLoading: boolean;
+  isActionLoading: boolean;
   error: string | null;
 }
 

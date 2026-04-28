@@ -342,6 +342,7 @@ export function Members() {
             {/* Actions */}
             <GroupButton
               variant="solid"
+              className='shadow-card'
               options={[
                 { label: t('members.groupButtons.createUser'), value: 'create', onClick: () => setIsCreateUserModalOpen(true) },
                 { label: t('members.groupButtons.inviteMember'), value: 'invite', onClick: () => setIsInviteModalOpen(true) },

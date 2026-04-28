@@ -4,7 +4,7 @@ import { fetchUsers, clearAdminError, updateUserStatus, inviteUser as inviteUser
 
 export const useAdmin = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { users, totalCount, offset, limit, isLoading, error } = useSelector((state: RootState) => state.admin);
+  const { users, totalCount, offset, limit, isLoading, isActionLoading, error } = useSelector((state: RootState) => state.admin);
 
   const getUsers = async (options: { limit?: number; offset?: number } = {}) => {
     return dispatch(fetchUsers(options)).unwrap();
@@ -32,6 +32,7 @@ export const useAdmin = () => {
     offset,
     limit,
     isLoading,
+    isActionLoading,
     error,
     getUsers,
     updateUserStatus: updateStatus,

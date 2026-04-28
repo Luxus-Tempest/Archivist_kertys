@@ -21,7 +21,7 @@ export interface UserInviteModalProps {
 
 export function UserInviteModal({ open, onClose, onSubmitSuccess }: UserInviteModalProps) {
   const { t } = useTranslation();
-  const { inviteUser, isLoading } = useAdmin();
+  const { inviteUser, isActionLoading } = useAdmin();
   
   const { register, handleSubmit, reset, formState: { errors } } = useForm<InviteUserFormData>({
     resolver: zodResolver(inviteUserSchema(t)),
@@ -79,9 +79,9 @@ export function UserInviteModal({ open, onClose, onSubmitSuccess }: UserInviteMo
             onClick={handleSubmit(onSubmit)}
             type="button"
             btnClass='rounded-lg w-content'
-            disabled={isLoading}
+            disabled={isActionLoading}
           >
-            {isLoading ? t('sendingInvitation', 'Sending invitation...') : t('sendInvitation', 'Send Invitation')}
+            {isActionLoading ? t('sendingInvitation', 'Sending invitation...') : t('sendInvitation', 'Send Invitation')}
           </Button>
         </div>
       }
