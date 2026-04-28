@@ -24,7 +24,7 @@ export function DocumentRow({ name, size, status, category, action }: DocumentRo
   };
 
   return (
-    <tr className="group hover:bg-surface-container-lowest transition-colors">
+    <tr className="group hover:bg-surface-container-low/50  border-outline-variant/20 transition-colors">
       <td className="px-6 py-3">
         <div className="flex items-center gap-4">
           <div className="relative w-12 h-12 bg-white rounded-lg border border-outline-variant/30 flex items-center justify-center overflow-hidden shadow-sm shrink-0">

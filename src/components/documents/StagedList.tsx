@@ -16,7 +16,7 @@ export function StagedList({ files, onRemove, onClear, isUploading }: StagedList
   if (files.length === 0) return null;
 
   return (
-    <section className="flex flex-col gap-4">
+    <section className="flex flex-col gap-4 ">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h3 className="text-xl font-bold font-headline text-on-surface">{t('stagedFiles', 'Staged Files')}</h3>

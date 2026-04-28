@@ -44,7 +44,7 @@ export function UploadAreaNew({ onFilesSelected, isUploading, disabled }: Upload
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
       onClick={() => !isUploading && fileInputRef.current?.click()}
-      className={`group relative bg-surface-container-lowest rounded-md border-2 border-dashed transition-all duration-300 flex flex-col items-center justify-center p-4 lg:p-4 overflow-hidden min-h-[230px] cursor-pointer
+      className={`group relative bg-surface-container-lowest rounded-md border-2 border-dashed transition-all duration-300 flex flex-col items-center justify-center p-4 lg:p-4 overflow-hidden min-h-[230px] cursor-pointer border-outline-variant/40 shadow-card
         ${isDragging ? 'border-primary bg-primary/5' : 'border-outline-variant/30 hover:border-primary/50'}
         ${isUploading ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}
       `}
@@ -59,8 +59,8 @@ export function UploadAreaNew({ onFilesSelected, isUploading, disabled }: Upload
       />
       
       {/* Background blur effects */}
-      <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-primary-container/30 blur-[80px] rounded-full group-hover:scale-125 transition-transform duration-700"></div>
-      <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 bg-secondary-container/20 blur-[80px] rounded-full group-hover:scale-125 transition-transform duration-700"></div>
+      <div className="absolute top-0 right-0 -mr-8 -mt-16 w-64 h-64 bg-primary-container/30 blur-[80px] rounded-full group-hover:scale-125 transition-transform duration-700"></div>
+      <div className="absolute top-6 left-0 -ml-20 -mt-8 w-72 h-72 bg-primary-container/30 blur-[100px] rounded-full group-hover:scale-125 transition-transform duration-700"></div>
       
       <div className="relative z-10 flex flex-col items-center text-center">
         <div className="w-16 h-16 mb-4 rounded-3xl bg-primary-container/50 flex items-center justify-center text-primary-dim group-hover:scale-110 transition-transform duration-300">

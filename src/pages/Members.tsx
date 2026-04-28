@@ -290,7 +290,7 @@ export function Members() {
 
   return (
     <DashboardLayoutNew>
-      <div className="min-h-screen bg-[#f7f9fb] pb-10">
+      <div className="min-h-screen  pb-10">
         <div className="max-w-[1280px] mx-auto w-full px-6 pt-8">
 
           {/* ── Header ── */}
@@ -309,7 +309,7 @@ export function Members() {
           {/* ── Toolbar ── */}
           <div className="flex flex-col md:flex-row justify-between gap-3 mb-5">
             {/* Search bar */}
-            <div className="flex-1 flex items-center gap-3 bg-white border border-[#e2e6ea] rounded-lg px-4 py-2.5 shadow-sm">
+            <div className="flex-1 flex items-center gap-3 bg-white border border-outline-variant/40 shadow-card rounded-lg px-4 py-2.5 ">
               <SearchRoundedIcon sx={{ fontSize: 18, color: '#9ca3af' }} />
               <input
                 type="text"
@@ -365,7 +365,7 @@ export function Members() {
           )}
 
           {/* ── Table card ── */}
-          <div className="bg-white rounded-xl border border-[#e2e6ea] shadow-sm overflow-hidden">
+          <div className="bg-white rounded-xl border border-outline-variant/40 shadow-card overflow-hidden">
 
             {/* table */}
             <div className="overflow-x-auto">

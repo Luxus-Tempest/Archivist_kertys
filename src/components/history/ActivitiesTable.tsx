@@ -13,6 +13,7 @@ import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
 import FolderOffRoundedIcon from '@mui/icons-material/FolderOffRounded';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
+import { Button } from '../Button';
 
 const formatDate = (dateString: string, lng: string) => {
   const d = new Date(dateString.replace(' ', 'T'));
@@ -98,19 +99,19 @@ export function ActivitiesTable() {
         </div>
         <div className="flex gap-4 items-center">
           {/* Segmented Control / Toggle */}
-          <div className="flex bg-surface-container-high p-1 rounded-full border border-outline-variant/10 shadow-sm">
+          <div className="flex items-center justify-center bg-surface-container-high p-1 rounded-md border border-outline-variant/10 shadow-card">
             <button 
               onClick={() => setGroupBy('session')}
-              className={`px-3 cursor-pointer py-1.5 text-xs font-bold rounded-full transition-all duration-300 flex items-center gap-2 ${
-                groupBy === 'session' ? 'bg-white shadow-sm text-primary' : 'text-outline hover:text-on-surface'
+              className={`px-3 cursor-pointer py-1.5 text-xs font-bold rounded-md transition-all duration-300 flex items-center gap-2 ${
+                groupBy === 'session' ? 'bg-white/90  text-primary' : 'text-outline hover:text-on-surface'
               }`}
             >
               <ViewAgendaRoundedIcon sx={{ fontSize: 18 }} />
               {t('sessions', 'Sessions')}</button>
             <button 
               onClick={() => setGroupBy('files')}
-              className={`px-3 cursor-pointer py-1.5 text-xs font-bold rounded-full transition-all duration-300 flex items-center gap-2 ${
-                groupBy === 'files' ? 'bg-white shadow-sm text-primary' : 'text-outline hover:text-on-surface'
+              className={`px-3 cursor-pointer py-1.5 text-xs font-bold rounded-md transition-all duration-300 flex items-center gap-2 ${
+                groupBy === 'files' ? 'bg-white/90  text-primary' : 'text-outline hover:text-on-surface'
               }`}
             >
               <DescriptionRoundedIcon sx={{ fontSize: 18 }} />
@@ -120,17 +121,17 @@ export function ActivitiesTable() {
           <div className="h-4 w-px bg-outline-variant/20 mx-2"></div>
 
           <div className="flex gap-2">
-            <button 
+            <Button 
               onClick={() => navigate('/process')}
               className="px-4 py-2 text-sm font-semibold bg-primary text-on-primary rounded-lg shadow-sm flex items-center gap-2 hover:bg-primary-dim transition-colors cursor-pointer"
             >
               {t('uploadNewFiles')}
-              <AddRoundedIcon sx={{ fontSize: 18 }} /></button>
+              <AddRoundedIcon sx={{ fontSize: 18 }} /></Button>
           </div>
         </div>
       </div>
 
-      <div className="overflow-hidden bg-surface-container-lowest rounded-2xl border border-outline-variant/10 shadow-sm">
+      <div className="overflow-hidden bg-surface-container-lowest rounded-md border border-outline-variant/40 shadow-card">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-surface-container-low/50">

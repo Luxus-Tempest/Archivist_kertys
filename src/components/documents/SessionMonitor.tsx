@@ -79,13 +79,13 @@ export function SessionMonitor({ sessionId, onClose }: SessionMonitorProps) {
   if (!sessionData) return null;
 
   return (
-    <section className="flex flex-col gap-4 bg-surface-container-lowest border border-outline-variant/20 rounded-md p-5 transition-all shadow-sm">
+    <section className="flex flex-col gap-4 bg-surface-container-lowest border border-outline-variant/40 rounded-md p-5 duration-300 transition-all shadow-card hover:shadow-xs">
       <div 
         className="flex flex-wrap transition-all duration-300 items-center justify-between gap-4 cursor-pointer select-none"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <div className="flex items-center gap-3">
-          <span className="p-2 bg-surface-container-highest rounded-full text-on-surface-variant flex items-center justify-center transition-transform duration-200">
+          <span className="p-2 bg-surface-container-highest rounded-md text-on-surface-variant flex items-center justify-center transition-transform duration-200">
             <KeyboardArrowDownRoundedIcon className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} />
           </span>
           <div>

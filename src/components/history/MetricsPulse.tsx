@@ -30,7 +30,7 @@ export function MetricsPulse() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {/* Metric Card 1 */}
-        <div className="bg-surface-container-lowest p-3 rounded-xl border border-outline-variant/10 shadow-card">
+        <div className="bg-surface-container-lowest p-3 rounded-md border border-outline-variant/40 shadow-card">
           <p className="text-outline text-xs font-semibold uppercase tracking-wider mb-2">{t('totalFilesProcessed', 'Total files processed')}</p>
           <div className="flex items-baseline gap-2">
             {isLoading || !user ? (
@@ -44,7 +44,7 @@ export function MetricsPulse() {
         </div>
 
         {/* Metric Card 2 */}
-        <div className="bg-surface-container-lowest p-3 rounded-xl border border-outline-variant/10 shadow-card">
+        <div className="bg-surface-container-lowest p-3 rounded-md border border-outline-variant/40 shadow-card">
           <p className="text-outline text-xs font-semibold uppercase tracking-wider mb-2">{t('storage', 'Storage')}</p>
           <div className="flex items-baseline gap-2">
             {isLoading || !user ? (

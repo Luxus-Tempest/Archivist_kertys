@@ -8,7 +8,7 @@ interface DocumentTableProps {
 export function DocumentTable({ children }: DocumentTableProps) {
   const { t } = useTranslation()
   return (
-    <div className="bg-surface-container-low/50 rounded-md border border-outline-variant/10 overflow-hidden">
+    <div className="bg-white rounded-md border border-outline-variant/40 overflow-hidden shadow-card">
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead className="bg-surface-container-high/30 border-b border-outline-variant/10 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
