@@ -91,7 +91,14 @@
     "explorer": "Explorateur",
     "history": "Historique",
     "process": "Téléverser",
-    "members": "Membres"
+    "members": "Membres",
+    "organizations": "Organisations",
+    "comingSoon": "Bientôt",
+    "groups": {
+      "core": "Principal",
+      "admin": "Administration",
+      "settings": "Paramètres"
+    }
   },
   "account": "Compte",
   "settings": "Paramètres",

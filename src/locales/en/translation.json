@@ -100,7 +100,14 @@
     "explorer": "Explorer",
     "history": "History",
     "process": "Process",
-    "members": "Members"
+    "members": "Members",
+    "organizations": "Organizations",
+    "comingSoon": "Coming soon",
+    "groups": {
+      "core": "Core",
+      "admin": "Admin",
+      "settings": "Settings"
+    }
   },
   "account": "Account",
   "settings": "Settings",
