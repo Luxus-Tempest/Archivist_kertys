@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState, AppDispatch } from '../store';
-import { loginUser, signupUser, createOrganization, logout, clearError, fetchMe } from '../store/auth/authSlice';
+import { loginUser, signupUser, createOrganization, registerInvitedUser as registerInvitedUserThunk, logout, clearError, fetchMe } from '../store/auth/authSlice';
 import type { LoginFormData, SignupFormData } from '../utils/validations';
 
 export const useAuth = () => {
@@ -17,6 +17,10 @@ export const useAuth = () => {
 
   const registerOrganization = async (data: any) => {
     return dispatch(createOrganization(data)).unwrap();
+  };
+
+  const handleRegisterInvitedUser = async (data: any) => {
+    return dispatch(registerInvitedUserThunk(data)).unwrap();
   };
 
   const getProfile = async () => {
@@ -40,6 +44,7 @@ export const useAuth = () => {
     login,
     signup,
     createOrganization: registerOrganization,
+    registerInvitedUser: handleRegisterInvitedUser,
     getProfile,
     logout: handleLogout,
     clearError: handleClearError

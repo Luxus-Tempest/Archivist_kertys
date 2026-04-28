@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Login } from './pages/Login';
 import { Signup } from './pages/Signup';
+import { InvitationRegister } from './pages/InvitationRegister';
 import { History } from './pages/History';
 import { Process } from './pages/Process';
 import { HistoryNew } from './pages/HistoryNew';
@@ -72,6 +73,11 @@ function App() {
         <Route path="/signup" element={
           <GuestRoute>
             <Signup />
+          </GuestRoute>
+        } />
+        <Route path="/invitation/register" element={
+          <GuestRoute>
+            <InvitationRegister />
           </GuestRoute>
         } />
         

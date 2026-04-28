@@ -72,6 +72,64 @@ export const updateUserStatus = createAsyncThunk<
   }
 });
 
+export const inviteUser = createAsyncThunk<
+  { Link: string; Message: string },
+  { email: string; role: string; status: string },
+  { rejectValue: string }
+>('admin/inviteUser', async (data, thunkAPI) => {
+  try {
+    const token = (thunkAPI.getState() as any).auth.token;
+    if (!token) return thunkAPI.rejectWithValue('No token found');
+
+    const response = await fetch(`${API_URL}/invite-user`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      return thunkAPI.rejectWithValue(errorData.message || 'Erreur lors de l\'envoi de l\'invitation.');
+    }
+
+    return await response.json();
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(error.message || 'Erreur de connexion au serveur.');
+  }
+});
+
+export const createUserByAdmin = createAsyncThunk<
+  { message: string; userId: string },
+  { Email: string; Role: string; Status: string; Password: string; FullName: string },
+  { rejectValue: string }
+>('admin/createUserByAdmin', async (data, thunkAPI) => {
+  try {
+    const token = (thunkAPI.getState() as any).auth.token;
+    if (!token) return thunkAPI.rejectWithValue('No token found');
+
+    const response = await fetch(`${API_URL}/add-user`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      return thunkAPI.rejectWithValue(errorData.message || 'Erreur lors de la création de l\'utilisateur.');
+    }
+
+    return await response.json();
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(error.message || 'Erreur de connexion au serveur.');
+  }
+});
+
 const adminSlice = createSlice({
   name: 'admin',
   initialState,
@@ -112,6 +170,34 @@ const adminSlice = createSlice({
       }
     });
     builder.addCase(updateUserStatus.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload || 'Erreur inconnue';
+    });
+
+    // Invite User
+    builder.addCase(inviteUser.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(inviteUser.fulfilled, (state) => {
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(inviteUser.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload || 'Erreur inconnue';
+    });
+
+    // Create User By Admin
+    builder.addCase(createUserByAdmin.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(createUserByAdmin.fulfilled, (state) => {
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(createUserByAdmin.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.payload || 'Erreur inconnue';
     });

@@ -162,5 +162,15 @@
     "save": "Enregistrer",
     "cancel": "Annuler",
     "saving": "Enregistrement..."
+  },
+  "invitationPage": {
+    "completeRegistration": "Finaliser l'inscription",
+    "fillInYourDetails": "Renseignez vos informations personnelles pour rejoindre l'équipe.",
+    "welcomeToTheTeam": "Bienvenue dans l'équipe.",
+    "youveBeenInvited": "Vous avez été invité(e) à rejoindre l'organisation. Configurez votre compte pour commencer.",
+    "completingAccount": "Finalisation de votre compte...",
+    "completedAccount": "Compte finalisé avec succès !",
+    "errorCompleting": "Erreur lors de la finalisation du compte.",
+    "completeAccount": "Finaliser le compte"
   }
 }

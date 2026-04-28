@@ -153,6 +153,7 @@
     "subtitle": "Manage your team and their permissions.",
     "inviteMember": "Invite Team Member",
     "searchPlaceholder": "Search by name or email...",
+    "clear": "Clear",
     "tabs": {
       "general": "General Information",
       "staff": "Staff & Permissions",
@@ -162,6 +163,7 @@
       "user": "User",
       "status": "Status",
       "role": "Role",
+      "email": "Email",
       "permissionGroup": "Permission Group",
       "location": "Location",
       "actions": "Actions"
@@ -170,6 +172,25 @@
       "active": "Active",
       "inviteSent": "Invite Sent",
       "inactive": "Inactive"
+    },
+    "groupButtons": {
+      "createUser": "Create member",
+      "inviteMember": "Invite member"
+    },
+    "createUserModal": {
+      "label": "Create a New User",
+      "fullName": "Full Name",
+      "fullNamePlaceholder": "John Doe",
+      "email": "Email Address",
+      "emailPlaceholder": "john@doe.com",
+      "password": "Password",
+      "passwordPlaceholder": "••••••••",
+      "role": "Role",
+      "status": "Initial Status",
+      "createUserInfoText": "The created user will receive an automated email with his credentials to connect to your organization.",
+      "creatingUser": "Creating user...",
+      "createUser": "Create User",
+      "cancel": "Cancel"
     }
   },
   "signupPage": {
@@ -203,5 +224,15 @@
     "save": "Save",
     "cancel": "Cancel",
     "saving": "Saving..."
+  },
+  "invitationPage": {
+    "completeRegistration": "Complete Registration",
+    "fillInYourDetails": "Fill in your personal details to join the team.",
+    "welcomeToTheTeam": "Welcome to the Team.",
+    "youveBeenInvited": "You've been invited to join the organization. Set up your account to get started.",
+    "completingAccount": "Completing your account...",
+    "completedAccount": "Account completed successfully!",
+    "errorCompleting": "Error completing account.",
+    "completeAccount": "Complete Account"
   }
 }

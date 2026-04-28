@@ -25,3 +25,11 @@ export interface AdminState {
   isLoading: boolean;
   error: string | null;
 }
+
+export interface CreateUserByAdminData {
+  fullname: string;
+  email: string;
+  password: string;
+  role: UserRole;
+  status: UserStatus;
+}

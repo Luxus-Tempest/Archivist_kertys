@@ -6,10 +6,11 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   id: string;
   error?: string;
   rightElement?: ReactNode;
+  inputClassName?: string;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ label, id, icon, className = '', error, rightElement, ...props }, ref) => {
+  ({ label, id, icon, className = '', error, rightElement, inputClassName = '', ...props }, ref) => {
     return (
       <div className={`group ${className}`}>
         <label 
@@ -29,7 +30,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             className={`w-full ${icon ? 'pl-12' : 'pl-4'} pr-4 py-3 bg-surface-container-low border-0 rounded-xl focus:ring-1 focus:ring-primary transition-all placeholder:text-outline-variant font-body text-on-surface ${
               error ? 'ring-1 ring-error' : ''
-            }`}
+            } ${inputClassName}`}
             {...props}
           />
           {rightElement && (

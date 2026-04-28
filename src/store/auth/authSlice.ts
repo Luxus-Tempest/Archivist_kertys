@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import type { AuthState, LoginResponse, User, CreateOrganizationPayload } from '../../types/auth';
+import type { AuthState, LoginResponse, User, CreateOrganizationPayload, RegisterInvitedUserPayload } from '../../types/auth';
 import type { LoginFormData, SignupFormData } from '../../utils/validations';
 import i18next from 'i18next'
 
@@ -64,6 +64,36 @@ export const createOrganization = createAsyncThunk<
     return { message: 'Organization created successfully' } as any;
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error.message || 'Erreur de connexion au serveur.');
+  }
+});
+
+export const registerInvitedUser = createAsyncThunk<
+  { message: string },
+  { data: RegisterInvitedUserPayload; token: string },
+  { rejectValue: string }
+>('auth/RegisterByInvitation', async ({ data, token }, thunkAPI) => {
+  try {
+    const response = await fetch(`${API_URL}/register-by-invitation`, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'token': `${token}`
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      return thunkAPI.rejectWithValue(errorData.message || 'Error during registration.');
+    }
+    
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      return await response.json();
+    }
+    return { message: 'Registration successful' } as any;
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(error.message || 'Server connection error.');
   }
 });
 
@@ -165,6 +195,20 @@ const authSlice = createSlice({
       state.error = null;
     });
     builder.addCase(createOrganization.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload || 'Erreur inconnue';
+    });
+
+    // Register Invited User
+    builder.addCase(registerInvitedUser.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(registerInvitedUser.fulfilled, (state) => {
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(registerInvitedUser.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.payload || 'Erreur inconnue';
     });

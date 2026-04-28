@@ -18,7 +18,7 @@ export function Button({
   children, 
   ...props 
 }: ButtonProps) {
-  const baseStyles = `w-full py-2 font-semibold transition-all duration-300 flex justify-center items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed ${btnClass}`;
+  const baseStyles = `w-full py-2 font-semibold transition-all duration-300 flex justify-center items-center gap-2 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed ${btnClass}`;
   
   const variants = {
     solid:  'bg-linear-to-r from-primary to-primary-dim text-on-primary rounded-full hover:shadow-lg hover:shadow-primary/20',
