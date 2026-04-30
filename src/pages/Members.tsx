@@ -53,19 +53,19 @@ const ACTION_CONFIG: Record<Status, { labelKey: string; color: string; hoverBg: 
 };
 
 // ─── Avatar colour palette (deterministic by initial) ───────────────────────
-const AVATAR_PALETTES = [
-  { bg: '#dbeafe', color: '#1d4ed8' },
-  { bg: '#dcfce7', color: '#15803d' },
-  { bg: '#fef9c3', color: '#a16207' },
-  { bg: '#fce7f3', color: '#9d174d' },
-  { bg: '#ede9fe', color: '#6d28d9' },
-  { bg: '#ffedd5', color: '#c2410c' },
-];
+// const AVATAR_PALETTES = [
+//   { bg: '#dbeafe', color: '#1d4ed8' },
+//   { bg: '#dcfce7', color: '#15803d' },
+//   { bg: '#fef9c3', color: '#a16207' },
+//   { bg: '#fce7f3', color: '#9d174d' },
+//   { bg: '#ede9fe', color: '#6d28d9' },
+//   { bg: '#ffedd5', color: '#c2410c' },
+// ];
 
-function getAvatarPalette(name: string) {
-  const idx = name.charCodeAt(0) % AVATAR_PALETTES.length;
-  return AVATAR_PALETTES[idx];
-}
+// function getAvatarPalette(name: string) {
+//   const idx = name.charCodeAt(0) % AVATAR_PALETTES.length;
+//   return AVATAR_PALETTES[idx];
+// }
 
 // ─── StatusBadge — UNCHANGED ─────────────────────────────────────────────────
 function StatusBadge({ status }: { status: Status }) {
@@ -116,7 +116,7 @@ function MemberRow({ member, onUpdateStatus, updatingId }: {
   onUpdateStatus: (member: Member, status: string) => void;
   updatingId: string | null;
 }) {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const isBlocked = member.status === 'Blocked';
   const isUpdating = updatingId === member.id;
   
