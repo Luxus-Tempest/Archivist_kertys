@@ -49,6 +49,7 @@ export function SidebarNew({ isCollapsed, setIsCollapsed }: SidebarProps) {
       adminOnly: true,
       items: [
         { name: t('sidebar.members', 'Members'), icon: ManageAccountsRoundedIcon, path: '/members' },
+        { name: t('sidebar.instructions', 'Instructions'), icon: ManageAccountsRoundedIcon, path: '/instructions' },
       ],
     },
     {

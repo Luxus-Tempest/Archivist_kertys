@@ -12,6 +12,7 @@ import { Members } from './pages/Members';
 import { DashboardLayout } from './components/layout/DashboardLayout';
 import { useAuth } from './hooks/useAuth';
 import './index.css';
+import { InstructionPage } from './pages/InstructionPage';
 
 // Protected Route wrapper component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -101,6 +102,11 @@ function App() {
           <AdminRoute>
             <Members />
           </AdminRoute>
+        } />
+        <Route path="/instructions" element={
+          <ProtectedRoute>
+            <InstructionPage />
+          </ProtectedRoute>
         } />
 
         {/* Existing Dashboard Routes (Preserved) */}
