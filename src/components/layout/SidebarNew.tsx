@@ -9,6 +9,9 @@ import ManageAccountsRoundedIcon from '@mui/icons-material/ManageAccountsRounded
 import CorporateFareRoundedIcon from '@mui/icons-material/CorporateFareRounded';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
+import DescriptionIcon from '@mui/icons-material/Description';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import ManageHistoryIcon from '@mui/icons-material/ManageHistory';
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -40,8 +43,8 @@ export function SidebarNew({ isCollapsed, setIsCollapsed }: SidebarProps) {
       label: t('sidebar.groups.core', 'Core'),
       items: [
         { name: t('sidebar.explorer', 'Explorer'), icon: FolderRoundedIcon, path: '/explorer' },
-        { name: t('sidebar.history', 'History'), icon: HistoryRoundedIcon, path: '/history' },
-        { name: t('sidebar.process', 'Process'), icon: AddRoundedIcon, path: '/process' },
+        { name: t('sidebar.history', 'History'), icon: ManageHistoryIcon, path: '/history' },
+        { name: t('sidebar.process', 'Process'), icon: CloudUploadIcon, path: '/process' },
       ],
     },
     {
@@ -49,7 +52,7 @@ export function SidebarNew({ isCollapsed, setIsCollapsed }: SidebarProps) {
       adminOnly: true,
       items: [
         { name: t('sidebar.members', 'Members'), icon: ManageAccountsRoundedIcon, path: '/members' },
-        { name: t('sidebar.instructions', 'Instructions'), icon: ManageAccountsRoundedIcon, path: '/instructions' },
+        { name: t('sidebar.instructions', 'Instructions'), icon: DescriptionIcon, path: '/instructions' },
       ],
     },
     {

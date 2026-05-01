@@ -65,7 +65,7 @@ export function Menu({
   return (
     <div 
       ref={menuRef}
-      className={`absolute ${alignmentClass} mt-3 w-56 rounded-xl border py-2 z-50 transition-all ${bgClass} ${className}`}
+      className={`absolute ${alignmentClass} mt-3 w-56 rounded-xl border py-2 z-50 transition-all ${bgClass} ${className} shadow-md`}
       style={{
         animation: 'menu-appear 0.2s cubic-bezier(0.16, 1, 0.3, 1)'
       }}
@@ -74,7 +74,7 @@ export function Menu({
 
       {header && (
         <div className={`px-6 py-2 border-b ${headerBorderClass} mb-1`}>
-          <h4 className={`text-[10px] font-black uppercase tracking-[0.2em] ${headerTextClass}`}>
+          <h4 className={`text-[10px] font-black capitalize tracking-[0.2em] ${headerTextClass}`}>
             {header}
           </h4>
         </div>
@@ -107,7 +107,7 @@ export function Menu({
                 {item.icon}
               </span>
             )}
-            <span className="text-[12px] font-black tracking-widest uppercase">
+            <span className="text-[12px] font-black tracking-widest capitalize">
               {item.label}
             </span>
           </button>

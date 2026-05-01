@@ -1,18 +1,19 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import type { Instruction, InstructionState, CreateInstructionPayload } from '../../types/instruction';
+import type { Instruction, InstructionState, CreateInstructionPayload, FetchInstructionsResponse } from '../../types/instruction';
 import i18next from 'i18next';
 
 const API_URL = import.meta.env.VITE_BASE_URL + '/admin/instructions';
 
 const initialState: InstructionState = {
   instructions: [],
+  totalCount: 0,
   isLoading: false,
   isActionLoading: false,
   error: null,
 };
 
 export const fetchInstructions = createAsyncThunk<
-  Instruction[],
+  FetchInstructionsResponse,
   void,
   { rejectValue: string }
 >('instruction/fetchInstructions', async (_, thunkAPI) => {
@@ -136,7 +137,8 @@ const instructionSlice = createSlice({
       })
       .addCase(fetchInstructions.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.instructions = action.payload;
+        state.instructions = action.payload.instructions;
+        state.totalCount = action.payload.totalCount;
       })
       .addCase(fetchInstructions.rejected, (state, action) => {
         state.isLoading = false;

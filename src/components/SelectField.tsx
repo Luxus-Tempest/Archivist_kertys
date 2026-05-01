@@ -7,13 +7,14 @@ interface SelectOption {
 }
 
 interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
-  label: string;
+  label?: string;
   id: string;
   icon?: ReactNode;
   error?: string;
   rightElement?: ReactNode;
   inputClassName?: string;
   options?: SelectOption[];
+  readOnly?: boolean;
 }
 
 export const SelectField = forwardRef<HTMLSelectElement, SelectProps>(
@@ -28,18 +29,21 @@ export const SelectField = forwardRef<HTMLSelectElement, SelectProps>(
       inputClassName = '',
       options,
       children,
+      readOnly = false,
       ...props
     },
     ref
   ) => {
     return (
       <div className={`group ${className} text-xs`}>
-        <label
-          htmlFor={id}
-          className="block font-semibold uppercase tracking-widest text-on-surface-variant mb-2 ml-1"
-        >
-          {label}
-        </label>
+        {label && (
+          <label
+            htmlFor={id}
+            className="block font-semibold uppercase tracking-widest text-on-surface-variant mb-2 ml-1"
+          >
+            {label}
+          </label>
+        )}
 
         <div className="relative flex items-center">
           {icon && (
@@ -51,11 +55,12 @@ export const SelectField = forwardRef<HTMLSelectElement, SelectProps>(
           <select
             id={id}
             ref={ref}
+            disabled={readOnly}
             className={`w-full appearance-none ${
               icon ? 'pl-12' : 'pl-4'
             } pr-10 py-3 bg-surface-container-low border-0 rounded-xl focus:ring-1 focus:ring-primary transition-all font-body text-on-surface ${
               error ? 'ring-1 ring-error' : ''
-            } ${inputClassName}`}
+            } ${readOnly ? 'opacity-50 cursor-not-allowed ' : ''} ${inputClassName}`}
             {...props}
           >
             {options

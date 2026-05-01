@@ -8,9 +8,15 @@ export interface Instruction {
 
 export interface InstructionState {
   instructions: Instruction[];
+  totalCount: number;
   isLoading: boolean;
   isActionLoading: boolean;
   error: string | null;
+}
+
+export interface FetchInstructionsResponse {
+  totalCount: number;
+  instructions: Instruction[];
 }
 
 export interface CreateInstructionPayload {

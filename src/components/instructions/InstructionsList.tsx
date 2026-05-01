@@ -2,15 +2,16 @@ import React from "react";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
+import ScheduleRoundedIcon from "@mui/icons-material/ScheduleRounded";
 import { Button } from "../Button";
-import { Divider } from "@mui/material";
-
+import { SelectField } from "../SelectField";
+import { formatRelativeDate } from "../../utils/LocalTime.heler";
 export interface Instruction {
   id: string;
   classId: number;
   className: string;
   content: string;
-  updatedAt: string;
+  updatedAt?: string;
 }
 
 interface Props {
@@ -26,68 +27,99 @@ export const InstructionsList: React.FC<Props> = ({
   onSelect,
   onCreate,
 }) => {
+  
+
   return (
-    <div className="flex flex-col h-[calc(100%+2rem)] -mx-6 -mt-12">
-      {/* Top Section with Glass Effect and Demarcation */}
-      <div className="glass-panel shadow-card bg-surface-container-lowest/70 border-b-2 border-outline-variant/30 px-6 pt-8 pb-4 flex flex-col gap-6 z-20">
+    <section className="w-full md:w-[400px] h-full flex-shrink-0 flex flex-col border-r border-outline-variant/30  overflow-hidden">
+      {/* Library Header */}
+      <div className="p-6 space-y-4 border-b border-outline-variant/30">
         <div className="flex items-center justify-between">
-          <h1 className="font-headline font-extrabold text-4xl text-primary tracking-tight">Instructions</h1>
-          <Button
-            variant="solid"
+          <div>
+            <h3 className="font-headline text-xl font-bold text-primary">Instructions</h3>
+            <p className="text-xs font-medium text-outline">{data.length} items total</p>
+          </div>
+          <Button 
             onClick={onCreate}
-            className="w-max px-2 rounded-md"
+            variant="solid"
+            className="w-max px-3"
+            btnClass="rounded-md text-xs py-1"
+            icon={<AddRoundedIcon sx={{ fontSize: 18 }} />}
+            iconPosition="left"
           >
-            <AddRoundedIcon sx={{ fontSize: 24 }} />
+            Nouvelle
           </Button>
         </div>
-
-        <div className="flex flex-col gap-4">
-          <div className="relative group">
-            <SearchRoundedIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-outline" sx={{ fontSize: 20 }} />
+        <div className="space-y-2">
+          {/* <div className="relative">
+            <SelectField
+              id="filter-class"
+              options={[{ label: "Filtrer par Classe", value: "" }]}
+              inputClassName="py-2.5 text-sm bg-surface-container-lowest border-1 border-outline-variant/40"
+              rightElement={<ExpandMoreRoundedIcon className="text-outline pointer-events-none" />}
+            />
+          </div> */}
+          <div className="relative">
+            <SearchRoundedIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]" />
             <input 
-              className="w-full pl-10 pr-4 py-3 bg-white outline border-outline/40 rounded-xl focus:outline-2 placeholder:text-outline transition-all text-sm" 
+              className="w-full pl-10  pr-4 py-2.5 bg-surface-container-lowest border-1 border-outline-variant/40  rounded-xl text-sm focus:ring-2 focus:ring-primary/20 placeholder:text-outline-variant" 
               placeholder="Rechercher une classe..." 
               type="text"
             />
           </div>
-          
+         
         </div>
       </div>
 
-      {/* Scrollable List Section */}
-      <div className="flex-1 min-h-0">
-        <div className="h-full overflow-y-auto flex flex-col gap-3 px-6 pt-4 pb-0 custom-scrollbar">
-          {data.map((item) => {
-            const active = item.id === selectedId;
+      {/* Instruction List */}
+      <div className="flex-1 overflow-y-auto px-4 pt-2 pb-6 space-y-3 custom-scrollbar">
+        {data.map((item) => {
+          const active = item.id === selectedId;
 
-            return (
-              <div
-                key={item.id}
-                onClick={() => onSelect(item)}
-                className={`p-4 rounded-xl cursor-pointer transition-all ${
-                  active
-                    ? "bg-surface-container-lowest shadow-sm border-l-4 border-teal-600"
-                    : "bg-surface-container-lowest border border-outline-variant/40 shadow-card hover:bg-surface-container-low"
-                } group border border-outline-variant/5`}
-              >
-                <div className="flex justify-between items-start mb-2">
-                  <span className={`font-mono text-xs font-bold px-2 py-0.5 rounded-md ${
-                    active ? "text-teal-700 bg-tertiary-container" : "text-slate-500 bg-surface-container-highest"
-                  }`}>
-                    [{item.classId}] {item.className}
+          return (
+            <div
+              key={item.id+item.classId}
+              onClick={() => onSelect(item)}
+              className={
+                active
+                  ? "bg-surface-container-lowest p-4 rounded-xl shadow-sm active-item ring-1 ring-primary/10 cursor-pointer group hover:bg-surface-container-high transition-colors relative"
+                  : "p-4 rounded-xl cursor-pointer shadow-card border border-outline-variant/40 hover:bg-surface-container-high transition-all"
+              }
+            >
+              {active && <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-r-sm"></div>}
+              <div className="flex items-start justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <span className={
+                    active
+                      ? "bg-primary text-on-primary text-[10px] font-bold px-2 py-0.5 rounded tracking-tighter"
+                      : "bg-surface-container-highest text-on-surface-variant text-[10px] font-bold px-2 py-0.5 rounded tracking-tighter"
+                  }>
+                    [{item.classId}]
                   </span>
-                  {/* <span className="text-[10px] text-outline font-medium uppercase">
-                    MODIFIED {item.updatedAt}
-                  </span> */}
+                  <span className={`font-headline font-bold text-sm uppercase tracking-wide ${active ? 'text-primary' : 'text-on-surface'}`}>
+                    {item.className}
+                  </span>
                 </div>
-                <p className="text-sm text-on-surface-variant line-clamp-2 leading-relaxed">
-                  {item.content || "Aucun contenu..."}
-                </p>
+                {active ? (
+                  <span className="text-[10px] font-bold text-tertiary bg-tertiary-container/30 px-2 py-0.5 rounded-full">
+                    ACTIVE
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-bold text-outline bg-surface-container-high px-2 py-0.5 rounded-full">
+                    DRAFT
+                  </span>
+                )}
               </div>
-            );
-          })}
-        </div>
+              <p className="text-xs text-on-surface-variant line-clamp-2 leading-relaxed mb-3">
+                {item.content || "Aucun contenu..."}
+              </p>
+              <div className="flex capitalize items-center text-[10px] text-outline font-bold  tracking-widest">
+                <ScheduleRoundedIcon sx={{ fontSize: 14, mr: 0.5 }} />
+                {formatRelativeDate(item.updatedAt)}
+              </div>
+            </div>
+          );
+        })}
       </div>
-    </div>
+    </section>
   );
 };
