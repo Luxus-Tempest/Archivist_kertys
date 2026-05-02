@@ -6,6 +6,7 @@ import {
   createInstruction as createInstructionThunk, 
   updateInstruction as updateInstructionThunk, 
   deleteInstruction as deleteInstructionThunk,
+  fetchInstructionById as fetchInstructionByIdThunk,
   clearError 
 } from '../store/instruction/instructionSlice';
 import type { CreateInstructionPayload, Instruction } from '../types/instruction';
@@ -30,6 +31,10 @@ export const useInstructions = () => {
     return dispatch(deleteInstructionThunk(id)).unwrap();
   }, [dispatch]);
 
+  const fetchInstructionById = useCallback(async (id: string) => {
+    return dispatch(fetchInstructionByIdThunk(id)).unwrap();
+  }, [dispatch]);
+
   const handleClearError = useCallback(() => {
     dispatch(clearError());
   }, [dispatch]);
@@ -43,6 +48,7 @@ export const useInstructions = () => {
     createInstruction,
     updateInstruction,
     deleteInstruction,
+    fetchInstructionById,
     clearError: handleClearError
   };
 };

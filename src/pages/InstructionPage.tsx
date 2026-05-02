@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { InstructionsList } from "../components/instructions/InstructionsList";
 import { InstructionCore } from "../components/instructions/InstructionCore";
@@ -7,6 +8,7 @@ import { DashboardLayoutNew } from "../components/layout/DashboardLayoutNew";
 import { useMFilesDocsHook } from "../hooks/useMFilesDocsHook";
 import { useInstructions } from "../hooks/useInstructions";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
+import { SvgIcon } from "../components/SvgIcon";
 
 export const InstructionPage = () => {
   const { fetchVaultClasses } = useMFilesDocsHook();
@@ -22,20 +24,21 @@ export const InstructionPage = () => {
   const [selected, setSelected] = useState<Instruction | undefined>(undefined);
   const [classes, setClasses] = useState<{ id: number; name: string }[]>([]);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [localDraft, setLocalDraft] = useState<Instruction | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentId = searchParams.get("id");
+  const { fetchInstructionById } = useInstructions();
 
   useEffect(() => {
     const init = async () => {
       setIsInitialLoading(true);
       try {
-        const [classList, instructionList] = await Promise.all([
+        const [classList] = await Promise.all([
           fetchVaultClasses(),
           fetchInstructions()
         ]);
         
         if (classList) setClasses(classList);
-        if (instructionList && instructionList.instructions.length > 0) {
-          setSelected(instructionList.instructions[0]);
-        }
       } catch (err) {
         console.error("Failed to load initial data", err);
       } finally {
@@ -44,6 +47,29 @@ export const InstructionPage = () => {
     };
     init();
   }, [fetchVaultClasses, fetchInstructions]);
+
+  useEffect(() => {
+    if (currentId) {
+      // If it's a local draft (not in the list yet)
+      const existing = instructions.find(i => i.id === currentId);
+      if (existing) {
+        // We could fetch details here if the list only has partial data
+        fetchInstructionById(currentId).then(setSelected).catch(() => {
+            // Fallback to existing list data if detail fetch fails
+            setSelected(existing);
+        });
+      } else if (localDraft && localDraft.id === currentId) {
+        setSelected(localDraft);
+      } else {
+        // Try fetching from server anyway (deep link case)
+        fetchInstructionById(currentId).then(setSelected).catch(() => {
+            setSelected(undefined);
+        });
+      }
+    } else {
+      setSelected(undefined);
+    }
+  }, [currentId, instructions, localDraft, fetchInstructionById]);
 
   const handleSave = async (updated: Instruction) => {
     // Check if it's a new instruction (temporary ID from Date.now())
@@ -58,11 +84,15 @@ export const InstructionPage = () => {
         });
         toast.success("Instruction créée avec succès");
         setLocalDraft(null);
-        setSelected(created);
+        await fetchInstructions();
+        setSearchParams({ id: created.id });
       } else {
         const result = await updateInstruction(updated.id, updated);
         toast.success("Instruction mise à jour avec succès");
-        setSelected(result);
+        await fetchInstructions();
+        // keep the locally updated state to ensure UI remains fluid
+        // even if backend response is minimal
+        setSelected(updated);
       }
     } catch (err: any) {
       toast.error(err || "Une erreur est survenue");
@@ -70,8 +100,10 @@ export const InstructionPage = () => {
   };
 
   const handleDelete = async (id: string) => {
-    // If it's a local unsaved item (ID from Date.now())
-    if (id.length > 15 || !instructions.find(i => i.id === id)) {
+    console.log("Attempting to delete instruction with ID:", id);
+    // If it's a local unsaved item (not yet in the server-provided instructions list)
+    if (!instructions.find(i => i.id === id)) {
+        console.log("Local draft detected, removing from state");
         setLocalDraft(null);
         if (instructions.length > 0) setSelected(instructions[0]);
         else setSelected(undefined);
@@ -79,25 +111,28 @@ export const InstructionPage = () => {
     }
 
     try {
+      console.log("Calling deleteInstruction API...");
       await deleteInstruction(id);
       toast.success("Instruction supprimée");
+      await fetchInstructions();
       
       // Fluid selection: select the next available item in the current list
       const currentIndex = instructions.findIndex(i => i.id === id);
       const nextItem = instructions[currentIndex + 1] || instructions[currentIndex - 1];
       
       if (nextItem && nextItem.id !== id) {
-        setSelected(nextItem);
+        setSearchParams({ id: nextItem.id });
       } else {
         const fallback = instructions.find(i => i.id !== id);
-        setSelected(fallback);
+        if (fallback) setSearchParams({ id: fallback.id });
+        else setSearchParams({});
       }
     } catch (err: any) {
       toast.error(err || "Erreur lors de la suppression");
     }
   };
 
-  const [localDraft, setLocalDraft] = useState<Instruction | null>(null);
+
 
   const handleCreate = () => {
     const newItem: Instruction = {
@@ -109,7 +144,7 @@ export const InstructionPage = () => {
     };
 
     setLocalDraft(newItem);
-    setSelected(newItem);
+    setSearchParams({ id: newItem.id });
   };
 
   const handleCoreChange = (updated: Instruction) => {
@@ -144,7 +179,7 @@ export const InstructionPage = () => {
               data={combinedInstructions}
               selectedId={selected?.id}
               onSelect={(i) => {
-                setSelected(i);
+                setSearchParams({ id: i.id });
                 if (localDraft && i.id !== localDraft.id) setLocalDraft(null);
               }}
               onCreate={handleCreate}
@@ -161,10 +196,22 @@ export const InstructionPage = () => {
                 onChange={handleCoreChange}
               />
             ) : (
-              <section className="flex-1 bg-surface-container-lowest flex flex-col items-center justify-center text-center p-20 text-outline opacity-40">
-                <p className="text-xl font-bold">Aucune instruction</p>
-                <p className="text-sm mt-2">Cliquez sur Nouvelle pour en créer une.</p>
-              </section>
+              <div className="flex-1 bg-surface-container-lowest flex flex-col items-center justify-center text-center p-20 animate-fade-in">
+                <div className="w-24 h-24 mb-8 text-primary opacity-20 animate-bounce-subtle">
+                  <SvgIcon name="click" width="100%" height="100%" />
+                </div>
+                <h3 className="text-2xl font-headline font-bold text-on-surface mb-3">Prêt à configurer ?</h3>
+                <p className="text-outline max-w-sm leading-relaxed">
+                  Sélectionnez une instruction dans la liste à gauche pour la modifier, ou cliquez sur 
+                  <span className="text-primary font-bold mx-1">Nouvelle</span> 
+                  pour commencer une nouvelle configuration.
+                </p>
+                <div className="mt-10 flex gap-4">
+                  <div className="px-4 py-2 bg-surface-container-high rounded-full text-[10px] font-bold text-outline uppercase tracking-widest border border-outline-variant/30">
+                    Mode Consultation
+                  </div>
+                </div>
+              </div>
             )}
           </>
         )}

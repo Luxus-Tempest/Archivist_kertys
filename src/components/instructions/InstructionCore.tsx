@@ -11,10 +11,11 @@ import { CustomEditor } from "./CustomEditor";
 import { Button } from "../Button";
 import { SelectField } from "../SelectField";
 import { Menu } from "../Menu";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { instructionSchema } from "../../utils/validations/instruction.validation";
 import { Input } from "../Input";
+import { DeleteConfirmationModal } from "../modals/DeleteConfirmationModal";
 
 export interface InstructionsIds extends Pick<Instruction, "id" | "classId"> { }
 
@@ -40,16 +41,18 @@ export const InstructionCore: React.FC<Props> = ({
   onChange,
 }) => {
   const { control, handleSubmit, reset, setValue, watch, formState: { isValid, isSubmitting, errors } } = useForm<Instruction>({
-    resolver: zodResolver(instructionSchema),
+    resolver: zodResolver(instructionSchema) as any,
     defaultValues: instruction,
-    mode: "onChange"
+    mode: "all"
   });
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   useEffect(() => {
     reset(instruction);
-  }, [instruction, reset]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [instruction?.id, reset]);
 
   const watchedForm = watch();
 
@@ -72,7 +75,7 @@ export const InstructionCore: React.FC<Props> = ({
     }
   };
 
-  const onSubmit = async (data: Instruction) => {
+  const onSubmit: SubmitHandler<Instruction> = async (data) => {
     await onSave(data);
   };
 
@@ -149,7 +152,10 @@ export const InstructionCore: React.FC<Props> = ({
                 {
                   label: "Supprimer",
                   icon: <DeleteRoundedIcon sx={{ fontSize: 18 }} />,
-                  onClick: () => onDelete(watchedForm.id!),
+                  onClick: () => {
+                    setIsMenuOpen(false);
+                    setIsDeleteModalOpen(true);
+                  },
                   variant: "danger"
                 }
               ]}
@@ -235,6 +241,21 @@ export const InstructionCore: React.FC<Props> = ({
           </div> */}
         </div>
       </div>
+
+      <DeleteConfirmationModal
+        open={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={() => {
+          onDelete(watchedForm.id!);
+          setIsDeleteModalOpen(false);
+        }}
+        description={
+          <>
+            Voulez-vous vraiment supprimer l'instruction <span className="font-bold">"{watchedForm.className}"</span> ? 
+            Cette action est irréversible et toutes les données associées seront perdues.
+          </>
+        }
+      />
     </section>
   );
 };

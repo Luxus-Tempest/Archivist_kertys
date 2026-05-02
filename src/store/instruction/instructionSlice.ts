@@ -102,7 +102,7 @@ export const deleteInstruction = createAsyncThunk<
 >('instruction/deleteInstruction', async (id, thunkAPI) => {
   try {
     const token = (thunkAPI.getState() as any).auth.token;
-    const response = await fetch(`${API_URL}/${id}`, {
+    const response = await fetch(`${API_URL}/delete?id=${id}`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`
@@ -115,6 +115,32 @@ export const deleteInstruction = createAsyncThunk<
     }
 
     return id;
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(error.message || 'Erreur de connexion au serveur.');
+  }
+});
+
+export const fetchInstructionById = createAsyncThunk<
+  Instruction,
+  string,
+  { rejectValue: string }
+>('instruction/fetchInstructionById', async (id, thunkAPI) => {
+  try {
+    const token = (thunkAPI.getState() as any).auth.token;
+    const response = await fetch(`${API_URL}/instruction?id=${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      return thunkAPI.rejectWithValue(errorData.message || 'Erreur lors de la récupération de l\'instruction.');
+    }
+
+    return await response.json();
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error.message || 'Erreur de connexion au serveur.');
   }
@@ -142,6 +168,22 @@ const instructionSlice = createSlice({
       })
       .addCase(fetchInstructions.rejected, (state, action) => {
         state.isLoading = false;
+        state.error = action.payload as string;
+      })
+      // Fetch By ID
+      .addCase(fetchInstructionById.pending, (state) => {
+        state.isActionLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchInstructionById.fulfilled, (state, action) => {
+        state.isActionLoading = false;
+        // Optional: update the instruction in the list if it exists
+        state.instructions = state.instructions.map((i) =>
+          i.id === action.payload.id ? action.payload : i
+        );
+      })
+      .addCase(fetchInstructionById.rejected, (state, action) => {
+        state.isActionLoading = false;
         state.error = action.payload as string;
       })
       // Create
