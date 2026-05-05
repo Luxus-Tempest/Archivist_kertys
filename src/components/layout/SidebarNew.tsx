@@ -2,16 +2,9 @@ import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 
-import FolderRoundedIcon from '@mui/icons-material/FolderRounded';
-import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
-import AddRoundedIcon from '@mui/icons-material/AddRounded';
-import ManageAccountsRoundedIcon from '@mui/icons-material/ManageAccountsRounded';
-import CorporateFareRoundedIcon from '@mui/icons-material/CorporateFareRounded';
+import { SvgIcon, type IconName } from '../SvgIcon';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
-import DescriptionIcon from '@mui/icons-material/Description';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import ManageHistoryIcon from '@mui/icons-material/ManageHistory';
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -20,7 +13,7 @@ interface SidebarProps {
 
 interface NavItem {
   name: string;
-  icon: React.ElementType;
+  icon: IconName;
   path: string;
   adminOnly?: boolean;
   disabled?: boolean;
@@ -42,27 +35,27 @@ export function SidebarNew({ isCollapsed, setIsCollapsed }: SidebarProps) {
     {
       label: t('sidebar.groups.core', 'Core'),
       items: [
-        { name: t('sidebar.explorer', 'Explorer'), icon: FolderRoundedIcon, path: '/explorer' },
-        { name: t('sidebar.history', 'History'), icon: ManageHistoryIcon, path: '/history' },
-        { name: t('sidebar.process', 'Process'), icon: CloudUploadIcon, path: '/process' },
+        { name: t('sidebar.explorer', 'Explorer'), icon: 'explorer', path: '/explorer' },
+        { name: t('sidebar.history', 'History'), icon: 'history', path: '/history' },
+        { name: t('sidebar.process', 'Process'), icon: 'upload', path: '/process' },
       ],
     },
     {
       label: t('sidebar.groups.admin', 'Admin'),
       adminOnly: true,
       items: [
-        { name: t('sidebar.members', 'Members'), icon: ManageAccountsRoundedIcon, path: '/members' },
-        { name: t('sidebar.instructions', 'Instructions'), icon: DescriptionIcon, path: '/instructions' },
+        { name: t('sidebar.members', 'Members'), icon: 'members', path: '/members' },
+        { name: t('sidebar.instructions', 'Instructions'), icon: 'folderOpen', path: '/instructions' },
       ],
     },
     {
       label: t('sidebar.groups.settings', 'Settings'),
       items: [
         {
-          name: t('sidebar.organizations', 'Organizations'),
-          icon: CorporateFareRoundedIcon,
+          name: t('sidebar.organizations'),
+          icon: 'organizations',
           path: '/organizations',
-          disabled: true,
+          // disabled: true,
           message: t('sidebar.comingSoon', 'Coming soon'),
         },
       ],
@@ -135,9 +128,11 @@ export function SidebarNew({ isCollapsed, setIsCollapsed }: SidebarProps) {
                           `
                         }
                       >
-                        <item.icon
-                          className={`flex-shrink-0 transition-all duration-300`}
-                          sx={{ fontSize: isCollapsed ? 24 : 20 }}
+                        <SvgIcon
+                          name={item.icon}
+                          className="flex-shrink-0 transition-all duration-300"
+                          width={isCollapsed ? 24 : 18}
+                          height={isCollapsed ? 24 : 18}
                         />
 
                         {!isCollapsed && (
