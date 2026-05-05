@@ -281,7 +281,7 @@
     "noResults": "No results found for your search",
     "noResultsHint": "Try modifying your keywords or creating a new instruction.",
     "readyToConfigure": "Ready to configure?",
-    "readyHint": "Select an instruction from the list on the left to edit it, or click <0>New</0> to start a new configuration.",
+    "readyHint": "Select an instruction from the list on the left to edit it, or click <0>\"{{name}}\"</0> to start a new configuration.",
     "consultationMode": "Consultation Mode",
     "active": "ACTIVE",
     "draft": "DRAFT",

@@ -84,7 +84,7 @@ export const InstructionsList: React.FC<Props> = ({
       </div>
 
       {/* Instruction List */}
-      <div className="flex-1 overflow-y-auto px-4 pt-2 pb-6 space-y-3 custom-scrollbar">
+      <div className="flex-1 overflow-y-auto px-4 pt-2 pb-6 space-y-2 custom-scrollbar">
         {filteredData.length > 0 ? (
           filteredData.map((item) => {
             const active = item.id === selectedId;
@@ -113,13 +113,9 @@ export const InstructionsList: React.FC<Props> = ({
                       {item.className}
                     </span>
                   </div>
-                  {active ? (
-                    <span className="text-[10px] font-bold text-tertiary bg-tertiary-container/30 px-2 py-0.5 rounded-full">
-                      {t("instructions.active", "ACTIVE")}
-                    </span>
-                  ) : (
-                    <span className="text-[10px] font-bold text-outline bg-surface-container-high px-2 py-0.5 rounded-full">
-                      {t("instructions.draft", "DRAFT")}
+                  {active && (
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${item.id === "draft_new" ? "text-outline bg-surface-container-high" : "text-tertiary bg-tertiary-container/30"}`}>
+                      {item.id === "draft_new" ? t("instructions.draft", "DRAFT") : t("instructions.active", "ACTIVE")}
                     </span>
                   )}
                 </div>

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import type { Instruction, InstructionState, CreateInstructionPayload, FetchInstructionsResponse } from '../../types/instruction';
+import type { Instruction, InstructionState, CreateInstructionPayload, FetchInstructionsResponse, InstructionCreatedResponse } from '../../types/instruction';
 import i18next from 'i18next';
 
 const API_URL = import.meta.env.VITE_BASE_URL + '/admin/instructions';
@@ -39,7 +39,7 @@ export const fetchInstructions = createAsyncThunk<
 });
 
 export const createInstruction = createAsyncThunk<
-  Instruction,
+  InstructionCreatedResponse,
   CreateInstructionPayload,
   { rejectValue: string }
 >('instruction/createInstruction', async (payload, thunkAPI) => {
@@ -193,7 +193,7 @@ const instructionSlice = createSlice({
       })
       .addCase(createInstruction.fulfilled, (state, action) => {
         state.isActionLoading = false;
-        state.instructions.unshift(action.payload);
+        state.instructions.push(action.payload.entity);
       })
       .addCase(createInstruction.rejected, (state, action) => {
         state.isActionLoading = false;

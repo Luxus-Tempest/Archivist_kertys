@@ -75,10 +75,10 @@ export function SidebarNew({ isCollapsed, setIsCollapsed }: SidebarProps) {
     <aside
       className={`
         hidden md:flex flex-col p-3
-        border-r border-outline-variant/45
+        border-r border-surface-container
         h-[calc(100vh-80px)]
         fixed left-0
-        bg-surface
+        bg-cipher-bg
         font-body text-sm font-medium
         transition-all duration-300 ease-in-out
         z-40
@@ -92,7 +92,7 @@ export function SidebarNew({ isCollapsed, setIsCollapsed }: SidebarProps) {
             <div key={group.label}>
 
               {!isCollapsed && (
-                <p className="px-2 mb-2 text-[10px] font-bold tracking-[0.14em] uppercase text-slate-400 select-none">
+                <p className="px-3 mb-2 text-[10px] font-bold tracking-[0.14em] uppercase text-on-surface-variant/70 select-none">
                   {group.label}
                 </p>
               )}
@@ -117,39 +117,27 @@ export function SidebarNew({ isCollapsed, setIsCollapsed }: SidebarProps) {
                         className={({ isActive }) =>
                           `
                             relative flex items-center
-                            ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-4'}
-                            py-3 rounded-md transition-all duration-200
+                            ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-3'}
+                            py-2.5 rounded-lg transition-all duration-200
 
                             ${
                               isDisabled
-                                ? 'opacity-40 cursor-not-allowed text-slate-400'
+                                ? 'opacity-40 cursor-not-allowed text-outline'
                                 : isActive
                                   ? `
-                                      text-slate-900
-                                      ${isCollapsed ? 'bg-white' : 'bg-gradient-to-r from-white to-slate-50/65'}
-                                      ${isCollapsed ? 'border border-outline-variant/20' : 'border border-slate-100/70'}
-                                      font-semibold
-                                      relative
-                                      before:content-['']
-                                      before:absolute
-                                      before:left-0
-                                      before:top-1/2
-                                      before:-translate-y-1/2
-                                      before:${isCollapsed ? 'w-1' : 'w-1.5'}
-                                      before:bg-slate-900/90
-                                      before:h-full
-                                      before:rounded-none
+                                      bg-primary text-on-primary
+                                      shadow-sm
+                                      font-bold
+                                      ${isCollapsed ? 'shadow-md' : ''}
                                     `
-                                  : 'text-slate-500 hover:text-slate-700 hover:bg-slate-100/70'
+                                  : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
                             }
                           `
                         }
                       >
                         <item.icon
-                          className={`flex-shrink-0 transition-all duration-300 ${
-                            isCollapsed ? 'text-slate-600' : 'text-slate-500 group-hover:text-slate-700'
-                          }`}
-                          sx={{ fontSize: isCollapsed ? 24 : 18 }}
+                          className={`flex-shrink-0 transition-all duration-300`}
+                          sx={{ fontSize: isCollapsed ? 24 : 20 }}
                         />
 
                         {!isCollapsed && (
@@ -165,13 +153,13 @@ export function SidebarNew({ isCollapsed, setIsCollapsed }: SidebarProps) {
                               absolute left-full top-1/2 -translate-y-1/2 ml-3
                               px-3 py-3
 
-                              bg-slate-900/95 backdrop-blur-xl
-                              text-slate-100 text-[11px] font-medium
+                              bg-on-surface/95 backdrop-blur-xl
+                              text-surface text-[11px] font-medium
 
                               rounded-md
-                              border border-slate-700/60
+                              border border-outline-variant/30
 
-                              shadow-[0_10px_40px_rgba(0,0,0,0.6)]
+                              shadow-[0_10px_40px_rgba(0,0,0,0.4)]
 
                               whitespace-nowrap
 
@@ -193,8 +181,8 @@ export function SidebarNew({ isCollapsed, setIsCollapsed }: SidebarProps) {
                               className="
                                 absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2
                                 w-2.5 h-2.5 rotate-45
-                                bg-slate-900/95
-                                border-l border-t border-slate-700/60
+                                bg-on-surface/95
+                                border-l border-t border-outline-variant/30
                               "
                             />
                           </div>
@@ -202,7 +190,7 @@ export function SidebarNew({ isCollapsed, setIsCollapsed }: SidebarProps) {
 
                         {/* DISABLED BADGE */}
                         {isDisabled && !isCollapsed && (
-                          <span className="ml-auto text-[9px] italic tracking-wider text-slate-400 font-bold">
+                          <span className="ml-auto text-[9px] italic tracking-wider text-outline/60 font-bold">
                             {item.message}
                           </span>
                         )}
@@ -222,10 +210,10 @@ export function SidebarNew({ isCollapsed, setIsCollapsed }: SidebarProps) {
         onClick={() => setIsCollapsed(!isCollapsed)}
         className="
           absolute -right-[17px] top-1/2 -translate-y-1/2
-          w-4 h-14 bg-surface
-          border-y border-r border-outline-variant/45
+          w-4 h-14 bg-cipher-bg
+          border-y border-r border-surface-container
           rounded-r-xl flex items-center justify-center
-          cursor-pointer text-slate-400 hover:text-slate-900
+          cursor-pointer text-outline hover:text-primary
           transition-all z-50
           hover:w-5 hover:-right-[21px]
         "

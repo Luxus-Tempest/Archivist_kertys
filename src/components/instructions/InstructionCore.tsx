@@ -28,6 +28,7 @@ interface Props {
   classes?: { id: number; name: string }[];
   onSave: (data: Instruction) => Promise<void> | void;
   onDelete: (id: string) => void;
+  onDuplicate?: (data: Instruction) => void;
   onChange?: (data: Instruction) => void;
 }
 
@@ -39,6 +40,7 @@ export const InstructionCore: React.FC<Props> = ({
   classes = [],
   onSave,
   onDelete,
+  onDuplicate,
   onChange,
 }) => {
   const { t } = useTranslation();
@@ -147,13 +149,14 @@ export const InstructionCore: React.FC<Props> = ({
               onClose={() => setIsMenuOpen(false)}
               align="right"
               items={[
-                {
+                ...(!isNew ? [{
                   label: t("instructions.duplicate", "Dupliquer"),
                   icon: <ContentCopyRoundedIcon sx={{ fontSize: 18 }} />,
                   onClick: () => {
-                    // Logic for duplicate
+                    setIsMenuOpen(false);
+                    if (onDuplicate) onDuplicate(watchedForm);
                   }
-                },
+                }] : []),
                 {
                   label: t("instructions.delete", "Supprimer"),
                   icon: <DeleteRoundedIcon sx={{ fontSize: 18 }} />,
@@ -161,7 +164,7 @@ export const InstructionCore: React.FC<Props> = ({
                     setIsMenuOpen(false);
                     setIsDeleteModalOpen(true);
                   },
-                  variant: "danger"
+                  variant: "danger" as const
                 }
               ]}
             />

@@ -264,7 +264,7 @@
     "noResults": "Aucun résultat ne correspond à votre recherche",
     "noResultsHint": "Essayez de modifier vos mots-clés ou de créer une nouvelle instruction.",
     "readyToConfigure": "Prêt à configurer ?",
-    "readyHint": "Sélectionnez une instruction dans la liste à gauche pour la modifier, ou cliquez sur <0>Nouvelle</0> pour commencer une nouvelle configuration.",
+    "readyHint": "Sélectionnez une instruction dans la liste à gauche pour la modifier, ou cliquez sur <0>\"{{name}}\"</0> pour commencer une nouvelle configuration.",
     "consultationMode": "Mode Consultation",
     "active": "ACTIVE",
     "draft": "DRAFT",
