@@ -28,17 +28,24 @@ export function ProcessNew() {
   const dispatch = useDispatch();
   const { stagedFiles: stagedMetadata, activeSessions } = useSelector((state: RootState) => state.docs);
   const [stagedFiles, setStagedFiles] = useState<File[]>([]);
+  const [isSyncing, setIsSyncing] = useState(true);
   const { uploadFiles, fetchPendingSessions, isUploading } = useDocument();
 
   // Synchronisation des sessions serveurs au montage
   useEffect(() => {
     const syncSessions = async () => {
-      const pendingIds = await fetchPendingSessions();
-      // First mark finished sessions as Completed
-      dispatch(reconcilePendingSessions(pendingIds));
-      // Then initialize any new ones that weren't in our local state
-      if (pendingIds.length > 0) {
-        dispatch(initializeSessionsFromIds(pendingIds));
+      try {
+        const pendingIds = await fetchPendingSessions();
+        // First mark finished sessions as Completed
+        dispatch(reconcilePendingSessions(pendingIds));
+        // Then initialize any new ones that weren't in our local state
+        if (pendingIds.length > 0) {
+          dispatch(initializeSessionsFromIds(pendingIds));
+        }
+      } catch (error) {
+        console.error("Error syncing sessions:", error);
+      } finally {
+        setIsSyncing(false);
       }
     };
     syncSessions();
@@ -158,7 +165,7 @@ export function ProcessNew() {
           </div>
         )}
 
-        {sessionsList.length > 0 && (
+        {!isSyncing && sessionsList.length > 0 && (
           <div className="flex flex-col gap-4">
             <div>
               <h3 className="text-xl font-bold font-headline text-on-surface">{t('monitoringSession', 'Monitoring Session')}</h3>

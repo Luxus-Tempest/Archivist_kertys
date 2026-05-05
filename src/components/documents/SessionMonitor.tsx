@@ -44,8 +44,10 @@ export function SessionMonitor({ sessionId, onClose }: SessionMonitorProps) {
       .build();
 
     connection.on("ReceiveStatusUpdate", (data: any) => {
+      console.log("SignalR: Received status update:", data);
       const sessionStatus = (data.sessionStatus ?? data.SessionStatus) as ProcessingStatus;
       const filesArray = data.files ?? data.Files;
+      console.log("SignalR: Received files array:", filesArray);
       if (!Array.isArray(filesArray)) return;
       
       dispatch(updateSessionStatus({
@@ -71,10 +73,18 @@ export function SessionMonitor({ sessionId, onClose }: SessionMonitorProps) {
       }
     });
 
-    connection.start().catch((err: unknown) => console.error("SignalR Connection Error:", err));
+    connection.start()
+  .then(() => {
+    console.log(`✅ SignalR: Connecté à la session ${sessionId}`);
+    console.log("🚀 Prêt à recevoir des mises à jour...");
+  })
+  .catch((err) => {
+    if (err.name !== 'AbortError') console.error("❌ SignalR Error:", err);
+  });
+
 
     return () => { connection.stop(); };
-  }, [sessionId, dispatch]);
+  }, [sessionId, sessionData?.session?.status, dispatch, t]);
 
   if (!sessionData) return null;
 
@@ -133,8 +143,18 @@ export function SessionMonitor({ sessionId, onClose }: SessionMonitorProps) {
               <tr>
                 <td colSpan={3} className="px-6 py-10 text-center">
                   <div className="flex flex-col items-center gap-2">
-                    <SyncRoundedIcon className="animate-spin text-primary" />
-                    <p className="text-sm text-on-surface-variant italic">{t('connectingToSessionAndRetrievingDocumentStatus', 'Connecting to session and retrieving document status...')}</p>
+                    {(() => {
+                      const terminalStates: string[] = [ProcessingStatus.COMPLETED, ProcessingStatus.UPLOADED, ProcessingStatus.FAILED];
+                      if (terminalStates.includes(sessionData.session.status)) {
+                        return <p className="text-sm text-on-surface-variant italic">{t('noDocumentsInThisSession', 'No documents found in this session.')}</p>;
+                      }
+                      return (
+                        <>
+                          <SyncRoundedIcon className="animate-spin text-primary" />
+                          <p className="text-sm text-on-surface-variant italic">{t('connectingToSessionAndRetrievingDocumentStatus', 'Connecting to session and retrieving document status...')}</p>
+                        </>
+                      );
+                    })()}
                   </div>
                 </td>
               </tr>

@@ -43,6 +43,7 @@ const loadInitialState = (): DocsState => {
       return {
         ...defaultState,
         ...parsed,
+        activeSessions: {}, // On ne restaure pas les sessions du local, l'API doit piloter la récupération
         history: {
           ...defaultState.history,
           ...(parsed.history || {})

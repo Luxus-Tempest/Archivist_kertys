@@ -220,13 +220,13 @@ export const InstructionCore: React.FC<Props> = ({
             />
           </div>
 
-          {/* AI Preview Section */}
-          {/* <div className="bg-surface-container-high/40 p-6 rounded-2xl space-y-4">
+          {/* Preview Section */}
+           <div className="bg-surface-container-high/40 p-6 rounded-2xl space-y-4">
             <div className="flex items-center gap-3">
               <span className="w-8 h-8 rounded-lg bg-tertiary/10 text-tertiary flex items-center justify-center">
                 <PsychologyRoundedIcon />
               </span>
-              <h4 className="font-headline font-bold text-sm text-on-surface">Aperçu utilisé par l'IA</h4>
+              <h4 className="font-headline font-bold text-sm text-on-surface">Aperçu</h4>
             </div>
             <div className="bg-on-surface text-surface-container-lowest p-5 rounded-xl font-mono text-[11px] leading-relaxed shadow-lg overflow-x-auto">
               <span className="text-outline-variant">// SYSTEM_PROMPT_INJECTION</span><br/>
@@ -238,7 +238,7 @@ export const InstructionCore: React.FC<Props> = ({
               ))}
               &lt;/rule_set&gt;
             </div>
-          </div> */}
+          </div> 
         </div>
       </div>
 
