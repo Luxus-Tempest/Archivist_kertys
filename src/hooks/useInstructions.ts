@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import type { RootState, AppDispatch } from '../store';
+import { useAppDispatch, useAppSelector } from '../store';
 import { 
   fetchInstructions as fetchInstructionsThunk, 
   createInstruction as createInstructionThunk, 
@@ -12,8 +11,8 @@ import {
 import type { CreateInstructionPayload, Instruction } from '../types/instruction';
 
 export const useInstructions = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const { instructions, isLoading, isActionLoading, error } = useSelector((state: RootState) => state.instruction);
+  const dispatch = useAppDispatch();
+  const { instructions, isLoading, isActionLoading, error } = useAppSelector((state) => state.instruction);
 
   const fetchInstructions = useCallback(async () => {
     return dispatch(fetchInstructionsThunk()).unwrap();

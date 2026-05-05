@@ -1,11 +1,10 @@
-import { useDispatch, useSelector } from 'react-redux';
-import type { RootState, AppDispatch } from '../store';
+import { useAppDispatch, useAppSelector } from '../store';
 import { loginUser, signupUser, createOrganization, registerInvitedUser as registerInvitedUserThunk, logout, clearError, fetchMe } from '../store/auth/authSlice';
 import type { LoginFormData, SignupFormData } from '../utils/validations';
 
 export const useAuth = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const { user, token, isLoading, error } = useSelector((state: RootState) => state.auth);
+  const dispatch = useAppDispatch();
+  const { user, token, isLoading, error } = useAppSelector((state) => state.auth);
 
   const login = async (data: LoginFormData) => {
     return dispatch(loginUser(data)).unwrap();

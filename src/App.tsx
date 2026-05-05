@@ -34,10 +34,20 @@ function GuestRoute({ children }: { children: React.ReactNode }) {
 
 // Admin Route wrapper component (restricts access to ADMIN role)
 function AdminRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, user, isLoading } = useAuth();
+  const { isAuthenticated, user, isLoading, token } = useAuth();
   
-  if (isLoading) {
-    return <div>Loading...</div>; // Or a proper loading spinner
+  // Si on a un token mais pas encore d'utilisateur, on attend la fin du getProfile()
+  const isRehydrating = !!token && !user;
+
+  if (isLoading || isRehydrating) {
+    return (
+      <div className="h-screen w-screen flex items-center justify-center bg-surface-container-lowest">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-sm font-medium text-outline animate-pulse">Vérification des permissions...</p>
+        </div>
+      </div>
+    );
   }
 
   if (!isAuthenticated) {
