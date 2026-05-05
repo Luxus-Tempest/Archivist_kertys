@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
@@ -28,6 +29,7 @@ export const InstructionsList: React.FC<Props> = ({
   onSelect,
   onCreate,
 }) => {
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = React.useState("");
 
   const filteredData = data.filter((item) => {
@@ -44,8 +46,8 @@ export const InstructionsList: React.FC<Props> = ({
       <div className="p-6 space-y-4 border-b border-outline-variant/30">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="font-headline text-xl font-bold text-primary">Instructions</h3>
-            <p className="text-xs font-medium text-outline">{filteredData.length} items total</p>
+            <h3 className="font-headline text-xl font-bold text-primary">{t("instructions.title", "Instructions")}</h3>
+            <p className="text-xs font-medium text-outline">{t("instructions.itemsTotal", "{{count}} items total", { count: filteredData.length })}</p>
           </div>
           <Button 
             onClick={onCreate}
@@ -55,7 +57,7 @@ export const InstructionsList: React.FC<Props> = ({
             icon={<AddRoundedIcon sx={{ fontSize: 18 }} />}
             iconPosition="left"
           >
-            Nouvelle
+            {t("instructions.newInstruction", "Nouvelle")}
           </Button>
         </div>
         <div className="space-y-2">
@@ -71,7 +73,7 @@ export const InstructionsList: React.FC<Props> = ({
             <SearchRoundedIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]" />
             <input 
               className="w-full pl-10  pr-4 py-2.5 bg-surface-container-lowest border-1 border-outline-variant/40  rounded-xl text-sm focus:ring-2 focus:ring-primary/20 placeholder:text-outline-variant" 
-              placeholder="Rechercher une classe..." 
+              placeholder={t("instructions.searchPlaceholder", "Rechercher une classe...")} 
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -113,16 +115,16 @@ export const InstructionsList: React.FC<Props> = ({
                   </div>
                   {active ? (
                     <span className="text-[10px] font-bold text-tertiary bg-tertiary-container/30 px-2 py-0.5 rounded-full">
-                      ACTIVE
+                      {t("instructions.active", "ACTIVE")}
                     </span>
                   ) : (
                     <span className="text-[10px] font-bold text-outline bg-surface-container-high px-2 py-0.5 rounded-full">
-                      DRAFT
+                      {t("instructions.draft", "DRAFT")}
                     </span>
                   )}
                 </div>
                 <p className="text-xs text-on-surface-variant line-clamp-2 leading-relaxed mb-3">
-                  {item.content || "Aucun contenu..."}
+                  {item.content || t("instructions.noContent", "Aucun contenu...")}
                 </p>
                 <div className="flex capitalize items-center text-[10px] text-outline font-bold  tracking-widest">
                   <ScheduleRoundedIcon sx={{ fontSize: 14, mr: 0.5 }} />
@@ -136,8 +138,8 @@ export const InstructionsList: React.FC<Props> = ({
             <div className="w-16 h-16 mb-4 opacity-20">
               <SvgIcon name="search" width="100%" height="100%" />
             </div>
-            <p className="text-sm font-medium text-outline">Aucun résultat ne correspond à votre recherche</p>
-            <p className="text-xs text-outline-variant mt-1">Essayez de modifier vos mots-clés ou de créer une nouvelle instruction.</p>
+            <p className="text-sm font-medium text-outline">{t("instructions.noResults", "Aucun résultat ne correspond à votre recherche")}</p>
+            <p className="text-xs text-outline-variant mt-1">{t("instructions.noResultsHint", "Essayez de modifier vos mots-clés ou de créer une nouvelle instruction.")}</p>
           </div>
         )}
       </div>

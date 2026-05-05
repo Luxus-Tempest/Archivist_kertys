@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation, Trans } from "react-i18next";
 import type { Instruction } from "./InstructionsList";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import HistoryRoundedIcon from "@mui/icons-material/HistoryRounded";
@@ -40,6 +41,7 @@ export const InstructionCore: React.FC<Props> = ({
   onDelete,
   onChange,
 }) => {
+  const { t } = useTranslation();
   const { control, handleSubmit, reset, setValue, watch, formState: { isValid, isSubmitting, errors } } = useForm<Instruction>({
     resolver: zodResolver(instructionSchema) as any,
     defaultValues: instruction,
@@ -63,7 +65,7 @@ export const InstructionCore: React.FC<Props> = ({
   }, [watchedForm, onChange]);
 
   if (!watchedForm || Object.keys(watchedForm).length === 0) {
-    return <div className="p-10 text-gray-400">Aucune instruction sélectionnée</div>;
+    return <div className="p-10 text-gray-400">{t("instructions.emptySelection", "Aucune instruction sélectionnée")}</div>;
   }
 
   const handleClassChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -79,7 +81,7 @@ export const InstructionCore: React.FC<Props> = ({
     await onSave(data);
   };
 
-  const saveText = isNew ? "Enregistrer" : "Mettre à jour";
+  const saveText = isNew ? t("instructions.save", "Enregistrer") : t("instructions.update", "Mettre à jour");
   const disableActions = isActionLoading || isSubmitting;
 
   return (
@@ -89,9 +91,12 @@ export const InstructionCore: React.FC<Props> = ({
         <div className="flex items-center gap-4">
           <div>
             <h3 className="font-headline text-lg font-bold text-primary">
-              {isNew ? "Nouvelle instruction" : `Editer : ${watchedForm.className} (#${watchedForm.classId})`}
+              {isNew 
+                ? t("instructions.newInstruction", "Nouvelle instruction") 
+                : t("instructions.editInstruction", "Editer : {{className}} (#{{classId}})", { className: watchedForm.className, classId: watchedForm.classId })
+              }
             </h3>
-            <p className="text-xs text-outline font-medium">Configuration des règles globales d'extraction des données</p>
+            <p className="text-xs text-outline font-medium">{t("instructions.configRules", "Configuration des règles globales d'extraction des données")}</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -106,7 +111,7 @@ export const InstructionCore: React.FC<Props> = ({
               btnClass="rounded-md text-sm py-1"
               iconPosition="left"
             >
-              Annuler
+              {t("instructions.cancel", "Annuler")}
             </Button>
             <div className="flex-1"></div>
 
@@ -123,7 +128,7 @@ export const InstructionCore: React.FC<Props> = ({
               )}
               iconPosition="left"
             >
-              {isSubmitting ? "En cours..." : saveText}
+              {isSubmitting ? t("instructions.saving", "En cours...") : saveText}
             </Button>
           </div>
           <div className="relative">
@@ -143,14 +148,14 @@ export const InstructionCore: React.FC<Props> = ({
               align="right"
               items={[
                 {
-                  label: "Dupliquer",
+                  label: t("instructions.duplicate", "Dupliquer"),
                   icon: <ContentCopyRoundedIcon sx={{ fontSize: 18 }} />,
                   onClick: () => {
                     // Logic for duplicate
                   }
                 },
                 {
-                  label: "Supprimer",
+                  label: t("instructions.delete", "Supprimer"),
                   icon: <DeleteRoundedIcon sx={{ fontSize: 18 }} />,
                   onClick: () => {
                     setIsMenuOpen(false);
@@ -171,7 +176,7 @@ export const InstructionCore: React.FC<Props> = ({
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <Input
               id="class-id"
-              label="Class ID"
+              label={t("instructions.classId", "Class ID")}
               type="number"
               inputClassName="font-mono text-sm opacity-60 cursor-not-allowed bg-surface-container-low"
               readOnly
@@ -184,7 +189,7 @@ export const InstructionCore: React.FC<Props> = ({
               render={({ field, fieldState: { error } }) => (
                 <SelectField
                   id="class-name"
-                  label="Class Name"
+                  label={t("instructions.className", "Class Name")}
                   className="md:col-span-3"
                   inputClassName="font-headline font-bold text-sm bg-surface-container-low"
                   value={field.value?.toString() || ""}
@@ -203,7 +208,7 @@ export const InstructionCore: React.FC<Props> = ({
 
           {/* Rich Text Editor Container */}
           <div className="space-y-2">
-            <label className="text-xs font-bold text-primary uppercase tracking-wider block">Instruction Content</label>
+            <label className="text-xs font-bold text-primary uppercase tracking-wider block">{t("instructions.instructionContent", "Instruction Content")}</label>
             <Controller
               name="content"
               control={control}
@@ -226,7 +231,7 @@ export const InstructionCore: React.FC<Props> = ({
               <span className="w-8 h-8 rounded-lg bg-tertiary/10 text-tertiary flex items-center justify-center">
                 <PsychologyRoundedIcon />
               </span>
-              <h4 className="font-headline font-bold text-sm text-on-surface">Aperçu</h4>
+              <h4 className="font-headline font-bold text-sm text-on-surface">{t("instructions.preview", "Aperçu")}</h4>
             </div>
             <div className="bg-on-surface text-surface-container-lowest p-5 rounded-xl font-mono text-[11px] leading-relaxed shadow-lg overflow-x-auto">
               <span className="text-outline-variant">// SYSTEM_PROMPT_INJECTION</span><br/>
@@ -250,10 +255,11 @@ export const InstructionCore: React.FC<Props> = ({
           setIsDeleteModalOpen(false);
         }}
         description={
-          <>
-            Voulez-vous vraiment supprimer l'instruction <span className="font-bold">"{watchedForm.className}"</span> ? 
-            Cette action est irréversible et toutes les données associées seront perdues.
-          </>
+          <Trans
+            i18nKey="instructions.deleteDescription"
+            values={{ name: watchedForm.className }}
+            components={[<span className="font-semibold" />]}
+          />
         }
       />
     </section>

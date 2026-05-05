@@ -269,5 +269,50 @@
     "completedAccount": "Account completed successfully!",
     "errorCompleting": "Error completing account.",
     "completeAccount": "Complete Account"
+  },
+  "instructions": {
+    "title": "Instructions",
+    "itemsTotal": "{{count}} items total",
+    "newInstruction": "New",
+    "editInstruction": "Edit: {{className}} (#{{classId}})",
+    "searchPlaceholder": "Search for a class...",
+    "loading": "Loading instructions...",
+    "emptySelection": "No instruction selected",
+    "noResults": "No results found for your search",
+    "noResultsHint": "Try modifying your keywords or creating a new instruction.",
+    "readyToConfigure": "Ready to configure?",
+    "readyHint": "Select an instruction from the list on the left to edit it, or click <0>New</0> to start a new configuration.",
+    "consultationMode": "Consultation Mode",
+    "active": "ACTIVE",
+    "draft": "DRAFT",
+    "noContent": "No content...",
+    "save": "Save",
+    "update": "Update",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "duplicate": "Duplicate",
+    "saving": "Saving...",
+    "configRules": "Global data extraction rules configuration",
+    "classId": "Class ID",
+    "className": "Class Name",
+    "instructionContent": "Instruction Content",
+    "preview": "Preview",
+    "deleteConfirmTitle": "Confirm Deletion",
+    "deleteConfirmQuestion": "Are you sure?",
+    "deleteConfirmButton": "Yes, delete",
+    "deleteDescription": "Are you sure you want to delete instruction <0>\"{{name}}\"</0>? This action is irreversible and all associated data will be lost.",
+    "editorPlaceholder": "Type your instructions...",
+    "editorChars": "{{count}} chars",
+    "editorStatus": {
+      "editing": "editing",
+      "idle": "idle"
+    },
+    "toasts": {
+      "createSuccess": "Instruction created successfully",
+      "updateSuccess": "Instruction updated successfully",
+      "deleteSuccess": "Instruction deleted",
+      "error": "An error occurred",
+      "deleteError": "Error during deletion"
+    }
   }
 }

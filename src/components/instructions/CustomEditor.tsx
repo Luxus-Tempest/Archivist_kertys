@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import FormatBoldRoundedIcon from "@mui/icons-material/FormatBoldRounded";
 import FormatItalicRoundedIcon from "@mui/icons-material/FormatItalicRounded";
 import CodeRoundedIcon from "@mui/icons-material/CodeRounded";
@@ -14,11 +15,14 @@ interface CustomEditorProps {
 export const CustomEditor: React.FC<CustomEditorProps> = ({
   value,
   onChange,
-  placeholder = "Saisissez vos instructions...",
+  placeholder,
   height = "h-40",
 }) => {
+  const { t } = useTranslation();
   const [focused, setFocused] = useState(false);
   const [selection, setSelection] = useState(false);
+  
+  const displayPlaceholder = placeholder || t("instructions.editorPlaceholder", "Saisissez vos instructions...");
 
   const btn =
     "w-9 h-9 flex items-center justify-center rounded-xl transition-all duration-200 text-outline/70 hover:text-primary hover:bg-surface-container-high/60 active:scale-95";
@@ -48,7 +52,7 @@ export const CustomEditor: React.FC<CustomEditorProps> = ({
           onBlur={() => setFocused(false)}
           onSelect={() => setSelection(true)}
           onKeyUp={() => setSelection(false)}
-          placeholder={placeholder}
+          placeholder={displayPlaceholder}
           className={`
             relative z-10 w-full ${height}
             px-7 py-6
@@ -68,9 +72,9 @@ export const CustomEditor: React.FC<CustomEditorProps> = ({
 
       {/* subtle status bar */}
       <div className="flex items-center justify-between px-5 py-2 text-[10px] text-outline/60 border-t border-outline/10">
-        <span>{value.length} chars</span>
+        <span>{t("instructions.editorChars", "{{count}} caractères", { count: value.length })}</span>
         <span className={focused ? "text-primary/60" : ""}>
-          {focused ? "editing" : "idle"}
+          {focused ? t("instructions.editorStatus.editing", "édition") : t("instructions.editorStatus.idle", "en attente")}
         </span>
       </div>
     </div>

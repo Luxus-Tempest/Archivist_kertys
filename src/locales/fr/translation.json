@@ -252,5 +252,50 @@
       "reactivated": "Le compte de {{name}} a été réactivé",
       "error": "Erreur lors de la mise à jour du statut. {{err}}"
     }
+  },
+  "instructions": {
+    "title": "Instructions",
+    "itemsTotal": "{{count}} éléments au total",
+    "newInstruction": "Ajouter",
+    "editInstruction": "Éditer : {{className}} (#{{classId}})",
+    "searchPlaceholder": "Rechercher une classe...",
+    "loading": "Chargement des instructions...",
+    "emptySelection": "Aucune instruction sélectionnée",
+    "noResults": "Aucun résultat ne correspond à votre recherche",
+    "noResultsHint": "Essayez de modifier vos mots-clés ou de créer une nouvelle instruction.",
+    "readyToConfigure": "Prêt à configurer ?",
+    "readyHint": "Sélectionnez une instruction dans la liste à gauche pour la modifier, ou cliquez sur <0>Nouvelle</0> pour commencer une nouvelle configuration.",
+    "consultationMode": "Mode Consultation",
+    "active": "ACTIVE",
+    "draft": "DRAFT",
+    "noContent": "Aucun contenu...",
+    "save": "Enregistrer",
+    "update": "Mettre à jour",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "duplicate": "Dupliquer",
+    "saving": "En cours...",
+    "configRules": "Configuration des règles globales d'extraction des données",
+    "classId": "ID de classe",
+    "className": "Nom de la classe",
+    "instructionContent": "Contenu de l'instruction",
+    "preview": "Aperçu",
+    "deleteConfirmTitle": "Confirmer la suppression",
+    "deleteConfirmQuestion": "Êtes-vous sûr ?",
+    "deleteConfirmButton": "Oui, supprimer",
+    "deleteDescription": "Voulez-vous vraiment supprimer l'instruction <0>\"{{name}}\"</0> ? Cette action est irréversible et toutes les données associées seront perdues.",
+    "editorPlaceholder": "Saisissez vos instructions...",
+    "editorChars": "{{count}} caractères",
+    "editorStatus": {
+      "editing": "édition",
+      "idle": "en attente"
+    },
+    "toasts": {
+      "createSuccess": "Instruction créée avec succès",
+      "updateSuccess": "Instruction mise à jour avec succès",
+      "deleteSuccess": "Instruction supprimée",
+      "error": "Une erreur est survenue",
+      "deleteError": "Erreur lors de la suppression"
+    }
   }
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import { useTranslation } from "react-i18next";
 import { CustomModal } from "../CustomModal";
 import { Button } from "../Button";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
@@ -18,17 +18,24 @@ export const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = (
   open,
   onClose,
   onConfirm,
-  title = "Confirmer la suppression",
-  question = "Êtes-vous sûr ?",
+  title,
+  question,
   description,
-  confirmLabel = "Oui, supprimer",
-  cancelLabel = "Annuler",
+  confirmLabel,
+  cancelLabel,
 }) => {
+  const { t } = useTranslation();
+  
+  const displayTitle = title || t("instructions.deleteConfirmTitle", "Confirmer la suppression");
+  const displayQuestion = question || t("instructions.deleteConfirmQuestion", "Êtes-vous sûr ?");
+  const displayConfirmLabel = confirmLabel || t("instructions.deleteConfirmButton", "Oui, supprimer");
+  const displayCancelLabel = cancelLabel || t("instructions.cancel", "Annuler");
+
   return (
     <CustomModal
       open={open}
       onClose={onClose}
-      title={title}
+      title={displayTitle}
       width={400}
       footer={
         <>
@@ -37,7 +44,7 @@ export const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = (
             onClick={onClose}
             className="text-sm font-medium"
           >
-            {cancelLabel}
+            {displayCancelLabel}
           </Button>
           <Button
             variant="danger"
@@ -47,7 +54,7 @@ export const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = (
             btnClass="rounded-md"
             className="text-xs"
           >
-            {confirmLabel}
+            {displayConfirmLabel}
           </Button>
         </>
       }
@@ -57,7 +64,7 @@ export const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = (
           <DeleteRoundedIcon fontSize="medium" />
         </div>
         <div className="space-y-2">
-          <h4 className="text-lg font-bold text-on-surface">{question}</h4>
+          <h4 className="text-lg font-bold text-on-surface">{displayQuestion}</h4>
           <p className="text-sm text-on-surface-variant leading-relaxed">
             {description}
           </p>

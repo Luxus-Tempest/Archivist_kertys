@@ -1,6 +1,4 @@
-import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
-import { toast } from "sonner";
+import { useTranslation, Trans } from "react-i18next";
 import { InstructionsList } from "../components/instructions/InstructionsList";
 import { InstructionCore } from "../components/instructions/InstructionCore";
 import type { Instruction } from "../components/instructions/InstructionsList";
@@ -9,8 +7,12 @@ import { useMFilesDocsHook } from "../hooks/useMFilesDocsHook";
 import { useInstructions } from "../hooks/useInstructions";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import { SvgIcon } from "../components/SvgIcon";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { toast } from "sonner";
 
 export const InstructionPage = () => {
+  const { t } = useTranslation();
   const { fetchVaultClasses } = useMFilesDocsHook();
   const { 
     instructions,
@@ -82,25 +84,24 @@ export const InstructionPage = () => {
           className: updated.className,
           content: updated.content
         });
-        toast.success("Instruction créée avec succès");
+        toast.success(t("instructions.toasts.createSuccess", "Instruction créée avec succès"));
         setLocalDraft(null);
         await fetchInstructions();
         setSearchParams({ id: created.id });
       } else {
         const result = await updateInstruction(updated.id, updated);
-        toast.success("Instruction mise à jour avec succès");
+        toast.success(t("instructions.toasts.updateSuccess", "Instruction mise à jour avec succès"));
         await fetchInstructions();
         // keep the locally updated state to ensure UI remains fluid
         // even if backend response is minimal
         setSelected(updated);
       }
     } catch (err: any) {
-      toast.error(err || "Une erreur est survenue");
+      toast.error(err || t("instructions.toasts.error", "Une erreur est survenue"));
     }
   };
 
   const handleDelete = async (id: string) => {
-    console.log("Attempting to delete instruction with ID:", id);
     // If it's a local unsaved item (not yet in the server-provided instructions list)
     if (!instructions.find(i => i.id === id)) {
         console.log("Local draft detected, removing from state");
@@ -111,9 +112,8 @@ export const InstructionPage = () => {
     }
 
     try {
-      console.log("Calling deleteInstruction API...");
       await deleteInstruction(id);
-      toast.success("Instruction supprimée");
+      toast.success(t("instructions.toasts.deleteSuccess", "Instruction supprimée"));
       await fetchInstructions();
       
       // Fluid selection: select the next available item in the current list
@@ -128,7 +128,7 @@ export const InstructionPage = () => {
         else setSearchParams({});
       }
     } catch (err: any) {
-      toast.error(err || "Erreur lors de la suppression");
+      toast.error(err || t("instructions.toasts.deleteError", "Erreur lors de la suppression"));
     }
   };
 
@@ -138,7 +138,7 @@ export const InstructionPage = () => {
     const newItem: Instruction = {
       id: Date.now().toString(), // Temporary ID
       classId: classes[0]?.id || 0,
-      className: classes[0]?.name || "New Class",
+      className: classes[0]?.name || t("instructions.newInstruction", "New Class"),
       content: "",
       updatedAt: "NOW",
     };
@@ -170,7 +170,7 @@ export const InstructionPage = () => {
           <div className="flex-1 flex items-center justify-center">
             <div className="animate-pulse flex flex-col items-center gap-4">
               <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-              <p className="text-outline font-medium">Chargement des instructions...</p>
+              <p className="text-outline font-medium">{t("instructions.loading", "Chargement des instructions...")}</p>
             </div>
           </div>
         ) : (
@@ -200,15 +200,17 @@ export const InstructionPage = () => {
                 <div className="w-24 h-24 mb-8 text-primary opacity-20 animate-bounce-subtle">
                   <SvgIcon name="click" width="100%" height="100%" />
                 </div>
-                <h3 className="text-2xl font-headline font-bold text-on-surface mb-3">Prêt à configurer ?</h3>
+                <h3 className="text-2xl font-headline font-bold text-on-surface mb-3">{t("instructions.readyToConfigure", "Prêt à configurer ?")}</h3>
                 <p className="text-outline max-w-sm leading-relaxed">
-                  Sélectionnez une instruction dans la liste à gauche pour la modifier, ou cliquez sur 
-                  <span className="text-primary font-bold mx-1">Nouvelle</span> 
-                  pour commencer une nouvelle configuration.
+                  <Trans i18nKey="instructions.readyHint">
+                    Sélectionnez une instruction dans la liste à gauche pour la modifier, ou cliquez sur 
+                    <span className="text-primary font-bold mx-1">Nouvelle</span> 
+                    pour commencer une nouvelle configuration.
+                  </Trans>
                 </p>
                 <div className="mt-10 flex gap-4">
                   <div className="px-4 py-2 bg-surface-container-high rounded-full text-[10px] font-bold text-outline uppercase tracking-widest border border-outline-variant/30">
-                    Mode Consultation
+                    {t("instructions.consultationMode", "Mode Consultation")}
                   </div>
                 </div>
               </div>
