@@ -14,6 +14,7 @@ import FolderOffRoundedIcon from '@mui/icons-material/FolderOffRounded';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import { Button } from '../Button';
+import { formatDateWithTime } from '../../utils/LocalTime.heler';
 
 const formatDate = (dateString: string, lng: string) => {
   const d = new Date(dateString.replace(' ', 'T'));
@@ -182,7 +183,7 @@ export function ActivitiesTable() {
                         {session.sessionStatus}
                       </span>
                     </td>
-                    <td className="px-6 py-5 text-on-surface-variant text-sm font-medium border-none">{formatDate(session.date, i18n.language)}</td>
+                    <td className="px-6 py-5 text-on-surface-variant text-sm font-medium border-none">{formatDateWithTime(session.date, i18n.language)}</td>
                     <td className="px-6 py-5 border-none">
                       <ExpandMoreRoundedIcon className={`transition-transform duration-300 ${expandedId === session.sessionId ? 'text-primary rotate-180' : 'text-outline-variant group-hover:text-primary'}`} sx={{ fontSize: 20 }} />
                     </td>

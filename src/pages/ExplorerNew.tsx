@@ -32,11 +32,14 @@ import TableViewRoundedIcon from '@mui/icons-material/TableViewRounded';
 import ArticleRoundedIcon from '@mui/icons-material/ArticleRounded';
 import ImageRoundedIcon from '@mui/icons-material/ImageRounded';
 import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
+import { formatDateWithTime } from '../utils/LocalTime.heler';
+import i18next from 'i18next';
 
 // Initialize PDF worker
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 export function ExplorerNew() {
   const { t } = useTranslation()
+
   const { documents, isLoading, fetchDocuments, getFileContent, getFileProperties, fetchVaultClasses, updateFileProperties } = useMFilesDocsHook();
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeDoc, setActiveDoc] = useState<MFilesDocumentDto | null>(null);
@@ -477,10 +480,10 @@ export function ExplorerNew() {
                           </div>
                         </td>
                         <td className="px-4 py-3 text-xs font-medium text-slate-500 whitespace-nowrap">
-                          {createdDate}
+                          {createdStr ? formatDateWithTime(createdStr, i18next.language) : '-'}
                         </td>
                         <td className="px-4 py-3 text-xs font-medium text-slate-500 whitespace-nowrap">
-                          {modifiedDate}
+                          {modifiedStr ? formatDateWithTime(modifiedStr, i18next.language) : '-'}
                         </td>
                       </tr>
                     );
