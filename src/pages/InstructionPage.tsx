@@ -5,7 +5,6 @@ import type { Instruction } from "../components/instructions/InstructionsList";
 import { DashboardLayoutNew } from "../components/layout/DashboardLayoutNew";
 import { useMFilesDocsHook } from "../hooks/useMFilesDocsHook";
 import { useInstructions } from "../hooks/useInstructions";
-import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import { SvgIcon } from "../components/SvgIcon";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";

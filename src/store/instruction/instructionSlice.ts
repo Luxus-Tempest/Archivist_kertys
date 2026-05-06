@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { Instruction, InstructionState, CreateInstructionPayload, FetchInstructionsResponse, InstructionCreatedResponse } from '../../types/instruction';
-import i18next from 'i18next';
 
 const API_URL = import.meta.env.VITE_BASE_URL + '/admin/instructions';
 

@@ -1,9 +1,5 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import FormatBoldRoundedIcon from "@mui/icons-material/FormatBoldRounded";
-import FormatItalicRoundedIcon from "@mui/icons-material/FormatItalicRounded";
-import CodeRoundedIcon from "@mui/icons-material/CodeRounded";
-import FormatListBulletedRoundedIcon from "@mui/icons-material/FormatListBulleted";
 
 interface CustomEditorProps {
   value: string;
@@ -21,11 +17,9 @@ export const CustomEditor: React.FC<CustomEditorProps> = ({
   const { t } = useTranslation();
   const [focused, setFocused] = useState(false);
   const [selection, setSelection] = useState(false);
+  console.log("Editor selection: ",selection);
   
   const displayPlaceholder = placeholder || t("instructions.editorPlaceholder", "Saisissez vos instructions...");
-
-  const btn =
-    "w-9 h-9 flex items-center justify-center rounded-xl transition-all duration-200 text-outline/70 hover:text-primary hover:bg-surface-container-high/60 active:scale-95";
 
   return (
     <div

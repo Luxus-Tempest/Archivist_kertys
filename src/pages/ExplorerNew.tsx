@@ -449,8 +449,8 @@ export function ExplorerNew() {
                     const createdStr = firstFile?.CreatedUtc || firstFile?.createdUtc || (doc as any)?.Created || '';
                     const modifiedStr = firstFile?.LastModified || firstFile?.lastModified || (doc as any)?.LastModified || '';
                     
-                    const createdDate = createdStr ? new Date(createdStr).toLocaleDateString() : '-';
-                    const modifiedDate = modifiedStr ? new Date(modifiedStr).toLocaleDateString() : '-';
+                    // const createdDate = createdStr ? new Date(createdStr).toLocaleDateString() : '-';
+                    // const modifiedDate = modifiedStr ? new Date(modifiedStr).toLocaleDateString() : '-';
                     
                     let title = rawTitle;
                     if (ext && !rawTitle.toLowerCase().endsWith(`.${ext}`)) {

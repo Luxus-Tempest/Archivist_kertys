@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation, Trans } from "react-i18next";
 import type { Instruction } from "./InstructionsList";
-import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
-import HistoryRoundedIcon from "@mui/icons-material/HistoryRounded";
 import MoreVertRoundedIcon from "@mui/icons-material/MoreVertRounded";
 import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
 import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
@@ -44,7 +42,7 @@ export const InstructionCore: React.FC<Props> = ({
   onChange,
 }) => {
   const { t } = useTranslation();
-  const { control, handleSubmit, reset, setValue, watch, formState: { isValid, isSubmitting, errors } } = useForm<Instruction>({
+  const { control, handleSubmit, reset, setValue, watch, formState: { isValid, isSubmitting } } = useForm<Instruction>({
     resolver: zodResolver(instructionSchema) as any,
     defaultValues: instruction,
     mode: "all"
