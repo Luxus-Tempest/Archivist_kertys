@@ -55,7 +55,7 @@ export function SidebarNew({ isCollapsed, setIsCollapsed }: SidebarProps) {
           name: t('sidebar.organizations'),
           icon: 'organizations',
           path: '/organizations',
-          // disabled: true,
+          disabled: true,
           message: t('sidebar.comingSoon', 'Coming soon'),
         },
       ],
