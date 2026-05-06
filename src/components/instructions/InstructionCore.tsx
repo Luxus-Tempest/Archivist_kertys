@@ -218,6 +218,8 @@ export const InstructionCore: React.FC<Props> = ({
                   <CustomEditor 
                     value={field.value || ""}
                     onChange={field.onChange}
+                    classId={watchedForm.classId}
+                    className={watchedForm.className}
                     height="h-[300px]"
                   />
                   {error && <p className="text-xs text-error mt-2 ml-1">{error.message}</p>}
@@ -227,24 +229,80 @@ export const InstructionCore: React.FC<Props> = ({
           </div>
 
           {/* Preview Section */}
-           <div className="bg-surface-container-high/40 p-6 rounded-2xl space-y-4">
+          <div className="bg-surface-container-high/40 p-6 rounded-2xl space-y-4">
             <div className="flex items-center gap-3">
               <span className="w-8 h-8 rounded-lg bg-tertiary/10 text-tertiary flex items-center justify-center">
                 <PsychologyRoundedIcon />
               </span>
               <h4 className="font-headline font-bold text-sm text-on-surface">{t("instructions.preview", "Aperçu")}</h4>
             </div>
-            <div className="bg-on-surface text-surface-container-lowest p-5 rounded-xl font-mono text-[11px] leading-relaxed shadow-lg overflow-x-auto">
-              <span className="text-outline-variant">// SYSTEM_PROMPT_INJECTION</span><br/>
-              &lt;rule_set id="{watchedForm.classId}" name="{watchedForm.className}"&gt;<br/>
-              {watchedForm.content?.split('\n').map((line: string, i: number) => (
-                <React.Fragment key={i}>
-                  &nbsp;&nbsp;{line}<br/>
-                </React.Fragment>
-              ))}
-              &lt;/rule_set&gt;
+            <div className="bg-[#1a1f2e] text-slate-300 p-5 rounded-xl font-mono text-[11px] leading-[1.8] shadow-lg overflow-x-auto">
+              {/* Ligne commentaire */}
+              <div><span className="text-slate-500">// SYSTEM_PROMPT_INJECTION</span></div>
+
+              {/* rule_set ouvrant */}
+              <div>
+                <span className="text-teal-400">&lt;rule_set</span>
+                {" "}<span className="text-amber-400">id</span>
+                <span className="text-slate-400">=&quot;</span>
+                <span className="text-orange-300">{watchedForm.classId}</span>
+                <span className="text-slate-400">&quot;</span>
+                {" "}<span className="text-amber-400">name</span>
+                <span className="text-slate-400">=&quot;</span>
+                <span className="text-orange-300">{watchedForm.className}</span>
+                <span className="text-slate-400">&quot;</span>
+                <span className="text-teal-400">&gt;</span>
+              </div>
+
+              {/* Contenu parsé */}
+              {(() => {
+                const raw = watchedForm.content || "";
+                const giMatch  = raw.match(/<GlobalInstruction>([\s\S]*?)<\/GlobalInstruction>/);
+                const propMatches = [...raw.matchAll(/<Property name="([^"]*)">([\s\S]*?)<\/Property>/g)];
+
+                // Fallback: ancien format plain text
+                if (!giMatch && propMatches.length === 0) {
+                  return raw.split("\n").map((line: string, i: number) => (
+                    <div key={i} className="pl-4 text-slate-300">{line || "\u00a0"}</div>
+                  ));
+                }
+
+                return (
+                  <>
+                    {/* GlobalInstruction */}
+                    {giMatch && (
+                      <div className="pl-4">
+                        <span className="text-teal-400">&lt;GlobalInstruction&gt;</span>
+                        {giMatch[1].split("\n").map((l: string, i: number) => (
+                          <div key={i} className="pl-4 text-slate-200">{l || "\u00a0"}</div>
+                        ))}
+                        <span className="text-teal-400">&lt;/GlobalInstruction&gt;</span>
+                      </div>
+                    )}
+
+                    {/* Property blocks */}
+                    {propMatches.map((m, i) => (
+                      <div key={i} className="pl-4">
+                        <span className="text-teal-400">&lt;Property</span>
+                        {" "}<span className="text-amber-400">name</span>
+                        <span className="text-slate-400">=&quot;</span>
+                        <span className="text-orange-300">{m[1]}</span>
+                        <span className="text-slate-400">&quot;</span>
+                        <span className="text-teal-400">&gt;</span>
+                        {m[2].split("\n").map((l: string, j: number) => (
+                          <div key={j} className="pl-4 text-slate-200">{l || "\u00a0"}</div>
+                        ))}
+                        <span className="text-teal-400">&lt;/Property&gt;</span>
+                      </div>
+                    ))}
+                  </>
+                );
+              })()}
+
+              {/* rule_set fermant */}
+              <div><span className="text-teal-400">&lt;/rule_set&gt;</span></div>
             </div>
-          </div> 
+          </div>
         </div>
       </div>
 

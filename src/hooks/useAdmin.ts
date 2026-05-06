@@ -1,10 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState, AppDispatch } from '../store';
-import { fetchUsers, clearAdminError, updateUserStatus, inviteUser as inviteUserThunk, createUserByAdmin as createUserByAdminThunk } from '../store/admin/adminSlice';
+import { fetchUsers, clearAdminError, updateUserStatus, inviteUser as inviteUserThunk, createUserByAdmin as createUserByAdminThunk, fetchClassStructure } from '../store/admin/adminSlice';
 
 export const useAdmin = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { users, totalCount, offset, limit, isLoading, isActionLoading, error } = useSelector((state: RootState) => state.admin);
+  const { users, totalCount, offset, limit, isLoading, isActionLoading, error, classStructure } = useSelector((state: RootState) => state.admin);
 
   const getUsers = async (options: { limit?: number; offset?: number } = {}) => {
     return dispatch(fetchUsers(options)).unwrap();
@@ -22,6 +22,10 @@ export const useAdmin = () => {
     return dispatch(createUserByAdminThunk(data)).unwrap();
   };
 
+  const getClassStructure = async (classId: number | string, className: string) => {
+    return dispatch(fetchClassStructure({ classId, className })).unwrap();
+  };
+
   const handleClearError = () => {
     dispatch(clearAdminError());
   };
@@ -34,10 +38,12 @@ export const useAdmin = () => {
     isLoading,
     isActionLoading,
     error,
+    classStructure,
     getUsers,
     updateUserStatus: updateStatus,
     inviteUser,
     createUserByAdmin,
+    getClassStructure,
     clearError: handleClearError
   };
 };

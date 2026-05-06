@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import type { AdminState, AdminUsersResponse } from '../../types/admin';
+import type { AdminState, AdminUsersResponse, ClassStructureResponse } from '../../types/admin';
 import i18next from 'i18next';
 
 const API_URL = import.meta.env.VITE_BASE_URL + '/admin';
@@ -12,6 +12,7 @@ const initialState: AdminState = {
   isLoading: false,
   isActionLoading: false,
   error: null,
+  classStructure: null,
 };
 
 export const fetchUsers = createAsyncThunk<
@@ -66,7 +67,7 @@ export const updateUserStatus = createAsyncThunk<
       const errorData = await response.json().catch(() => ({}));
       return thunkAPI.rejectWithValue(errorData.message || 'Erreur lors de la mise à jour du statut.');
     }
-
+    
     return { id: userId, status };
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error.message || 'Erreur de connexion au serveur.');
@@ -123,6 +124,40 @@ export const createUserByAdmin = createAsyncThunk<
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       return thunkAPI.rejectWithValue(errorData.message || 'Erreur lors de la création de l\'utilisateur.');
+    }
+
+    return await response.json();
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(error.message || 'Erreur de connexion au serveur.');
+  }
+});
+
+export const fetchClassStructure = createAsyncThunk<
+  ClassStructureResponse,
+  { classId: number | string; className: string },
+  { rejectValue: string }
+>('admin/fetchClassStructure', async ({ classId, className }, thunkAPI) => {
+  try {
+    const token = (thunkAPI.getState() as any).auth.token;
+    if (!token) return thunkAPI.rejectWithValue('No token found');
+
+    const url = `${API_URL}/structure/get-class-structure`;
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ 
+        ClassId: Number(classId), 
+        ClassName: className 
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      return thunkAPI.rejectWithValue(errorData.Message || 'Erreur lors de la récupération de la structure.');
     }
 
     return await response.json();
@@ -202,6 +237,22 @@ const adminSlice = createSlice({
     builder.addCase(createUserByAdmin.rejected, (state, action) => {
       state.isActionLoading = false;
       state.error = action.payload || 'Erreur inconnue';
+    });
+
+    // Fetch Class Structure
+    builder.addCase(fetchClassStructure.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(fetchClassStructure.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.classStructure = action.payload;
+      state.error = null;
+    });
+    builder.addCase(fetchClassStructure.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload || 'Erreur inconnue';
+      state.classStructure = null;
     });
   },
 });

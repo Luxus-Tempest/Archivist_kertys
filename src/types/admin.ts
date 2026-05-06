@@ -25,6 +25,19 @@ export interface AdminState {
   isLoading: boolean;
   isActionLoading: boolean;
   error: string | null;
+  classStructure: ClassStructureResponse | null;
+}
+
+export interface ClassStructureProperty {
+  type: string;
+  minLength?: number;
+  [key: string]: any;
+}
+
+export interface ClassStructureResponse {
+  properties: Record<string, ClassStructureProperty>;
+  required?: string[];
+  Message?: string;
 }
 
 export interface CreateUserByAdminData {

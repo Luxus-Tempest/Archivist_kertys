@@ -117,9 +117,9 @@ export const InstructionsList: React.FC<Props> = ({
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-on-surface-variant line-clamp-1 leading-relaxed mb-3">
+                {/* <p className="text-xs text-on-surface-variant line-clamp-1 leading-relaxed mb-3">
                   {item.content || t("instructions.noContent", "Aucun contenu...")}
-                </p>
+                </p> */}
                 <div className="flex items-center text-[10px] text-outline font-bold  tracking-widest ">
                   <ScheduleRoundedIcon sx={{ fontSize: 14, mr: 0.5 }} />
                   {formatRelativeDate(item.updatedAt)}
