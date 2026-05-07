@@ -296,6 +296,19 @@
       "deleteSuccess": "Instruction supprimée",
       "error": "Une erreur est survenue",
       "deleteError": "Erreur lors de la suppression"
+    },
+    "properties": "Propriétés",
+    "globalInstruction": "Instruction globale",
+    "required": "Requis",
+    "mentionHint": "Tapez @ pour lier des propriétés",
+    "linkProperty": "Associer une propriété",
+    "propertyPlaceholder": "Définir les règles pour {{name}}...",
+    "types": {
+      "text": "Texte",
+      "number": "Nombre",
+      "date": "Date",
+      "lookup": "Lookup",
+      "list": "Liste"
     }
   }
 }

@@ -2,6 +2,7 @@ import React, { useState, useRef, useCallback, useEffect, useLayoutEffect } from
 import { useTranslation } from "react-i18next";
 import { AtMentionMenu, type PropertyItem } from "./AtMentionMenu";
 import { useAdmin } from "../../hooks/useAdmin";
+import { SvgIcon } from "../SvgIcon";
 
 
 
@@ -19,7 +20,7 @@ interface EditorState {
 // ─── Sérialisation / Parsing ─────────────────────────────────────────────────
 function serialize(s: EditorState, classId: number | string, className: string): string {
   const parts: string[] = [];
-  parts.push(`<rule_set id="${classId || 0}" name="${className || "Document"}">`);
+  parts.push(`<rule_set id="${classId || 0}" document_type="${className || "Document"}">`);
   parts.push(`  <GlobalInstruction>${s.global || ""}</GlobalInstruction>`);
   s.blocks.forEach((b) =>
     parts.push(`  <Property name="${b.name}">${b.content || ""}</Property>`)
@@ -103,7 +104,7 @@ export const CustomEditor: React.FC<CustomEditorProps> = ({
 
   const { t } = useTranslation();
   const [state, setState] = useState<EditorState>(() => parse(value));
-  const [focusedId, setFocusedId] = useState<string | null>(null);
+  const [_, setFocusedId] = useState<string | null>(null);
   const [showMenu, setShowMenu]   = useState(false);
   const [query, setQuery]         = useState("");
   const [menuPos, setMenuPos]     = useState({ top: 0, left: 0 });
@@ -132,17 +133,17 @@ export const CustomEditor: React.FC<CustomEditorProps> = ({
         const rawType = prop.type || "string";
         const rawFormat = prop.format;
         
-        let uiType = "Texte";
+        let uiType = t("instructions.types.text");
         
         if (rawFormat) {
           // Si format existe, on l'utilise (ex: date, email, uuid...)
-          uiType = rawFormat.charAt(0).toUpperCase() + rawFormat.slice(1);
+          uiType = t(`instructions.types.${rawFormat.toLowerCase()}`, { defaultValue: rawFormat.charAt(0).toUpperCase() + rawFormat.slice(1) });
         } else {
           // Sinon fallback sur le type
-          if (rawType.includes("number") || rawType.includes("integer")) uiType = "Nombre";
-          else if (rawType.includes("date")) uiType = "Date";
-          else if (rawType.includes("boolean")) uiType = "Lookup";
-          else if (rawType.includes("array")) uiType = "Liste";
+          if (rawType.includes("number") || rawType.includes("integer")) uiType = t("instructions.types.number");
+          else if (rawType.includes("date")) uiType = t("instructions.types.date");
+          else if (rawType.includes("boolean")) uiType = t("instructions.types.lookup");
+          else if (rawType.includes("array")) uiType = t("instructions.types.list");
         }
 
         return { key, label: key, type: uiType };
@@ -291,16 +292,14 @@ export const CustomEditor: React.FC<CustomEditorProps> = ({
       <div className="p-6 bg-surface-container-low border-b border-outline-variant/10">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-            <h3 className="font-headline font-bold text-on-surface tracking-tight text-sm">Global Instruction</h3>
+            <SvgIcon name="instruction" className="text-primary" />
+            <h3 className="font-headline font-bold text-on-surface tracking-tight text-sm">{t("instructions.globalInstruction")}</h3>
             {isLoadingProps && (
               <div className="w-3 h-3 border-2 border-primary/30 border-t-primary rounded-full animate-spin ml-2"></div>
             )}
           </div>
           <span className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant bg-surface-container-high px-2.5 py-1 rounded-full border border-outline-variant/10">
-            Required
+            {t("instructions.required")}
           </span>
         </div>
         
@@ -316,7 +315,7 @@ export const CustomEditor: React.FC<CustomEditorProps> = ({
             className="w-full bg-surface-container-lowest border-0 rounded-xl p-4 text-sm font-body text-on-surface-variant focus:ring-2 focus:ring-primary/20 placeholder:text-outline-variant/50 resize-none min-h-[100px] overflow-hidden transition-[border,box-shadow,height] duration-200"
           />
           <div className="absolute bottom-3 right-4 flex items-center gap-2 pointer-events-none">
-            <span className="text-[10px] text-outline-variant/60 font-medium">Type @ to link properties</span>
+            <span className="text-[10px] text-outline-variant/60 font-medium">{t("instructions.mentionHint")}</span>
           </div>
 
           {showMenu && (
@@ -334,7 +333,7 @@ export const CustomEditor: React.FC<CustomEditorProps> = ({
 
       {/* ── Property Blocks Container ──────────────────────────────────────── */}
       <div className="flex flex-col">
-        {state.blocks.map((block, idx) => {
+        {state.blocks.map((block) => {
           const propertyInfo = currentProperties.find(p => p.key === block.name);
           return (
             <React.Fragment key={block.id}>
@@ -347,7 +346,7 @@ export const CustomEditor: React.FC<CustomEditorProps> = ({
                       propertyInfo?.type === 'Date' ? 'bg-primary-container text-on-primary-container' :
                       'bg-tertiary-container text-on-tertiary-container'
                     }`}>
-                      <span className="text-[9px] font-bold uppercase tracking-wider">{propertyInfo?.type || 'Texte'}</span>
+                      <span className="text-[9px] font-bold uppercase tracking-wider">{propertyInfo?.type || t("instructions.types.text")}</span>
                     </div>
                   </div>
                   <button
@@ -366,7 +365,7 @@ export const CustomEditor: React.FC<CustomEditorProps> = ({
                   onChange={(e) => updateBlock(block.id, e.target.value)}
                   onFocus={() => setFocusedId(block.id)}
                   onBlur={() => setFocusedId(null)}
-                  placeholder={`Define rules for ${block.name.toLowerCase()}...`}
+                  placeholder={t("instructions.propertyPlaceholder", { name: block.name.toLowerCase() })}
                   rows={2}
                   className="w-full bg-transparent border-0 p-1 px-2 text-xs font-body text-on-surface-variant focus:ring-0 placeholder:text-outline-variant/40 resize-none leading-relaxed overflow-hidden"
                 />
@@ -381,10 +380,8 @@ export const CustomEditor: React.FC<CustomEditorProps> = ({
           onClick={handleAddClick}
           className="m-4 p-4 py-2 rounded-xl cursor-pointer border border-dashed border-outline-variant/30 hover:bg-surface-container-low hover:border-primary/50 transition-all flex items-center justify-center gap-2 group"
         >
-          <svg className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span className="font-label text-[11px] font-bold uppercase tracking-[0.15em] text-primary">Add Extraction Field</span>
+          <SvgIcon name="add" />
+          <span className="font-label text-[11px] font-bold uppercase tracking-[0.15em] text-primary">{t("instructions.linkProperty")}</span>
         </button>
       </div>
     </div>

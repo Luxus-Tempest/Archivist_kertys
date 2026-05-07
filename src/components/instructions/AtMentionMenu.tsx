@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
+import { useTranslation } from "react-i18next";
 
 export interface PropertyItem {
   key: string;       // ex: "{{className}}"
@@ -17,18 +18,7 @@ interface AtMentionMenuProps {
   position: { top: number; left: number };
 }
 
-const TYPE_COLORS: Record<string, { bg: string; text: string }> = {
-  "Texte":    { bg: "bg-surface-container",   text: "text-primary" },
-  "Nombre":   { bg: "bg-amber-50",  text: "text-amber-600" },
-  "Date":     { bg: "bg-violet-50", text: "text-violet-500" },
-  "Booléen":  { bg: "bg-teal-50",   text: "text-teal-600" },
-  "Lookup":   { bg: "bg-rose-50",   text: "text-rose-500" },
-  "Defaut":   { bg: "bg-surface-container", text: "text-outline" },
-};
 
-function getTypeStyle(type: string) {
-  return TYPE_COLORS[type] ?? TYPE_COLORS["Defaut"];
-}
 
 export const AtMentionMenu: React.FC<AtMentionMenuProps> = ({
   items,
@@ -38,6 +28,7 @@ export const AtMentionMenu: React.FC<AtMentionMenuProps> = ({
   onClose: _onClose,
   position,
 }) => {
+  const { t } = useTranslation();
   const listRef = useRef<HTMLDivElement>(null);
   const activeRef = useRef<HTMLButtonElement>(null);
 
@@ -81,7 +72,7 @@ export const AtMentionMenu: React.FC<AtMentionMenuProps> = ({
         {/* Header discret */}
         <div className="px-3 pb-1.5 pt-0.5 flex items-center gap-1.5">
           <span className="text-[9px] font-black tracking-[0.18em] uppercase text-outline/60">
-            Propriétés
+            {t("instructions.properties")}
           </span>
           {query && (
             <span className="text-[9px] font-bold text-primary/70 truncate max-w-[100px]">
@@ -95,7 +86,7 @@ export const AtMentionMenu: React.FC<AtMentionMenuProps> = ({
         {/* Liste */}
         {filtered.map((item, idx) => {
           const isActive = idx === activeIndex;
-          const typeStyle = getTypeStyle(item.type);
+          // const typeStyle = getTypeStyle(item.type);
 
           return (
             <button
@@ -168,10 +159,4 @@ export const AtMentionMenu: React.FC<AtMentionMenuProps> = ({
   );
 };
 
-function Kbd({ children }: { children: React.ReactNode }) {
-  return (
-    <kbd className="inline-flex items-center justify-center px-1 py-0.5 text-[8px] font-black text-outline/60 bg-white border border-outline-variant/30 rounded shadow-sm leading-none">
-      {children}
-    </kbd>
-  );
-}
+

@@ -313,6 +313,19 @@
       "deleteSuccess": "Instruction deleted",
       "error": "An error occurred",
       "deleteError": "Error during deletion"
+    },
+    "properties": "Properties",
+    "globalInstruction": "Global Instruction",
+    "required": "Required",
+    "mentionHint": "Type @ to link properties",
+    "linkProperty": "Link property",
+    "propertyPlaceholder": "Define rules for {{name}}...",
+    "types": {
+      "text": "Text",
+      "number": "Number",
+      "date": "Date",
+      "lookup": "Lookup",
+      "list": "List"
     }
   }
 }

@@ -55,7 +55,7 @@ export const InstructionsList: React.FC<Props> = ({
             icon={<AddRoundedIcon sx={{ fontSize: 18 }} />}
             iconPosition="left"
           >
-            {t("instructions.newInstruction", "Nouvelle")}
+            {t("instructions.newInstruction")}
           </Button>
         </div>
         <div className="space-y-2">
