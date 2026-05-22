@@ -4,7 +4,8 @@ import { UserRoleEnum, UserStatusEnum } from '../types/auth';
 
 export const loginSchema = (t: TFunction) => z.object({
   Email: z.string().email(t("invalidEmail")),
-  Password: z.string().min(4, t("passwordTooShort"))
+  Password: z.string().min(4, t("passwordTooShort")),
+  OrganizationId: z.string().optional()
 });
 
 // Step 1: Organization info

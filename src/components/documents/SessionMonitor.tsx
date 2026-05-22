@@ -22,6 +22,7 @@ export function SessionMonitor({ sessionId, onClose }: SessionMonitorProps) {
   const { t } = useTranslation()
   const dispatch = useDispatch();
   const sessionData = useSelector((state: RootState) => state.docs.activeSessions[sessionId]);
+  const token = useSelector((state: RootState) => state.auth.token);
   const [isExpanded, setIsExpanded] = useState(true);
 
   useEffect(() => {
@@ -39,7 +40,7 @@ export function SessionMonitor({ sessionId, onClose }: SessionMonitorProps) {
     const hubUrl = t('rooturleventsexternalstatussessionid', '{{rootUrl}}/events/external/status/{{sessionId}}', { rootUrl, sessionId });
 
     const connection = new signalR.HubConnectionBuilder()
-      .withUrl(hubUrl)
+      .withUrl(hubUrl, { accessTokenFactory: () => token || '' })
       .withAutomaticReconnect()
       .build();
 

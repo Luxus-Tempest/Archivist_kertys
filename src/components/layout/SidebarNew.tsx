@@ -5,6 +5,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { SvgIcon, type IconName } from '../SvgIcon';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
+import { UserRoleEnum } from '../../types/auth';
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -29,7 +30,7 @@ interface NavGroup {
 export function SidebarNew({ isCollapsed, setIsCollapsed }: SidebarProps) {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const isAdmin = user?.role === 'ADMIN';
+  const isAllowed = user?.role === UserRoleEnum.OWNER || user?.role === UserRoleEnum.ADMIN;
 
   const navGroups: NavGroup[] = [
     {
@@ -62,7 +63,7 @@ export function SidebarNew({ isCollapsed, setIsCollapsed }: SidebarProps) {
     },
   ];
 
-  const visibleGroups = navGroups.filter(g => !g.adminOnly || isAdmin);
+  const visibleGroups = navGroups.filter(g => !g.adminOnly || isAllowed);
 
   return (
     <aside

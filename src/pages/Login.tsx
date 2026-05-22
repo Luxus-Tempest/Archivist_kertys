@@ -14,6 +14,7 @@ import LockRoundedIcon from '@mui/icons-material/LockRounded';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
 import VisibilityOffRoundedIcon from '@mui/icons-material/VisibilityOffRounded';
+import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded';
 
 export function Login() {
   const { t } = useTranslation()
@@ -55,6 +56,16 @@ export function Login() {
     >
       <form className="space-y-3" onSubmit={handleSubmit(onSubmit)}>
         <div className="space-y-4">
+          <Input 
+            id="organizationId"
+            label={t('organizationId', 'Organization ID (Optional)')} 
+            type="text" 
+            placeholder={t('enterOrganizationId', 'Enter Organization ID')} 
+            icon={<BusinessRoundedIcon sx={{ fontSize: 18 }} />}
+            {...register('OrganizationId')}
+            error={errors.OrganizationId?.message}
+          />
+
           <Input 
             id="email"
             label={t('email')} 

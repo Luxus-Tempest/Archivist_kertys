@@ -5,6 +5,7 @@ import i18next from 'i18next'
 
 
 const API_URL = import.meta.env.VITE_BASE_URL + '/auth';
+const AUTH_API_URL = import.meta.env.VITE_BASE_URL + '/v2/auth';
 
 const initialState: AuthState = {
   user: null,
@@ -135,7 +136,7 @@ export const loginUser = createAsyncThunk<
   { rejectValue: string }
 >('auth/login', async (data, thunkAPI) => {
   try {
-    const response = await fetch(`${API_URL}/login`, {
+    const response = await fetch(`${AUTH_API_URL}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),

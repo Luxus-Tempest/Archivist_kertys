@@ -1,73 +1,109 @@
-# React + TypeScript + Vite
+# Docs Management
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Application web de gestion et de traitement de documents connectee a une API backend et a M-Files.
 
-Currently, two official plugins are available:
+Le projet permet aux utilisateurs de deposer des documents, suivre leur traitement en temps reel, consulter l'historique des traitements, explorer les documents M-Files et administrer les utilisateurs et les instructions de classification.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Fonctionnalites
 
-## React Compiler
+- Authentification utilisateur : connexion, inscription et inscription par invitation.
+- Routes protegees selon l'etat de connexion.
+- Acces admin reserve aux utilisateurs avec le role `ADMIN`.
+- Upload de documents vers l'API backend.
+- Suivi des sessions de traitement avec mises a jour temps reel via SignalR.
+- Historique pagine des sessions de traitement.
+- Exploration des documents M-Files.
+- Consultation du contenu des fichiers M-Files.
+- Lecture et modification des proprietes de documents M-Files.
+- Gestion des utilisateurs : liste, creation, invitation et changement de statut.
+- Gestion des instructions liees aux classes de documents.
+- Interface multilingue : francais, anglais et espagnol.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Stack technique
 
-## Expanding the ESLint configuration
+- React 19
+- TypeScript
+- Vite
+- Redux Toolkit
+- React Router
+- Material UI
+- i18next
+- SignalR
+- React Hook Form
+- Zod
+- React PDF / PDF.js
+- Syncfusion PDF Viewer
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Structure principale
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```text
+src/
+  components/      Composants reutilisables et composants metier
+  hooks/           Hooks applicatifs pour l'auth, les documents, M-Files et l'admin
+  locales/         Traductions i18next
+  pages/           Pages principales de l'application
+  store/           Slices Redux
+  types/           Types TypeScript partages
+  utils/           Helpers API, stockage local et validations
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Pages principales
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- `/login` : connexion.
+- `/signup` : creation de compte.
+- `/invitation/register` : inscription par invitation.
+- `/process` : upload et suivi du traitement des documents.
+- `/history` : historique des sessions.
+- `/explorer` : exploration des documents M-Files.
+- `/members` : gestion des membres, reservee aux admins.
+- `/instructions` : gestion des instructions.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Configuration
+
+L'URL de base de l'API est configuree dans `.env` :
+
+```env
+VITE_BASE_URL=/api
 ```
+
+Les appels frontend utilisent cette base pour contacter les endpoints backend :
+
+- `/auth`
+- `/docs`
+- `/MFilesDocs`
+- `/admin`
+- `/admin/instructions`
+
+## Installation
+
+```bash
+npm install
+```
+
+## Developpement
+
+```bash
+npm run dev
+```
+
+## Build
+
+```bash
+npm run build
+```
+
+## Verification lint
+
+```bash
+npm run lint
+```
+
+## Preview du build
+
+```bash
+npm run preview
+```
+
+## Notes
+
+Le dossier `dist/` contient le build de production genere par Vite. Le dossier `node_modules/` contient les dependances installees localement et ne doit pas etre versionne.
