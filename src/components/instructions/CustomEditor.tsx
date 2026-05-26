@@ -286,10 +286,10 @@ export const CustomEditor: React.FC<CustomEditorProps> = ({
   };
 
   return (
-    <div className="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col border border-outline-variant/10">
+    <div className="bg-surface-container-lowest rounded-xl shadow-xs overflow-hidden flex flex-col border border-outline-variant/10">
       
       {/* ── Global Instruction Section (Docked Top) ────────────────────────── */}
-      <div className="p-6 bg-surface-container-low border-b border-outline-variant/10">
+      <div className="p-6 bg-on-bg-gray-100 border-b border-outline-variant/10">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <SvgIcon name="instruction" className="text-primary" />

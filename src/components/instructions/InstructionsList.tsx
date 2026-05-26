@@ -93,16 +93,16 @@ export const InstructionsList: React.FC<Props> = ({
                 onClick={() => onSelect(item)}
                 className={
                   active
-                    ? "bg-surface-container-lowest p-4 rounded-xl shadow-sm active-item ring-1 ring-primary/10 cursor-pointer group hover:bg-surface-container-high transition-colors relative"
-                    : "p-4 rounded-xl cursor-pointer shadow-card border border-outline-variant/40 hover:bg-surface-container-high transition-all"
+                    ? "bg-surface-container-lowest p-4 rounded-xl shadow-sm active-item ring-1 ring-primary/10 cursor-pointer group  transition-colors relative"
+                    : "p-4 rounded-xl cursor-pointer shadow-card border border-outline-variant/40 hover:bg-on-bg-gray-100 transition-all"
                 }
               >
-                {active && <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-r-sm"></div>}
+                {active && <div className="absolute left-0 top-3 bottom-3 w-1.5 bg-blue-dark rounded-r-sm"></div>}
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <span className={
                       active
-                        ? "bg-primary text-on-primary text-[10px] font-bold px-2 py-0.5 rounded tracking-tighter"
+                        ? "bg-blue-dark text-on-primary text-[10px] font-bold px-2 py-0.5 rounded tracking-tighter"
                         : "bg-surface-container-highest text-on-surface-variant text-[10px] font-bold px-2 py-0.5 rounded tracking-tighter"
                     }>
                       [{item.classId}]

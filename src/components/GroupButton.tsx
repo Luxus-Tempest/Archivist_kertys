@@ -34,11 +34,11 @@ export function GroupButton({
   const anchorRef = useRef<HTMLDivElement>(null);
 
   const baseStyles =
-    'py-2 cursor-pointer px-4 h-full font-semibold transition-all duration-300 flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed';
+    'py-2 cursor-pointer px-4 h-10 font-semibold transition-all duration-300 flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed';
 
   const variants = {
     solid:
-      'bg-linear-to-r from-primary to-primary-dim text-on-primary hover:shadow-lg hover:shadow-primary/20',
+      'bg-blue-medium hover:bg-blue-dark text-white',
     lightSolid:
       'bg-surface-container-highest text-on-surface font-bold text-sm hover:bg-surface-container-high',
     outline:

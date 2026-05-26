@@ -2,6 +2,7 @@ import { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next'
 import FileUploadRoundedIcon from '@mui/icons-material/FileUploadRounded';
 import EastRoundedIcon from '@mui/icons-material/EastRounded';
+import { Button } from './Button';
 
 interface UploadAreaNewProps {
   onFilesSelected?: (files: File[]) => void;
@@ -59,21 +60,24 @@ export function UploadAreaNew({ onFilesSelected, isUploading, disabled }: Upload
       />
       
       {/* Background blur effects */}
-      <div className="absolute top-0 right-0 -mr-8 -mt-16 w-64 h-64 bg-primary-container/30 blur-[80px] rounded-full group-hover:scale-125 transition-transform duration-700"></div>
-      <div className="absolute top-6 left-0 -ml-20 -mt-8 w-72 h-72 bg-primary-container/30 blur-[100px] rounded-full group-hover:scale-125 transition-transform duration-700"></div>
+      <div className="absolute top-0 right-0 -mr-8 -mt-16 w-64 h-64 bg-blue-thin blur-[130px] rounded-full group-hover:scale-125 transition-transform duration-700"></div>
+      <div className="absolute top-6 left-0 -ml-20 -mt-8 w-96 h-72 bg-blue-thin blur-[190px] rounded-full group-hover:scale-125 transition-transform duration-700"></div>
       
       <div className="relative z-10 flex flex-col items-center text-center">
-        <div className="w-16 h-16 mb-4 rounded-3xl bg-primary-container/50 flex items-center justify-center text-primary-dim group-hover:scale-110 transition-transform duration-300">
+        <div className="w-16 h-16 mb-4 rounded-3xl bg-blue-thin flex items-center justify-center text-blue-dark group-hover:scale-110 transition-transform duration-300">
           <FileUploadRoundedIcon sx={{ fontSize: 30 }} />
         </div>
         <h3 className="text-[16px] font-bold mb-2 font-headline text-on-surface">
           {isUploading ? t('uploadingDocuments', 'Uploading documents...') : t('clickToUploadOrDragDrop', 'Click to upload or drag & drop')}
         </h3>
         <p className="text-on-surface-variant text-[12px] font-body mb-6">{t('pdfDocxXlsxHighresImagesEtcUpTo25mb', 'PDF, DOCX, XLSX, high-res images etc... up to 25MB')}</p>
-        <button className="px-6 py-2 cursor-pointer bg-primary text-on-primary rounded-full font-semibold text-sm flex items-center gap-2 hover:bg-primary-dim active:scale-95 transition-all shadow-lg shadow-primary/10">
+        <Button variant='solid'
+          className="rounded-full"
+          icon= {<EastRoundedIcon sx={{ fontSize: 14 }} />}
+          iconPosition="right"
+        >
           {isUploading ? t('processing', 'Processing...') : t('browseLocalFiles', 'Browse Local Files')}
-          <EastRoundedIcon sx={{ fontSize: 14 }} />
-        </button>
+        </Button>
       </div>
     </div>
   );

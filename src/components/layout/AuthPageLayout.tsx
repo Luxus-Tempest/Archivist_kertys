@@ -1,7 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next'
 import { LanguageSelector } from '../LanguageSelector';
-import AccountBalanceWalletRoundedIcon from '@mui/icons-material/AccountBalanceWalletRounded';
+import { SvgIcon } from '../SvgIcon';
+// import AccountBalanceWalletRoundedIcon from '@mui/icons-material/AccountBalanceWalletRounded';
 
 interface AuthPageLayoutProps {
   children: React.ReactNode;
@@ -30,8 +31,10 @@ export function AuthPageLayout({
       {/* Header */}
       <header className="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl flex justify-between items-center px-8 py-3">
         <div className="flex items-center gap-2">
-          <AccountBalanceWalletRoundedIcon className="text-primary" />
-          <span className="text-xl font-bold tracking-tighter text-slate-800 font-headline">{t('docme', 'DocMe')}</span>
+          <SvgIcon name='logo' width="100%" height="100%" className="w-32 h-10" />
+
+          {/* <AccountBalanceWalletRoundedIcon className="text-primary" />
+          <span className="text-xl font-bold tracking-tighter text-slate-800 font-headline">{t('DocPulseAI', 'DocPulseAI')}</span> */}
         </div>
         <div className="hidden md:flex gap-8 items-center text-sm font-medium text-on-surface-variant">
           <LanguageSelector />
@@ -41,14 +44,14 @@ export function AuthPageLayout({
 
       {/* Main Content */}
       <main className="grow flex items-center justify-center px-6 pt-24 pb-12">
-      {/* <main className="grow flex items-center justify-center px-6 pt-24 pb-12"> */}
+        {/* <main className="grow flex items-center justify-center px-6 pt-24 pb-12"> */}
         <div className="w-full max-w-[1100px] grid md:grid-cols-2 bg-surface-container-lowest rounded-3xl overflow-hidden shadow-editorial h-max">
           {/* Left Side: Visual/Branding */}
           <div className="relative hidden md:flex flex-col justify-end p-12 bg-primary overflow-hidden">
-            <img 
-              alt={imageAlt} 
-              className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay" 
-              src={imageSrc} 
+            <img
+              alt={imageAlt}
+              className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay"
+              src={imageSrc}
             />
             <div className="absolute inset-0 bg-linear-to-t from-primary via-primary/20 to-transparent"></div>
             <div className="relative z-10 space-y-4 text-on-primary">
@@ -78,7 +81,7 @@ export function AuthPageLayout({
       {/* Footer */}
       {/* <footer className="p-8 text-center text-on-surface">
         <p className="text-xs text-outline-variant tracking-widest font-body uppercase">
-          {t('2024DocmeDocumentSystemsSecurePrivateEditorial', '© 2024 DocMe Document Systems. Secure. Private. Editorial.')}
+          {t('2024DocPulseAIDocumentSystemsSecurePrivateEditorial', '© 2024 DocPulseAI Document Systems. Secure. Private. Editorial.')}
         </p>
       </footer> */}
     </div>

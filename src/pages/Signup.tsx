@@ -27,18 +27,18 @@ export function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [step, setStep] = useState<1 | 2>(1);
   const [direction, setDirection] = useState<'forward' | 'backward'>('forward');
-  
+
   const {
-     register,
-     handleSubmit,
-     trigger,
-     getValues,
-     formState: { errors },
-   } = useForm<SignupFormData>({
-     resolver: zodResolver(signupSchema(t)),
-     mode: 'onTouched',
-   });
- 
+    register,
+    handleSubmit,
+    trigger,
+    getValues,
+    formState: { errors },
+  } = useForm<SignupFormData>({
+    resolver: zodResolver(signupSchema(t)),
+    mode: 'onTouched',
+  });
+
   //  useEffect(() => {
   //    trigger();
   //  }, [i18n.language, trigger]);
@@ -50,14 +50,14 @@ export function Signup() {
       OrgEmail: getValues('OrgEmail'),
       Domain: getValues('Domain'),
     };
-    
+
     const result = signupOrgSchema(t).safeParse(orgValues);
     if (!result.success) {
       // Trigger validation on step 1 fields to show errors
       await trigger(['OrgName', 'OrgEmail', 'Domain']);
       return;
     }
-    
+
     setDirection('forward');
     setStep(2);
   };
@@ -84,7 +84,7 @@ export function Signup() {
         success: t('accountCreatedSuccessfully', 'Account created successfully.'),
         error: (err: any) => err || t('errorCreatingAccount', 'Error creating account.'),
       });
-      
+
       await signupPromise;
       setTimeout(() => {
         navigate('/login');
@@ -94,13 +94,13 @@ export function Signup() {
     }
   };
 
-  const stepTitle = step === 1 
+  const stepTitle = step === 1
     ? t('signupPage.organizationDetails')
     : t('signupPage.createAccount');
-  
+
   const stepSubtitle = step === 1
     ? t('signupPage.enterYourOrganizationInfo')
-    : t('signupPage.joinDocme');
+    : t('signupPage.joinDocPulseAI');
 
   return (
     <AuthPageLayout
@@ -116,12 +116,10 @@ export function Signup() {
             {t('signupPage.stepOf', { current: step, total: 2 })}
           </span>
           <div className="flex gap-1.5">
-            <div className={`h-1.5 w-8 rounded-full transition-all duration-300 ${
-              step >= 1 ? 'bg-primary' : 'bg-outline-variant/30'
-            }`} />
-            <div className={`h-1.5 w-8 rounded-full transition-all duration-300 ${
-              step >= 2 ? 'bg-primary' : 'bg-outline-variant/30'
-            }`} />
+            <div className={`h-1.5 w-8 rounded-full transition-all duration-300 ${step >= 1 ? 'bg-primary' : 'bg-outline-variant/30'
+              }`} />
+            <div className={`h-1.5 w-8 rounded-full transition-all duration-300 ${step >= 2 ? 'bg-primary' : 'bg-outline-variant/30'
+              }`} />
           </div>
         </div>
       }
@@ -130,41 +128,40 @@ export function Signup() {
         <div className="relative ">
           {/* Step 1: Organization Details */}
           <div
-            className={`transition-all duration-300 ease-in-out ${
-              step === 1
+            className={`transition-all duration-300 ease-in-out ${step === 1
                 ? 'opacity-100 translate-x-0 relative'
                 : direction === 'forward'
                   ? 'opacity-0 -translate-x-10 absolute inset-0'
                   : 'opacity-0 translate-x-10 absolute inset-0'
-            }`}
+              }`}
             style={{ pointerEvents: step === 1 ? 'auto' : 'none' }}
           >
             <div className="space-y-4">
-              <Input 
+              <Input
                 id="orgName"
-                label={t('signupPage.organizationName')} 
-                type="text" 
-                placeholder={t('signupPage.egArchivistGlobal')} 
+                label={t('signupPage.organizationName')}
+                type="text"
+                placeholder={t('signupPage.egArchivistGlobal')}
                 icon={<ApartmentRoundedIcon sx={{ fontSize: 18 }} />}
                 {...register('OrgName')}
                 error={errors.OrgName?.message}
               />
 
-              <Input 
+              <Input
                 id="orgEmail"
-                label={t('signupPage.orgEmail')} 
-                type="email" 
-                placeholder={t('signupPage.orgEmailPlaceholder')} 
+                label={t('signupPage.orgEmail')}
+                type="email"
+                placeholder={t('signupPage.orgEmailPlaceholder')}
                 icon={<MailRoundedIcon sx={{ fontSize: 18 }} />}
                 {...register('OrgEmail')}
                 error={errors.OrgEmail?.message}
               />
 
-              <Input 
+              <Input
                 id="domain"
-                label={t('signupPage.domain')} 
-                type="text" 
-                placeholder={t('signupPage.egMycompanyCom')} 
+                label={t('signupPage.domain')}
+                type="text"
+                placeholder={t('signupPage.egMycompanyCom')}
                 icon={<LanguageRoundedIcon sx={{ fontSize: 18 }} />}
                 {...register('Domain')}
                 error={errors.Domain?.message}
@@ -180,47 +177,46 @@ export function Signup() {
 
           {/* Step 2: User Account Details */}
           <div
-            className={`transition-all duration-300 ease-in-out ${
-              step === 2
+            className={`transition-all duration-300 ease-in-out ${step === 2
                 ? 'opacity-100 translate-x-0 relative'
                 : direction === 'forward'
                   ? 'opacity-0 translate-x-8 absolute inset-0'
                   : 'opacity-0 -translate-x-8 absolute inset-0'
-            }`}
+              }`}
             style={{ pointerEvents: step === 2 ? 'auto' : 'none' }}
           >
             <div className="space-y-4">
-              <Input 
+              <Input
                 id="fullName"
-                label={t('signupPage.fullName')} 
-                type="text" 
-                placeholder={t('signupPage.JDoe')} 
+                label={t('signupPage.fullName')}
+                type="text"
+                placeholder={t('signupPage.JDoe')}
                 icon={<PersonRoundedIcon sx={{ fontSize: 18 }} />}
                 {...register('FullName')}
                 error={errors.FullName?.message}
               />
 
-              <Input 
+              <Input
                 id="email"
-                label={t('signupPage.userEmail')} 
-                type="email" 
-                placeholder={t('signupPage.userEmailPlaceholder')} 
+                label={t('signupPage.userEmail')}
+                type="email"
+                placeholder={t('signupPage.userEmailPlaceholder')}
                 icon={<MailRoundedIcon sx={{ fontSize: 18 }} />}
                 {...register('Email')}
                 error={errors.Email?.message}
               />
-              
-              <Input 
+
+              <Input
                 id="password"
-                label={t('signupPage.password')} 
-                type={showPassword ? 'text' : 'password'} 
-                placeholder="••••••••" 
+                label={t('signupPage.password')}
+                type={showPassword ? 'text' : 'password'}
+                placeholder="••••••••"
                 icon={<LockRoundedIcon sx={{ fontSize: 18 }} />}
                 {...register('Password')}
                 error={errors.Password?.message}
                 rightElement={
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="text-outline hover:text-on-surface-variant transition-colors flex items-center justify-center p-1"
                   >

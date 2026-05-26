@@ -4,10 +4,11 @@ import { UserStatusEnum } from '../../types/auth';
 import { Menu, type MenuItem } from '../Menu';
 import { useTranslation } from 'react-i18next'
 import { LanguageSelector } from '../LanguageSelector';
-import AccountBalanceWalletRoundedIcon from '@mui/icons-material/AccountBalanceWalletRounded';
+// import AccountBalanceWalletRoundedIcon from '@mui/icons-material/AccountBalanceWalletRounded';
 import PendingActionsRoundedIcon from '@mui/icons-material/PendingActionsRounded';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
+import { SvgIcon } from '../SvgIcon';
 
 export function HeaderNew() {
   const { t } = useTranslation()
@@ -20,24 +21,25 @@ export function HeaderNew() {
   };
 
   const profileMenuItems: MenuItem[] = [
-    { 
-      label: t('settings', 'Settings'), 
-      icon: <SettingsRoundedIcon sx={{ fontSize: 18 }} />, 
-      onClick: () => console.log('Settings clicked') 
+    {
+      label: t('settings', 'Settings'),
+      icon: <SettingsRoundedIcon sx={{ fontSize: 18 }} />,
+      onClick: () => console.log('Settings clicked')
     },
-    { 
-      label: t('logout', 'Logout'), 
-      icon: <LogoutRoundedIcon sx={{ fontSize: 18 }} />, 
+    {
+      label: t('logout', 'Logout'),
+      icon: <LogoutRoundedIcon sx={{ fontSize: 18 }} />,
       onClick: () => logout(),
-      variant: 'danger' 
+      variant: 'danger'
     },
   ];
 
   return (
-    <header className="fixed top-0 w-full z-50 bg-cipher-bg border-b border-outline-variant/60 flex justify-between items-center px-6 py-4">
+    <header className="fixed top-0 w-full z-50 bg-white border-b border-gray-300 flex justify-between items-center px-6 py-4">
       <div className="flex items-center gap-3">
-        <AccountBalanceWalletRoundedIcon className="text-slate-600" />
-        <h1 className="text-xl font-bold tracking-tighter text-slate-800 font-headline">{t('docme', 'DocMe')}</h1>
+        <SvgIcon name='logo' width="100%" height="100%" className="w-32 h-10" />
+        {/* <AccountBalanceWalletRoundedIcon className="text-slate-600" /> */}
+        {/* <h1 className="text-xl font-bold tracking-tighter text-slate-800 font-headline">{t('DocPulseAI', 'DocPulseAI')}</h1> */}
       </div>
 
       {user?.status === UserStatusEnum.PENDING && (
@@ -55,10 +57,10 @@ export function HeaderNew() {
         </div>
       )}
 
-      
+
       <div className="flex items-center gap-4 relative">
         <LanguageSelector />
-        <div 
+        <div
           onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
           className="flex items-center gap-3 cursor-pointer group"
         >
@@ -78,16 +80,16 @@ export function HeaderNew() {
             </div>
           </div>
           <div className="w-8 h-8 rounded-md bg-surface-container-highest overflow-hidden border border-outline-variant/20 active:scale-95 transition-transform duration-200 shadow-sm group-hover:border-primary/30">
-            <img 
-              alt={t('userProfile', 'User profile')} 
-              src={`https://ui-avatars.com/api/?name=${user?.fullName || 'User'}&background=random&bold=true`} 
+            <img
+              alt={t('userProfile', 'User profile')}
+              src={`https://ui-avatars.com/api/?name=${user?.fullName || 'User'}&background=random&bold=true`}
             />
           </div>
         </div>
 
-        <Menu 
-          isOpen={isProfileMenuOpen} 
-          onClose={() => setIsProfileMenuOpen(false)} 
+        <Menu
+          isOpen={isProfileMenuOpen}
+          onClose={() => setIsProfileMenuOpen(false)}
           items={profileMenuItems}
           header={user?.email || t("account", "Account")}
           className="top-full mt-2"

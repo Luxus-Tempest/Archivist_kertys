@@ -11,7 +11,7 @@ import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownR
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import SyncRoundedIcon from '@mui/icons-material/SyncRounded';
-import VerifiedUserRoundedIcon from '@mui/icons-material/VerifiedUserRounded';
+// import VerifiedUserRoundedIcon from '@mui/icons-material/VerifiedUserRounded';
 
 interface SessionMonitorProps {
   sessionId: string;
@@ -90,23 +90,24 @@ export function SessionMonitor({ sessionId, onClose }: SessionMonitorProps) {
   if (!sessionData) return null;
 
   return (
-    <section className="flex flex-col gap-4 bg-surface-container-lowest border border-outline-variant/40 rounded-md p-5 duration-300 transition-all shadow-card hover:shadow-xs">
+    <section className="flex flex-col gap-4 bg-surface-container-lowest border border-outline-variant/40 rounded-md p-5 duration-300 transition-all">
       <div 
         className="flex flex-wrap transition-all duration-300 items-center justify-between gap-4 cursor-pointer select-none"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <div className="flex items-center gap-3">
-          <span className="p-2 bg-surface-container-highest rounded-md text-on-surface-variant flex items-center justify-center transition-transform duration-200">
+          <span className="p-1 bg-on-bg-gray-100 rounded-md text-on-surface-variant flex items-center justify-center transition-transform duration-200">
             <KeyboardArrowDownRoundedIcon className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} />
           </span>
           <div>
-            <h4 className="px-3 py-1 bg-surface-container-high rounded-md text-[10px] font-mono text-outline font-medium tracking-tight border border-outline-variant/20">{t('idId', 'ID: {{id}}', { id: sessionData.session.id })}</h4>
+            <h4 className="px-0 py-0  rounded-md text-[10px]  text-outline font-extrabold ">{t('idId', '{{id}}', { id: sessionData.session.id })}</h4>
             <p className="text-xs text-on-surface-variant">{t('lengthDocuments2', '{{length}} documents', { length: sessionData.files.length })}</p>
           </div>
         </div>
         
         <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
-          <span className="px-3 py-1 bg-surface-container-high rounded-md text-[10px] font-mono text-outline font-medium tracking-tight border border-outline-variant/20 uppercase">{t('statusStatus', 'STATUS: {{status}}', { status: sessionData.session.status })}</span>
+          {/* {sessionData.session.status === ProcessingStatus.COMPLETED ? <VerifiedUserRoundedIcon className="text-tertiary mt-0.5" sx={{ fontSize: 20 }} /> : <SyncRoundedIcon sx={{width: 15, height: 15}} className="animate-spin" />} */}
+          <span className="px-3 py-1  rounded-[3px] text-[10px] fontmono text-on-surface-variant font-extrabold tracking-tight border border-outline-variant/20 uppercase">{t('statusStatus', { status: sessionData.session.status })}</span>
           <button 
             className="p-2 text-error hover:bg-error-container/10 rounded-full transition-colors flex items-center justify-center" 
             onClick={onClose}
@@ -162,7 +163,7 @@ export function SessionMonitor({ sessionId, onClose }: SessionMonitorProps) {
             )}
           </DocumentTable>
 
-          {sessionData.session.status === ProcessingStatus.COMPLETED && (
+          {/* {sessionData.session.status === ProcessingStatus.COMPLETED && (
             <div className="mt-2 p-2 bg-tertiary-container/30 rounded-md border border-tertiary/20 flex items-start gap-2">
               <VerifiedUserRoundedIcon className="text-tertiary mt-0.5" sx={{ fontSize: 20 }} />
               <div>
@@ -172,7 +173,7 @@ export function SessionMonitor({ sessionId, onClose }: SessionMonitorProps) {
                 </p>
               </div>
             </div>
-          )}
+          )} */}
         </div>
       )}
     </section>

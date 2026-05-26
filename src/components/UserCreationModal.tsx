@@ -22,7 +22,7 @@ export interface ModalProps {
 export function UserCreationModal({ open, onClose, onSubmitSuccess }: ModalProps) {
   const { t } = useTranslation();
   const { createUserByAdmin, isActionLoading } = useAdmin();
-  
+
   const { register, handleSubmit, reset, formState: { errors } } = useForm<CreateUserByAdminFormData>({
     resolver: zodResolver(createUserByAdminSchema(t)),
     defaultValues: {
@@ -66,15 +66,15 @@ export function UserCreationModal({ open, onClose, onSubmitSuccess }: ModalProps
       width="100%"
       footer={
         <div className="flex w-full gap-3">
-          <Button variant="outline" className="flex-1 text-sm" onClick={handleClose} type="button">
+          <Button variant="outline" className="flex-1 " onClick={handleClose} type="button">
             {t('members.createUserModal.cancel')}
           </Button>
-          <Button 
-            className="flex-1" 
-            icon={<SendRoundedIcon sx={{ fontSize: 18 }} />} 
+          <Button
+            className="flex-1"
+            icon={<SendRoundedIcon sx={{ fontSize: 18 }} />}
             onClick={handleSubmit(onSubmit)}
             type="button"
-            btnClass='rounded-lg w-content text-sm'
+            // btnClass='rounded-lg w-content text-sm'
             disabled={isActionLoading}
           >
             {isActionLoading ? t('members.createUserModal.creatingUser') : t('members.createUserModal.createUser')}
@@ -84,7 +84,7 @@ export function UserCreationModal({ open, onClose, onSubmitSuccess }: ModalProps
     >
       <form id="invite-user-form" className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
         {/* Email Input */}
-        <Input 
+        <Input
           id="fullName"
           label={t('members.createUserModal.fullName')}
           type="text"
@@ -94,7 +94,7 @@ export function UserCreationModal({ open, onClose, onSubmitSuccess }: ModalProps
           error={errors.FullName?.message}
           required
         />
-        <Input 
+        <Input
           id="email"
           label={t('members.createUserModal.email')}
           type="email"
@@ -127,7 +127,7 @@ export function UserCreationModal({ open, onClose, onSubmitSuccess }: ModalProps
             {...register('Status')}
           />
         </div>
-        <Input 
+        <Input
           id="password"
           label={t('members.createUserModal.password')}
           type="password"
@@ -139,7 +139,7 @@ export function UserCreationModal({ open, onClose, onSubmitSuccess }: ModalProps
         />
 
         {/* Information Box */}
-        <div className="bg-surface-container-low/50 p-4 rounded-xl border-[0.5px] border-primary/30 flex gap-3 items-start">
+        <div className="bg-surface-container-low/50 p-2 rounded-xl border-[0.5px] border-primary/30 flex gap-3 items-start">
           <InfoRoundedIcon className="text-primary/60 shrink-0" sx={{ fontSize: 20 }} />
           <p className="text-xs text-on-surface-variant leading-relaxed">
             {t('members.createUserModal.createUserInfoText')}

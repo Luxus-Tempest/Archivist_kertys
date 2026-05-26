@@ -3,6 +3,7 @@ import { DocumentRow } from './DocumentRow';
 import { useTranslation } from 'react-i18next'
 import DeleteSweepRoundedIcon from '@mui/icons-material/DeleteSweepRounded';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
+import { Button } from '../Button';
 
 interface StagedListProps {
   files: File[];
@@ -23,14 +24,14 @@ export function StagedList({ files, onRemove, onClear, isUploading }: StagedList
           <p className="text-sm text-on-surface-variant">{t('reviewDocumentsBeforeSendingToVault', 'Review documents before sending to vault')}</p>
         </div>
         <div className="flex items-center gap-3">
-          <button 
-            className="p-2 cursor-pointer text-error hover:bg-error-container/10 rounded-full transition-colors" 
+          <Button 
+            variant='danger'
             onClick={onClear}
             disabled={isUploading}
             title={t('clearAll', 'Clear All')}
-          >
-             <DeleteSweepRoundedIcon sx={{ fontSize: 24 }} />
-          </button>
+            icon={<DeleteSweepRoundedIcon />}
+            iconPosition='left'
+          />
         </div>
       </div>
 

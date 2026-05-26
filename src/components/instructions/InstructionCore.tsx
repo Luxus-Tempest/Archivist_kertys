@@ -108,7 +108,7 @@ export const InstructionCore: React.FC<Props> = ({
               }}
               disabled={disableActions}
               className="w-max px-4"
-              btnClass="rounded-md text-sm py-1"
+              // btnClass="rounded-md text-sm py-1"
               iconPosition="left"
             >
               {t("instructions.cancel", "Annuler")}
@@ -119,8 +119,8 @@ export const InstructionCore: React.FC<Props> = ({
               variant="solid"
               onClick={handleSubmit(onSubmit)}
               disabled={disableActions || !isValid}
-              className="w-max px-3"
-              btnClass="rounded-md text-xs py-1"
+              // className="w-max px-3"
+              // btnClass="rounded-md text-xs py-1"
               icon={isSubmitting ? (
                 <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
               ) : (
@@ -229,9 +229,9 @@ export const InstructionCore: React.FC<Props> = ({
           </div>
 
           {/* Preview Section */}
-          <div className="bg-surface-container-high/40 p-6 rounded-2xl space-y-4">
+          <div className="bg-on-bg-gray-100 p-6 rounded-xl space-y-4">
             <div className="flex items-center gap-3">
-              <span className="w-8 h-8 rounded-lg bg-tertiary/10 text-tertiary flex items-center justify-center">
+              <span className="w-8 h-8 rounded-lg bg-on-bg-gray-200 text-on-bg-gray-800 flex items-center justify-center">
                 <PsychologyRoundedIcon />
               </span>
               <h4 className="font-headline font-bold text-sm text-on-surface">{t("instructions.preview", "Aperçu")}</h4>

@@ -69,7 +69,10 @@ export function UserInviteModal({ open, onClose, onSubmitSuccess }: UserInviteMo
       width="100%"
       footer={
         <div className="flex w-full gap-3">
-          <Button variant="outline" className="flex-1 text-sm" onClick={handleClose} type="button">
+          <Button 
+          variant="outline" 
+          className="flex-1" 
+          onClick={handleClose} type="button">
             {t('members.inviteUserModal.cancel')}
           </Button>
           <Button 
@@ -77,7 +80,7 @@ export function UserInviteModal({ open, onClose, onSubmitSuccess }: UserInviteMo
             icon={<SendRoundedIcon sx={{ fontSize: 18 }} />} 
             onClick={handleSubmit(onSubmit)}
             type="button"
-            btnClass='rounded-lg w-content text-sm'
+            // btnClass='rounded-lg w-content text-sm'
             disabled={isActionLoading}
           >
             {isActionLoading ? t('members.inviteUserModal.sending') : t('members.inviteUserModal.send')}
@@ -122,7 +125,7 @@ export function UserInviteModal({ open, onClose, onSubmitSuccess }: UserInviteMo
         </div>
 
         {/* Information Box */}
-        <div className="bg-surface-container-low/50 p-4 rounded-xl border-[0.5px] border-primary/30 flex gap-3 items-start">
+        <div className="bg-surface-container-low/50 p-2 rounded-xl border-[0.5px] border-primary/30 flex gap-3 items-start">
           <InfoRoundedIcon className="text-primary/60 shrink-0" sx={{ fontSize: 20 }} />
           <p className="text-xs text-on-surface-variant leading-relaxed">
             {t('members.inviteUserModal.infoText')}

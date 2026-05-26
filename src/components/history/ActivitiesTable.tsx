@@ -96,23 +96,23 @@ export function ActivitiesTable() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h2 className="font-headline font-bold text-2xl tracking-tight text-on-surface mb-1">{t('recentActivities', 'Recent Activities')}</h2>
-          <p className="text-sm text-outline tracking-tight">{t('reviewAndManageYourProcessedDocuments', 'Review and manage your processed documents')}</p>
+          <p className="text-sm text-on-surface-variant tracking-tight">{t('reviewAndManageYourProcessedDocuments', 'Review and manage your processed documents')}</p>
         </div>
         <div className="flex gap-4 items-center">
           {/* Segmented Control / Toggle */}
-          <div className="flex items-center justify-center bg-surface-container-high p-1 rounded-md border border-outline-variant/10 shadow-card">
+          <div className="flex items-center justify-center bg-on-bg-gray-200 p-1 rounded-[3px] border border-outline-variant/10 shadow-card h-8">
             <button 
               onClick={() => setGroupBy('session')}
-              className={`px-3 cursor-pointer py-1.5 text-xs font-bold rounded-md transition-all duration-300 flex items-center gap-2 ${
-                groupBy === 'session' ? 'bg-white/90  text-primary' : 'text-outline hover:text-on-surface'
+              className={`px-2 cursor-pointer py-1 text-xs font-bold rounded-md transition-all duration-300 flex items-center gap-2 ${
+                groupBy === 'session' ? 'bg-white/88  text-on-surface-variant' : 'text-outline hover:text-on-surface'
               }`}
             >
               <ViewAgendaRoundedIcon sx={{ fontSize: 18 }} />
               {t('sessions', 'Sessions')}</button>
             <button 
               onClick={() => setGroupBy('files')}
-              className={`px-3 cursor-pointer py-1.5 text-xs font-bold rounded-md transition-all duration-300 flex items-center gap-2 ${
-                groupBy === 'files' ? 'bg-white/90  text-primary' : 'text-outline hover:text-on-surface'
+              className={`px-2 cursor-pointer py-1 text-xs font-bold rounded-md transition-all duration-300 flex items-center gap-2 ${
+                groupBy === 'files' ? 'bg-white/88  text-on-surface-variant' : 'text-outline hover:text-on-surface'
               }`}
             >
               <DescriptionRoundedIcon sx={{ fontSize: 18 }} />
@@ -123,11 +123,14 @@ export function ActivitiesTable() {
 
           <div className="flex gap-2">
             <Button 
+              variant='solid'
+              iconPosition='left'
+              icon={<AddRoundedIcon sx={{ fontSize: 18 }} />}
               onClick={() => navigate('/process')}
-              className="px-4 py-2 text-sm font-semibold bg-primary text-on-primary rounded-lg shadow-sm flex items-center gap-2 hover:bg-primary-dim transition-colors cursor-pointer"
+              // className="px-4 py-2 text-sm font-semibold bg-primary text-on-primary rounded-lg shadow-sm flex items-center gap-2 hover:bg-primary-dim transition-colors cursor-pointer"
             >
               {t('uploadNewFiles')}
-              <AddRoundedIcon sx={{ fontSize: 18 }} /></Button>
+            </Button>
           </div>
         </div>
       </div>
@@ -160,7 +163,7 @@ export function ActivitiesTable() {
               history?.sessions?.map((session) => (
                 <Fragment key={session.sessionId}>
                   <tr 
-                    className={`transition-colors cursor-pointer group ${expandedId === session.sessionId ? 'bg-surface-container-low/30' : 'hover:bg-surface-container-low'}`}
+                    className={`transition-colors cursor-pointer group ${expandedId === session.sessionId ? 'bg-surface-container-low/30' : 'hover:bg-on-bg-gray-100'}`}
                     onClick={() => setExpandedId(expandedId === session.sessionId ? null : session.sessionId)}
                   >
                     <td className="px-6 py-2 border-none">

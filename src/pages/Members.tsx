@@ -73,7 +73,7 @@ function StatusBadge({ status }: { status: Status }) {
   const cfg = STATUS_CONFIG[status];
   return (
     <span
-      className="inline-flex items-center px-3 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase"
+      className="inline-flex items-center px-3 py-0.5 rounded-[3px] text-[10px] font-bold tracking-wider uppercase"
       style={{ backgroundColor: cfg.bg, color: cfg.color, fontFamily: 'Inter, sans-serif' }}
     >
       {t(cfg.labelKey)}
@@ -121,12 +121,8 @@ function MemberRow({ member, onUpdateStatus, updatingId }: {
   const isUpdating = updatingId === member.id;
   
   return (
-    <tr
-      className="group transition-colors duration-150 hover:bg-[#f0f4f8]"
-      style={{ borderBottom: '1px solid #eaecef' }}
-    >
-      {/* ... (rest of row content same as before) */}
-      <td className="px-6 py-3.5">
+    <tr className="group hover:bg-on-bg-gray-100 border-t-2 border-b-2 border-on-bg-gray-200 transition-colors">
+      <td className="px-6 py-2">
         <div className="flex items-center gap-3">
           {member.avatar ? (
             <img
@@ -151,7 +147,7 @@ function MemberRow({ member, onUpdateStatus, updatingId }: {
         </div>
       </td>
 
-      <td className="px-6 py-3.5">
+      <td className="px-6 py-2">
         <span
           className="text-[12.5px] text-[#4b5563] truncate"
           style={{ opacity: isBlocked ? 0.45 : 1, fontFamily: 'Inter, sans-serif' }}
@@ -160,11 +156,11 @@ function MemberRow({ member, onUpdateStatus, updatingId }: {
         </span>
       </td>
 
-      <td className="px-6 py-3.5">
+      <td className="px-6 py-2">
         <StatusBadge status={member.status} />
       </td>
 
-      <td className="px-6 py-3.5">
+      <td className="px-6 py-2">
         <span
           className="text-[11px] font-bold tracking-wider uppercase"
           style={{
@@ -176,7 +172,7 @@ function MemberRow({ member, onUpdateStatus, updatingId }: {
         </span>
       </td>
 
-      <td className="px-6 py-3.5">
+      <td className="px-6 py-2">
         <div className="flex justify-end">
           <ActionButton
             status={member.status}
@@ -220,9 +216,9 @@ function PagerButton({ children, active, disabled, onClick }: {
 // ─── Skeleton row ─────────────────────────────────────────────────────────────
 function SkeletonRow() {
   return (
-    <tr style={{ borderBottom: '1px solid #eaecef' }}>
+    <tr className="border-t-2 border-b-2 border-on-bg-gray-200">
       {[160, 220, 80, 60, 60].map((w, i) => (
-        <td key={i} className="px-6 py-4">
+        <td key={i} className="px-6 py-2">
           <div
             className="h-3 rounded-full animate-pulse bg-[#eaecef]"
             style={{ width: w, marginLeft: i === 4 ? 'auto' : 0 }}
@@ -237,7 +233,7 @@ function SkeletonRow() {
 function Th({ children, right = false }: { children: React.ReactNode; right?: boolean }) {
   return (
     <th
-      className={`px-6 py-3 text-[10.5px] font-bold tracking-[0.12em] uppercase text-[#8b95a1] whitespace-nowrap ${right ? 'text-right' : 'text-start'}`}
+      className={`px-6 py-3 text-on-surface-variant font-extrabold text-xs capitalize whitespace-nowrap ${right ? 'text-right' : 'text-start'}`}
       style={{ fontFamily: 'Inter, sans-serif' }}
     >
       {children}
@@ -334,7 +330,7 @@ export function Members() {
                 placeholder={t('members.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
-                className="flex-1 bg-transparent border-none outline-none text-[13.5px] py-1 text-[#1e2a32] placeholder-[#c4cdd4]"
+                className="flex-1 bg-transparent border-none outline-none text-[13.5px] py-0 text-[#1e2a32]  placeholder-[#c4cdd4]"
                 style={{ fontFamily: 'Inter, sans-serif' }}
               />
               {searchQuery && (
@@ -384,13 +380,13 @@ export function Members() {
           )}
 
           {/* ── Table card ── */}
-          <div className="bg-white rounded-xl border border-outline-variant/40 shadow-card overflow-hidden">
+          <div className="bg-white overflow-hidden">
 
             {/* table */}
             <div className="overflow-x-auto">
               <table className="w-full border-collapse">
                 <thead>
-                  <tr className="border-b border-[#eaecef] bg-[#f9fafb]">
+                  <tr className="bg-white border-b border-outline-variant/10 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
                     <Th >{t('members.table.user')}</Th>
                     <Th>{t('members.table.email')}</Th>
                     <Th>{t('members.table.status')}</Th>

@@ -10,6 +10,7 @@ export interface MUIMenuItem {
   icon?: ReactNode;
   onClick: () => void;
   variant?: 'default' | 'danger';
+  selected?: boolean;
 }
 
 interface MUIMenuProps {
@@ -59,7 +60,7 @@ export function MUIMenu({
           sx: {
             mt: 1.5,
             width: width,
-            borderRadius: '12px',
+            borderRadius: '6px',
             backgroundColor: isDark ? t('rgba152342095', 'rgba(15, 23, 42, 0.95)') : '#ffffff',
             backdropFilter: isDark ? 'blur(12px)' : 'none',
             border: t('1pxSolidVal', '1px solid {{val}}', { val: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(226, 232, 240, 1)' }),
@@ -75,7 +76,7 @@ export function MUIMenu({
 
     >
       {header && (
-        <Box  sx={{ px: 2, py: 1.5, borderBottom: t('1pxSolidVal', '1px solid {{val}}', { val: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' }), mb: 0.5 }}>
+        <Box sx={{ px: 2, py: 1.5, borderBottom: t('1pxSolidVal', '1px solid {{val}}', { val: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' }), mb: 0.5 }}>
           <Typography
             sx={{
               fontSize: '10px',
@@ -93,27 +94,38 @@ export function MUIMenu({
       {items.map((item, index) => (
         <MenuItem
           key={index}
+          selected={item.selected}
           onClick={() => {
             item.onClick();
             onClose();
           }}
           sx={{
-            py: 1.25,
+            py: 0.75,
             px: 2,
             minHeight: 'auto',
             display: 'flex',
             alignItems: 'center',
-            gap: 1.5,
+            gap: 2,
             transition: t('all02sCubicbezier0161031', 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)'),
             mx: 0.5,
-            borderRadius: '8px',
-            '&:hover': {
-              backgroundColor: isDark ? t('rgba255255255008', 'rgba(255, 255, 255, 0.08)') : t('rgba2412452491', 'rgba(241, 245, 249, 1)'),
-              transform: 'translateX(2px)',
+            mb: 0.5,
+            borderRadius: '6px',
+            '&:hover, &.Mui-focusVisible, &:focus': {
+              backgroundColor: '#f3f4f6',
+              outline: 'none',
+              // transform: 'translateX(2px)',
             },
-            '&:active': {
-              transform: 'scale(0.98)',
+            '&.Mui-selected': {
+              backgroundColor: '#E9F2FE',
+              color: '#2C5EAD',
+              '&:hover, &.Mui-focusVisible, &:focus': {
+                backgroundColor: '#dce8f7',
+                outline: 'none',
+              },
             },
+            // '&:active': {
+            //   transform: 'scale(0.98)',
+            // },
           }}
         >
           {item.icon && (
@@ -130,6 +142,9 @@ export function MUIMenu({
                 '.MuiMenuItem-root:hover &': {
                   color: item.variant === 'danger' ? '#ef4444' : (isDark ? '#fff' : '#1e293b'),
                 },
+                '.MuiMenuItem-root.Mui-selected &': {
+                  color: item.variant === 'danger' ? '#ef4444' : '#2C5EAD',
+                },
               }}
             >
               {item.icon}
@@ -141,9 +156,12 @@ export function MUIMenu({
               fontWeight: 800,
               textTransform: 'uppercase',
               letterSpacing: '0.08em',
-              color: item.variant === 'danger' ? '#ef4444' : (isDark ? 'rgba(255,255,255,0.85)' : '#334155'),
+              color: item.variant === 'danger' ? '#ef4444' : (isDark ? 'rgba(255,255,255,0.85)' : 'var(--color-on-surface-variant)'),
               '.MuiMenuItem-root:hover &': {
                 color: item.variant === 'danger' ? '#ef4444' : (isDark ? '#fff' : '#0f172a'),
+              },
+              '.MuiMenuItem-root.Mui-selected &': {
+                color: item.variant === 'danger' ? '#ef4444' : '#2C5EAD',
               },
             }}
           >

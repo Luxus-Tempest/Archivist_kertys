@@ -14,14 +14,14 @@ import LockRoundedIcon from '@mui/icons-material/LockRounded';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
 import VisibilityOffRoundedIcon from '@mui/icons-material/VisibilityOffRounded';
-import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded';
+// import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded';
 
 export function Login() {
   const { t } = useTranslation()
   const navigate = useNavigate();
   const { login, isLoading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
-  
+
   const {
     formState: { errors },
     register,
@@ -30,9 +30,9 @@ export function Login() {
     resolver: zodResolver(loginSchema(t)),
   });
 
-//   useEffect(() => {
-//   trigger();
-// }, [i18n.language, trigger]);
+  //   useEffect(() => {
+  //   trigger();
+  // }, [i18n.language, trigger]);
 
   const onSubmit = async (data: LoginFormData) => {
     toast.promise(login(data), {
@@ -51,42 +51,42 @@ export function Login() {
       subtitle={t('welcomeBackEnterYourCredentialsToAccessYourLibrary', 'Welcome back. Enter your credentials to access your library.')}
       imageAlt={t('modernMinimalistArchitecturalDetails', 'Modern minimalist architectural details')}
       imageSrc="https://lh3.googleusercontent.com/aida-public/AB6AXuAVmvP0nNUNNLIrcGB5yQOTmZepG9Iq80ckhRKYj_ITI7PIvxq1CtZn4_iZb-l1vhI0TFE6yZgREZomjh2L5S-0UyAT6apBw2RVzRc83plgfgl_nqbwFXLI7MuCR1JRoP715RpRUiYE4vqwgl_gYnacAy5GH8XBGbAYq3tuxRrjLpaNzKln8Y5ha9nfrOFG2YpO2J7hTFQ0Y8TBnyYHEwKwxWqdx59zFAy64nZy9JmpuJiRUfqhev2uFnSvnUsUNCkXYi6rJFDaHNo"
-      headline={t('preservingTheBrfutureOfDocumentation', 'Preserving the <br/>Future of Documentation.')}
-      description={t('experienceTheQuietAuthorityOfSecureHighendDocumentManagementDesignedForProfessionals', 'Experience the quiet authority of secure, high-end document management designed for professionals.')}
+      headline={t('preservingTheBrfutureOfDocumentation')}
+      description={t('experienceTheQuietAuthorityOfSecureHighendDocumentManagementDesignedForProfessionals')}
     >
       <form className="space-y-3" onSubmit={handleSubmit(onSubmit)}>
         <div className="space-y-4">
-          <Input 
+          {/*<Input
             id="organizationId"
-            label={t('organizationId', 'Organization ID (Optional)')} 
-            type="text" 
-            placeholder={t('enterOrganizationId', 'Enter Organization ID')} 
+            label={t('organizationId', 'Organization ID (Optional)')}
+            type="text"
+            placeholder={t('enterOrganizationId', 'Enter Organization ID')}
             icon={<BusinessRoundedIcon sx={{ fontSize: 18 }} />}
             {...register('OrganizationId')}
             error={errors.OrganizationId?.message}
-          />
+          />*/}
 
-          <Input 
+          <Input
             id="email"
-            label={t('email')} 
-            type="email" 
-            placeholder={t('nameAtCompanyCom')} 
+            label={t('email')}
+            type="email"
+            placeholder={t('nameAtCompanyCom')}
             icon={<MailRoundedIcon sx={{ fontSize: 18 }} />}
             {...register('Email')}
             error={errors.Email?.message}
           />
-          
-          <Input 
+
+          <Input
             id="password"
-            label={t('password')} 
-            type={showPassword ? 'text' : 'password'} 
-            placeholder="••••••••" 
+            label={t('password')}
+            type={showPassword ? 'text' : 'password'}
+            placeholder="••••••••"
             icon={<LockRoundedIcon sx={{ fontSize: 18 }} />}
             {...register('Password')}
             error={errors.Password?.message}
             rightElement={
-              <button 
-                type="button" 
+              <button
+                type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="text-outline hover:text-on-surface-variant transition-colors flex items-center justify-center p-1"
               >
@@ -106,15 +106,15 @@ export function Login() {
           </div>
         </div>
 
-        <div className="pt-4">
-          <Button type="submit" variant="solid" icon={<ArrowForwardRoundedIcon sx={{ fontSize: 18 }} />} disabled={isLoading}>
+        <div className="w-full pt-4 flex justify-end">
+          <Button type="submit" variant="solid" className='w-full!' icon={<ArrowForwardRoundedIcon sx={{ fontSize: 18 }} />} disabled={isLoading}>
             {isLoading ? t('authenticating') : t('authenticate')}
           </Button>
         </div>
       </form>
 
       <p className="text-center text-sm text-on-surface-variant pt-4">
-        {t('newToDocme')} <Link to="/signup" className="text-primary font-semibold hover:underline">{t('createAnDocmeAccount')}</Link>
+        {t('newToDocPulseAI')} <Link to="/signup" className="text-primary font-semibold hover:underline">{t('createAnDocPulseAIAccount')}</Link>
       </p>
     </AuthPageLayout>
   );

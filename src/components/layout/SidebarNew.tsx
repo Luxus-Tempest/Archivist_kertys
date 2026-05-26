@@ -69,10 +69,10 @@ export function SidebarNew({ isCollapsed, setIsCollapsed }: SidebarProps) {
     <aside
       className={`
         hidden md:flex flex-col p-3
-        border-r border-surface-container
+        border-r border-gray-300
         h-[calc(100vh-80px)]
         fixed left-0
-        bg-cipher-bg
+        bg-white
         font-body text-sm font-medium
         transition-all duration-300 ease-in-out
         z-40
@@ -80,7 +80,7 @@ export function SidebarNew({ isCollapsed, setIsCollapsed }: SidebarProps) {
       `}
     >
       <div className={`flex-1 ${isCollapsed ? 'overflow-visible' : 'overflow-y-auto overflow-x-hidden'}`}>
-        <nav className="flex flex-col gap-5">
+        <nav className="flex flex-col gap-5 pt-3">
 
           {visibleGroups.map((group, gi) => (
             <div key={group.label}>
@@ -112,20 +112,17 @@ export function SidebarNew({ isCollapsed, setIsCollapsed }: SidebarProps) {
                           `
                             relative flex items-center
                             ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-3'}
-                            py-2.5 rounded-lg transition-all duration-200
+                            py-2.5 rounded-md transition-all duration-200
 
-                            ${
-                              isDisabled
-                                ? 'opacity-40 cursor-not-allowed text-outline'
-                                : isActive
-                                  ? `
-                                      bg-primary text-on-primary
-                                      shadow-sm
+                            ${isDisabled
+                            ? 'opacity-40 cursor-not-allowed text-outline'
+                            : isActive
+                              ? `
+                                      bg-blue-thin text-blue-dark
                                       font-bold
-                                      ${isCollapsed ? 'shadow-md' : ''}
                                     `
-                                  : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
-                            }
+                              : 'text-on-surface-variant hover:bg-hover-gray-100 hover:text-inherit'
+                          }
                           `
                         }
                       >

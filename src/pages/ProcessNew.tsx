@@ -136,13 +136,14 @@ export function ProcessNew() {
             />
             
             <div className="flex self-end w-fit items-center justify-end gap-3 px-2">
-              <button 
-                className="px-8 cursor-pointer w-max whitespace-nowrap py-2.5 bg-surface-container-highest text-on-surface font-bold text-sm rounded-xl hover:bg-surface-container-high transition-colors"
+              <Button 
+                // className="px-8 cursor-pointer w-max whitespace-nowrap py-2.5 bg-surface-container-highest text-on-surface font-bold text-sm rounded-xl hover:bg-surface-container-high transition-colors"
+                variant="outline"
                 onClick={clearStaged}
                 disabled={isUploading}
               >
                 {t('clearAll', 'Clear All')}
-              </button>
+              </Button>
               {/* <Button
                 variant="lightSolid"
                 onClick={clearStaged}
@@ -154,12 +155,13 @@ export function ProcessNew() {
               <Button 
                 onClick={handleSend}
                 disabled={isUploading}
-                icon={isUploading ? <SyncRoundedIcon className="animate-spin" /> : <SendRoundedIcon />}
+                icon={isUploading ? <SyncRoundedIcon sx={{width: 15, height: 15}} className="animate-spin" /> : <SendRoundedIcon sx={{width: 18, height: 18}} />}
                 variant="solid"
-                className={`w-auto px-10  shadow-xl shadow-slate-900/10 ${isUploading ? 'opacity-70' : 'bg-slate-900'}`}
-                btnClass={`rounded-md -py-2 text-[15px]`}
+                // className={` ${isUploading ? 'opacity-70' : 'bg-slate-900'}`}
+                // className={`w-auto px-10  shadow-xl shadow-slate-900/10 ${isUploading ? 'opacity-70' : 'bg-slate-900'}`}
+                // btnClass={`rounded-md -py-2 text-[15px]`}
               >
-                {isUploading ? 'Sending...' : t('sendToVault', 'Send to Vault')}
+                {isUploading ? t('sending') : t('sendToVault')}
               </Button>
             </div>
           </div>

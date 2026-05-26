@@ -42,7 +42,8 @@ export const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = (
           <Button
             variant="ghost"
             onClick={onClose}
-            className="text-sm font-medium"
+            // className="text-sm font-medium"
+            className="flex-1"
           >
             {displayCancelLabel}
           </Button>
@@ -51,8 +52,8 @@ export const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = (
             onClick={() => {
               onConfirm();
             }}
-            btnClass="rounded-md"
-            className="text-xs"
+            // btnClass="rounded-md"
+            className="flex-1"
           >
             {displayConfirmLabel}
           </Button>
