@@ -1,0 +1,350 @@
+import { useState } from 'react';
+import { DashboardLayoutNew } from '../components/layout/DashboardLayoutNew';
+import FolderRoundedIcon from '@mui/icons-material/FolderRounded';
+import InsertDriveFileRoundedIcon from '@mui/icons-material/InsertDriveFileRounded';
+import PictureAsPdfRoundedIcon from '@mui/icons-material/PictureAsPdfRounded';
+import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
+import KeyboardArrowRightRoundedIcon from '@mui/icons-material/KeyboardArrowRightRounded';
+import PushPinRoundedIcon from '@mui/icons-material/PushPinRounded';
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import StarRoundedIcon from '@mui/icons-material/StarRounded';
+import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
+import PeopleRoundedIcon from '@mui/icons-material/PeopleRounded';
+import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
+import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
+import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
+import GridViewRoundedIcon from '@mui/icons-material/GridViewRounded';
+import FilterListRoundedIcon from '@mui/icons-material/FilterListRounded';
+
+// --- Dummy Data ---
+const DUMMY_STATS = [
+  { label: 'Docs', value: 19 },
+  { label: 'Invoice', value: 48 },
+  { label: 'Reports', value: '07' },
+  { label: 'Purchase Order', value: 21 },
+  { label: 'Purchase Requisition', value: 18 },
+];
+
+const DUMMY_DOCS = [
+  { id: 1, name: 'Purchase...', type: 'Folder', status: '', author: 'Alex Rozario', shared: 2, date: '03/5/24 10:38 AM', isFolder: true },
+  { id: 2, name: 'Budget...', type: 'Folder', status: '', author: 'Alex Rozario', shared: 1, date: '02/5/24 02:58 PM', isFolder: true },
+  { id: 3, name: 'Invoice...', type: 'Folder', status: '', author: 'Alex Rozario', shared: 1, date: '01/5/24 03:42 PM', isFolder: true },
+  { id: 4, name: 'Laptop...', type: 'Purchase Requisition', status: 'Pending', statusColor: 'text-yellow-700 bg-yellow-50 border-yellow-200', author: 'Alex Rozario', shared: 4, date: '25/4/24 10:38 AM', isPdf: true },
+  { id: 5, name: 'Sales Report Quarter 2024', type: 'Purchase Requisition', status: 'Revision', statusColor: 'text-orange-700 bg-orange-50 border-orange-200', author: 'Alex Rozario', shared: 1, date: '18/4/24 10:46 AM', isPdf: true },
+  { id: 6, name: 'Central AC for Dhanmondi Branch', type: 'Purchase Requisition', status: 'Requisition', statusColor: 'text-blue-700 bg-blue-50 border-blue-200', author: 'Alex Rozario', shared: 1, date: '12/4/24 10:01 AM', isPdf: true },
+  { id: 7, name: 'Web Development Contract', type: 'Doc', status: 'Approved', statusColor: 'text-green-700 bg-green-50 border-green-200', author: 'Alex Rozario', shared: 2, date: '07/4/24 09:23 AM', isDoc: true },
+  { id: 8, name: 'Event Sponsor', type: 'Doc', status: 'Rejected', statusColor: 'text-red-700 bg-red-50 border-red-200', author: 'Alex Rozario', shared: 2, date: '05/4/24 10:48 AM', isDoc: true },
+  { id: 9, name: 'Budget 2025', type: 'Folder', status: '', author: 'Alex Rozario', shared: 1, date: '01/3/24 03:42 PM', isFolder: true },
+  { id: 10, name: 'Brands', type: 'Folder', status: '', author: 'Alex Rozario', shared: 1, date: '28/3/24 01:37 PM', isFolder: true },
+];
+
+export function ExplorerV2() {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeNav, setActiveNav] = useState('all');
+  const [activeTab, setActiveTab] = useState('all');
+  const [selectedDocs, setSelectedDocs] = useState<number[]>([]);
+  const [isDeptExpanded, setIsDeptExpanded] = useState(true);
+  const [isApprovalsExpanded, setIsApprovalsExpanded] = useState(true);
+  const [hoveredRow, setHoveredRow] = useState<number | null>(null);
+
+  const toggleSelectAll = () => {
+    if (selectedDocs.length === DUMMY_DOCS.length) {
+      setSelectedDocs([]);
+    } else {
+      setSelectedDocs(DUMMY_DOCS.map(d => d.id));
+    }
+  };
+
+  const toggleDoc = (id: number) => {
+    setSelectedDocs(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
+  };
+
+  const navItemClass = (id: string) => 
+    `flex items-center gap-3 px-3 py-2 rounded-md font-medium cursor-pointer transition-all duration-200 ${
+      activeNav === id 
+        ? 'text-blue-dark bg-blue-thin font-semibold shadow-sm' 
+        : 'text-slate-600 hover:bg-gray-100/80 hover:text-slate-900'
+    }`;
+
+  const tabClass = (id: string) => 
+    `px-4 py-1.5 text-xs font-semibold rounded-full cursor-pointer transition-all duration-200 ${
+      activeTab === id
+        ? 'bg-blue-100 text-blue-700 shadow-sm'
+        : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
+    }`;
+
+  return (
+    <DashboardLayoutNew isFullWidth isChildPaddingBottom={false}>
+      <div className="flex h-full w-full bg-white text-sm font-body -mb-16">
+        
+        {/* LEFT PANEL - COLLECTIONS / FOLDERS */}
+        <aside className="w-[260px] shrink-0 border-r border-gray-100 flex flex-col h-full bg-slate-50/50">
+          <div className="p-4 flex flex-col gap-1 overflow-y-auto [scrollbar-width:thin]">
+            
+            <div className="space-y-1 mt-2">
+              <div onClick={() => setActiveNav('all')} className={navItemClass('all')}>
+                <GridViewRoundedIcon sx={{ fontSize: 18 }} />
+                <span>All documents</span>
+              </div>
+              <div onClick={() => setActiveNav('my')} className={navItemClass('my')}>
+                <FolderRoundedIcon sx={{ fontSize: 18 }} />
+                <span>My documents</span>
+              </div>
+              <div onClick={() => setActiveNav('shared')} className={navItemClass('shared')}>
+                <PeopleRoundedIcon sx={{ fontSize: 18 }} />
+                <span>Shared with me</span>
+              </div>
+              <div onClick={() => setActiveNav('favorites')} className={navItemClass('favorites')}>
+                <StarRoundedIcon sx={{ fontSize: 18 }} />
+                <span>Favorite</span>
+              </div>
+              <div onClick={() => setActiveNav('recent')} className={navItemClass('recent')}>
+                <AccessTimeRoundedIcon sx={{ fontSize: 18 }} />
+                <span>Recent documents</span>
+              </div>
+            </div>
+
+            {/* Department Section */}
+            <div className="mt-8 mb-2 px-3 flex justify-between items-center group cursor-pointer" onClick={() => setIsDeptExpanded(!isDeptExpanded)}>
+              <div className="flex items-center gap-1 text-xs font-bold text-slate-400 uppercase tracking-wider group-hover:text-slate-600 transition-colors">
+                {isDeptExpanded ? <ExpandMoreRoundedIcon sx={{ fontSize: 16 }}/> : <KeyboardArrowRightRoundedIcon sx={{ fontSize: 16 }}/>}
+                <span>By Department</span>
+              </div>
+              <div className="w-5 h-5 rounded-full flex items-center justify-center hover:bg-slate-200 transition-colors" onClick={(e) => { e.stopPropagation(); /* Add Dept */ }}>
+                <AddRoundedIcon sx={{ fontSize: 14 }} className="text-slate-500 hover:text-slate-800" />
+              </div>
+            </div>
+            
+            {isDeptExpanded && (
+              <div className="flex flex-col gap-0.5 ml-2 border-l border-slate-200 pl-2 animate-in slide-in-from-top-2 duration-200">
+                <div onClick={() => setActiveNav('dept-hr')} className={`flex items-center gap-2 px-3 py-1.5 rounded-md cursor-pointer transition-colors ${activeNav === 'dept-hr' ? 'bg-blue-thin text-blue-dark font-semibold' : 'text-slate-600 hover:bg-gray-100'}`}>
+                  <FolderRoundedIcon sx={{ fontSize: 16 }} className={activeNav === 'dept-hr' ? 'text-blue-500' : 'text-slate-400'} />
+                  <span className="text-[13px]">HR</span>
+                </div>
+                <div onClick={() => setActiveNav('dept-finance')} className={`flex items-center gap-2 px-3 py-1.5 rounded-md cursor-pointer transition-colors ${activeNav === 'dept-finance' ? 'bg-blue-thin text-blue-dark font-semibold' : 'text-slate-600 hover:bg-gray-100'}`}>
+                  <FolderRoundedIcon sx={{ fontSize: 16 }} className={activeNav === 'dept-finance' ? 'text-blue-500' : 'text-slate-400'} />
+                  <span className="text-[13px]">Finance</span>
+                </div>
+                <div onClick={() => setActiveNav('dept-marketing')} className={`flex items-center gap-2 px-3 py-1.5 rounded-md cursor-pointer transition-colors ${activeNav === 'dept-marketing' ? 'bg-blue-thin text-blue-dark font-semibold' : 'text-slate-600 hover:bg-gray-100'}`}>
+                  <FolderRoundedIcon sx={{ fontSize: 16 }} className={activeNav === 'dept-marketing' ? 'text-blue-500' : 'text-slate-400'} />
+                  <span className="text-[13px]">Marketing</span>
+                </div>
+              </div>
+            )}
+
+            {/* Approvals Section */}
+            <div className="mt-8 mb-2 px-3 flex justify-between items-center group cursor-pointer" onClick={() => setIsApprovalsExpanded(!isApprovalsExpanded)}>
+              <div className="flex items-center gap-1 text-xs font-bold text-slate-400 uppercase tracking-wider group-hover:text-slate-600 transition-colors">
+                {isApprovalsExpanded ? <ExpandMoreRoundedIcon sx={{ fontSize: 16 }}/> : <KeyboardArrowRightRoundedIcon sx={{ fontSize: 16 }}/>}
+                <span>Approvals</span>
+              </div>
+            </div>
+            {isApprovalsExpanded && (
+              <div className="flex flex-col gap-0.5 ml-2 border-l border-slate-200 pl-2 animate-in slide-in-from-top-2 duration-200">
+                <div onClick={() => setActiveNav('app-to-me')} className={`flex items-center gap-2 px-3 py-1.5 rounded-md cursor-pointer transition-colors ${activeNav === 'app-to-me' ? 'bg-blue-thin text-blue-dark font-semibold' : 'text-slate-600 hover:bg-gray-100'}`}>
+                  <span className="text-[13px] relative pl-2 before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-1 before:h-1 before:bg-slate-300 before:rounded-full">Requested to me</span>
+                </div>
+                <div onClick={() => setActiveNav('app-by-me')} className={`flex items-center gap-2 px-3 py-1.5 rounded-md cursor-pointer transition-colors ${activeNav === 'app-by-me' ? 'bg-blue-thin text-blue-dark font-semibold' : 'text-slate-600 hover:bg-gray-100'}`}>
+                  <span className="text-[13px] relative pl-2 before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-1 before:h-1 before:bg-slate-300 before:rounded-full">Requested by me</span>
+                </div>
+              </div>
+            )}
+
+            <div className="mt-8 mb-2 px-3 text-xs font-bold text-slate-400 uppercase tracking-wider">
+              Pinned Docs
+            </div>
+            <div className="flex items-center justify-between px-3 py-2 text-slate-700 hover:bg-gray-100 rounded-md cursor-pointer transition-colors group border border-transparent hover:border-slate-200">
+              <span className="font-medium text-[12px] truncate pr-2">Website Development Invoice</span>
+              <PushPinRoundedIcon sx={{ fontSize: 14 }} className="text-slate-400 group-hover:text-blue-500 shrink-0 rotate-45 transition-colors" />
+            </div>
+
+          </div>
+        </aside>
+
+        {/* MAIN CONTENT AREA */}
+        <main className="flex-1 flex flex-col h-full min-w-0 bg-white shadow-[-4px_0_15px_-3px_rgba(0,0,0,0.02)] z-10">
+          
+          {/* Top Info & Stats */}
+          <div className="px-8 py-8 border-b border-gray-100 shrink-0 flex flex-col xl:flex-row xl:items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 text-white flex items-center justify-center rounded-xl text-2xl font-bold shadow-md shadow-blue-500/20">
+                G
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Greaper</h1>
+                <p className="text-sm font-medium text-slate-500">Joshep Tony Rozario</p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-x-12 gap-y-4">
+              {DUMMY_STATS.map((stat, i) => (
+                <div key={i} className="flex flex-col group cursor-default">
+                  <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1 group-hover:text-slate-500 transition-colors">{stat.label}</span>
+                  <span className="text-3xl font-black text-blue-600 tracking-tight">{stat.value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Search & Filters */}
+          <div className="px-8 py-5 shrink-0 flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-gray-50 bg-slate-50/30">
+            <div className="flex items-center gap-4 flex-1">
+              <span className="font-bold text-slate-700">Search</span>
+              <div className="flex items-center bg-white border border-gray-300 rounded-lg px-2 py-2 shadow-sm max-w-2xl w-full focus-within:ring-2 focus-within:ring-blue-100 focus-within:border-blue-400 transition-all">
+                <div className="flex items-center gap-2 mr-2 shrink-0">
+                  <span className="flex items-center gap-1.5 bg-slate-100 px-2.5 py-1 rounded-md text-xs font-semibold text-slate-700 border border-slate-200 cursor-pointer hover:bg-slate-200 transition-colors">
+                    Created By <CancelRoundedIcon sx={{ fontSize: 14 }} className="text-slate-400 hover:text-slate-600" />
+                  </span>
+                  <span className="flex items-center gap-1.5 bg-slate-100 px-2.5 py-1 rounded-md text-xs font-semibold text-slate-700 border border-slate-200 cursor-pointer hover:bg-slate-200 transition-colors">
+                    Alex Rozario <CancelRoundedIcon sx={{ fontSize: 14 }} className="text-slate-400 hover:text-slate-600" />
+                  </span>
+                </div>
+                <SearchRoundedIcon sx={{ fontSize: 20 }} className="text-slate-400 mr-2" />
+                <input 
+                  type="text" 
+                  placeholder="enter your query..." 
+                  className="flex-1 outline-none text-[13px] font-medium placeholder:text-slate-400 placeholder:font-normal bg-transparent min-w-[150px]"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Tabs & Sort */}
+          <div className="px-8 py-3 shrink-0 flex flex-wrap items-center justify-between gap-4 border-b border-gray-100">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-1 bg-slate-100/50 p-1 rounded-full border border-slate-200/60">
+                <div onClick={() => setActiveTab('suggested')} className={tabClass('suggested')}>Suggested</div>
+                <div onClick={() => setActiveTab('all')} className={tabClass('all')}>All</div>
+              </div>
+              <div className="h-4 w-px bg-slate-300 mx-2"></div>
+              <button className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-blue-600 transition-colors px-3 py-1.5 rounded-full hover:bg-blue-50">
+                <FilterListRoundedIcon sx={{ fontSize: 16 }} />
+                Filter by field
+              </button>
+            </div>
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 cursor-pointer hover:text-slate-800 transition-colors px-3 py-1.5 rounded-full hover:bg-slate-50">
+              Sort by: <span className="text-slate-700">Last modified date</span> <KeyboardArrowDownRoundedIcon sx={{ fontSize: 16 }} />
+            </div>
+          </div>
+
+          {/* Data Table */}
+          <div className="flex-1 overflow-auto p-8 pt-2 [scrollbar-width:thin]">
+            <table className="w-full min-w-max text-left border-collapse">
+              <thead className="sticky top-0 bg-white/95 backdrop-blur-sm z-10 shadow-[0_1px_0_rgba(0,0,0,0.05)]">
+                <tr>
+                  <th className="py-4 px-3 w-10">
+                    <input 
+                      type="checkbox" 
+                      checked={selectedDocs.length === DUMMY_DOCS.length && DUMMY_DOCS.length > 0}
+                      onChange={toggleSelectAll}
+                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer w-4 h-4" 
+                    />
+                  </th>
+                  <th className="py-4 px-2 w-8"></th>
+                  <th className="py-4 px-3 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Name</th>
+                  <th className="py-4 px-3 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Type</th>
+                  <th className="py-4 px-3 text-[11px] font-bold text-slate-400 uppercase tracking-wider text-center">Status</th>
+                  <th className="py-4 px-3 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Created by</th>
+                  <th className="py-4 px-3 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Shared with</th>
+                  <th className="py-4 px-3 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Last Modified</th>
+                  <th className="py-4 px-3 w-10 text-center"><MoreHorizRoundedIcon sx={{ fontSize: 18 }} className="text-slate-400" /></th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {DUMMY_DOCS.map((doc, idx) => {
+                  const isSelected = selectedDocs.includes(doc.id);
+                  return (
+                    <tr 
+                      key={doc.id} 
+                      className={`group cursor-pointer transition-all duration-200 ${isSelected ? 'bg-blue-50/50' : 'hover:bg-slate-50/80'}`}
+                      onMouseEnter={() => setHoveredRow(idx)}
+                      onMouseLeave={() => setHoveredRow(null)}
+                      onClick={() => toggleDoc(doc.id)}
+                    >
+                      <td className="py-3.5 px-3 relative" onClick={(e) => e.stopPropagation()}>
+                        {isSelected && <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-500 rounded-r-sm"></div>}
+                        <input 
+                          type="checkbox" 
+                          checked={isSelected}
+                          onChange={() => toggleDoc(doc.id)}
+                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer w-4 h-4 transition-all" 
+                        />
+                      </td>
+                      <td className="py-3.5 px-2">
+                        <KeyboardArrowRightRoundedIcon sx={{ fontSize: 18 }} className={`transition-all duration-200 ${doc.isFolder ? 'text-slate-400 hover:text-slate-700' : 'opacity-0'} ${(hoveredRow === idx && doc.isFolder) ? 'translate-x-1 text-slate-700' : ''}`} />
+                      </td>
+                      <td className="py-3.5 px-3">
+                        <div className="flex items-center gap-3">
+                          <div className={`p-1.5 rounded-lg flex items-center justify-center ${doc.isFolder ? 'bg-blue-50' : doc.isPdf ? 'bg-red-50' : 'bg-indigo-50'}`}>
+                            {doc.isFolder && <FolderRoundedIcon className="text-blue-500" sx={{ fontSize: 18 }} />}
+                            {doc.isPdf && <PictureAsPdfRoundedIcon className="text-red-500" sx={{ fontSize: 18 }} />}
+                            {doc.isDoc && <DescriptionRoundedIcon className="text-indigo-500" sx={{ fontSize: 18 }} />}
+                          </div>
+                          <span className={`font-semibold text-[13px] transition-colors ${isSelected ? 'text-blue-700' : 'text-slate-700 group-hover:text-blue-600'}`}>{doc.name}</span>
+                        </div>
+                      </td>
+                      <td className="py-3.5 px-3 text-[13px] text-slate-500 font-medium">{doc.type}</td>
+                      <td className="py-3.5 px-3 text-center">
+                        {doc.status && (
+                          <span className={`inline-block px-2.5 py-1 border rounded text-[10px] font-bold tracking-widest uppercase ${doc.statusColor}`}>
+                            {doc.status}
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-3.5 px-3">
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-full bg-slate-200 overflow-hidden shrink-0 border border-slate-200 shadow-sm">
+                            <img src={`https://i.pravatar.cc/150?u=${idx}`} alt="avatar" className="w-full h-full object-cover" />
+                          </div>
+                          <span className="text-[13px] text-slate-700 font-medium">{doc.author}</span>
+                        </div>
+                      </td>
+                      <td className="py-3.5 px-3">
+                        <div className="flex items-center">
+                          <div className="flex -space-x-2 mr-2">
+                            <img src="https://i.pravatar.cc/150?img=32" className="w-7 h-7 rounded-full border-2 border-white shadow-sm" alt="avatar" />
+                            <img src="https://i.pravatar.cc/150?img=12" className="w-7 h-7 rounded-full border-2 border-white shadow-sm" alt="avatar" />
+                          </div>
+                          <span className="text-xs font-bold text-slate-600 bg-slate-100/80 px-1.5 py-0.5 rounded-md border border-slate-200/60">+{doc.shared}</span>
+                        </div>
+                      </td>
+                      <td className="py-3.5 px-3 text-[13px] text-slate-500 font-medium">{doc.date}</td>
+                      <td className="py-3.5 px-3 text-center" onClick={(e) => e.stopPropagation()}>
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-slate-200/60 cursor-pointer transition-colors mx-auto text-slate-400 hover:text-slate-800">
+                          <MoreHorizRoundedIcon sx={{ fontSize: 18 }} />
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination */}
+          <div className="p-4 px-8 border-t border-gray-100 flex items-center justify-between shrink-0 bg-slate-50/30">
+            <span className="text-xs font-semibold text-slate-500">Showing 10 of 124 results</span>
+            <div className="flex items-center gap-1">
+              <button className="w-8 h-8 flex items-center justify-center rounded-md border border-slate-200 text-slate-400 hover:bg-white hover:text-slate-700 transition-colors cursor-not-allowed opacity-50">
+                <KeyboardArrowRightRoundedIcon sx={{ fontSize: 16, transform: 'rotate(180deg)' }} />
+              </button>
+              <button className="w-8 h-8 flex items-center justify-center rounded-md border border-blue-200 bg-blue-50 text-blue-600 font-bold text-xs">1</button>
+              <button className="w-8 h-8 flex items-center justify-center rounded-md border border-slate-200 bg-white text-slate-600 font-semibold hover:bg-slate-50 text-xs transition-colors">2</button>
+              <button className="w-8 h-8 flex items-center justify-center rounded-md border border-slate-200 bg-white text-slate-600 font-semibold hover:bg-slate-50 text-xs transition-colors">3</button>
+              <span className="px-2 text-slate-400">...</span>
+              <button className="w-8 h-8 flex items-center justify-center rounded-md border border-slate-200 bg-white text-slate-600 font-semibold hover:bg-slate-50 text-xs transition-colors">10</button>
+              <button className="w-8 h-8 flex items-center justify-center rounded-md border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-800 transition-colors">
+                <KeyboardArrowRightRoundedIcon sx={{ fontSize: 16 }} />
+              </button>
+            </div>
+          </div>
+
+        </main>
+      </div>
+    </DashboardLayoutNew>
+  );
+}

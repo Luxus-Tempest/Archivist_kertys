@@ -3,8 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 
 import { SvgIcon, type IconName } from '../SvgIcon';
-import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
-import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import { UserRoleEnum } from '../../types/auth';
 
 interface SidebarProps {
@@ -39,6 +37,7 @@ export function SidebarNew({ isCollapsed, setIsCollapsed }: SidebarProps) {
         { name: t('sidebar.explorer', 'Explorer'), icon: 'explorer', path: '/explorer' },
         { name: t('sidebar.history', 'History'), icon: 'history', path: '/history' },
         { name: t('sidebar.process', 'Process'), icon: 'upload', path: '/process' },
+        { name: t('sidebar.explorerV2', 'Explorer V2'), icon: 'folderOpen', path: '/explorer-v2' },
       ],
     },
     {
@@ -83,7 +82,7 @@ export function SidebarNew({ isCollapsed, setIsCollapsed }: SidebarProps) {
       <div className={`flex-1 ${isCollapsed ? 'overflow-visible' : 'overflow-y-auto overflow-x-hidden'}`}>
         <nav className="flex flex-col gap-5 pt-3">
 
-          {visibleGroups.map((group, gi) => (
+          {visibleGroups.map((group) => (
             <div key={group.label}>
 
               <div className="min-h-[28px] flex flex-col justify-end">

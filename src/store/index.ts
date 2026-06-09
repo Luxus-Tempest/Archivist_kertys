@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './auth/authSlice';
 import docsReducer from './docs/docsSlice';
+import metadataReducer from './docs/metadataSlice';
 import adminReducer from './admin/adminSlice';
 import instructionReducer from './instruction/instructionSlice';
 
@@ -11,6 +12,7 @@ export const store = configureStore({
   reducer: {
     auth: authReducer,
     docs: docsReducer,
+    metadata: metadataReducer,
     admin: adminReducer,
     instruction: instructionReducer,
   },

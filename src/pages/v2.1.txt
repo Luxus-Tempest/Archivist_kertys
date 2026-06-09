@@ -1,0 +1,266 @@
+import { useState } from 'react';
+import { DashboardLayoutNew } from '../components/layout/DashboardLayoutNew';
+import FolderRoundedIcon from '@mui/icons-material/FolderRounded';
+import InsertDriveFileRoundedIcon from '@mui/icons-material/InsertDriveFileRounded';
+import PictureAsPdfRoundedIcon from '@mui/icons-material/PictureAsPdfRounded';
+import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
+import KeyboardArrowRightRoundedIcon from '@mui/icons-material/KeyboardArrowRightRounded';
+import PushPinRoundedIcon from '@mui/icons-material/PushPinRounded';
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import StarRoundedIcon from '@mui/icons-material/StarRounded';
+import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
+import PeopleRoundedIcon from '@mui/icons-material/PeopleRounded';
+import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
+import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
+
+// --- Dummy Data ---
+const DUMMY_STATS = [
+  { label: 'Docs', value: 19 },
+  { label: 'Invoice', value: 48 },
+  { label: 'Reports', value: '07' },
+  { label: 'Purchase Order', value: 21 },
+  { label: 'Purchase Requisition', value: 18 },
+];
+
+const DUMMY_DOCS = [
+  { id: 1, name: 'Purchase...', type: 'Folder', status: '', author: 'Alex Rozario', shared: 2, date: '03/5/24 10:38 AM', isFolder: true },
+  { id: 2, name: 'Budget...', type: 'Folder', status: '', author: 'Alex Rozario', shared: 1, date: '02/5/24 02:58 PM', isFolder: true },
+  { id: 3, name: 'Invoice...', type: 'Folder', status: '', author: 'Alex Rozario', shared: 1, date: '01/5/24 03:42 PM', isFolder: true },
+  { id: 4, name: 'Laptop...', type: 'Purchase Requisition', status: 'Pending', statusColor: 'text-yellow-600 border-yellow-200', author: 'Alex Rozario', shared: 4, date: '25/4/24 10:38 AM', isPdf: true },
+  { id: 5, name: 'Sales Report Quarter 2024', type: 'Purchase Requisition', status: 'Revision', statusColor: 'text-orange-600 border-orange-200', author: 'Alex Rozario', shared: 1, date: '18/4/24 10:46 AM', isPdf: true },
+  { id: 6, name: 'Central AC for Dhanmondi Branch', type: 'Purchase Requisition', status: 'Requisition', statusColor: 'text-blue-600 border-blue-200', author: 'Alex Rozario', shared: 1, date: '12/4/24 10:01 AM', isPdf: true },
+  { id: 7, name: 'Web Development Contract', type: 'Doc', status: 'Approved', statusColor: 'text-green-600 border-green-200', author: 'Alex Rozario', shared: 2, date: '07/4/24 09:23 AM', isDoc: true },
+  { id: 8, name: 'Event Sponsor', type: 'Doc', status: 'Rejected', statusColor: 'text-red-600 border-red-200', author: 'Alex Rozario', shared: 2, date: '05/4/24 10:48 AM', isDoc: true },
+  { id: 9, name: 'Budget 2025', type: 'Folder', status: '', author: 'Alex Rozario', shared: 1, date: '01/3/24 03:42 PM', isFolder: true },
+  { id: 10, name: 'Brands', type: 'Folder', status: '', author: 'Alex Rozario', shared: 1, date: '28/3/24 01:37 PM', isFolder: true },
+];
+
+export function ExplorerV2() {
+  const [searchQuery, setSearchQuery] = useState('');
+
+  return (
+    <DashboardLayoutNew isFullWidth isChildPaddingBottom={false}>
+      <div className="flex h-full w-full bg-white text-sm font-body -mb-16">
+
+        {/* LEFT PANEL - COLLECTIONS / FOLDERS */}
+        <aside className="w-[240px] shrink-0 border-r border-gray-200 flex flex-col h-full bg-slate-50/30">
+          <div className="p-4 flex flex-col gap-1 overflow-y-auto">
+
+            <div className="flex items-center gap-3 px-3 py-2 text-blue-dark bg-blue-thin rounded-md font-semibold cursor-pointer">
+              <FolderRoundedIcon sx={{ fontSize: 18 }} />
+              <span>My documents</span>
+            </div>
+            <div className="flex items-center gap-3 px-3 py-2 text-blue-dark bg-blue-thin rounded-md font-semibold cursor-pointer">
+              <FolderRoundedIcon sx={{ fontSize: 18 }} />
+              <span>All documents</span>
+            </div>
+            <div className="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-gray-100 rounded-md font-medium cursor-pointer transition-colors">
+              <PeopleRoundedIcon sx={{ fontSize: 18 }} />
+              <span>Shared with me</span>
+            </div>
+            <div className="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-gray-100 rounded-md font-medium cursor-pointer transition-colors">
+              <StarRoundedIcon sx={{ fontSize: 18 }} />
+              <span>Favorite</span>
+            </div>
+            <div className="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-gray-100 rounded-md font-medium cursor-pointer transition-colors">
+              <AccessTimeRoundedIcon sx={{ fontSize: 18 }} />
+              <span>Recent documents</span>
+            </div>
+
+            <div className="mt-6 mb-1 px-3 flex justify-between items-center text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              <span>By Document Class</span>
+              <AddRoundedIcon sx={{ fontSize: 16 }} className="cursor-pointer hover:text-slate-800" />
+            </div>
+
+            <div className="flex flex-col gap-0.5">
+              <div className="flex items-center gap-2 px-3 py-1.5 text-slate-700 hover:bg-gray-100 rounded-md cursor-pointer transition-colors">
+                <KeyboardArrowRightRoundedIcon sx={{ fontSize: 16 }} className="text-slate-400" />
+                <FolderRoundedIcon sx={{ fontSize: 16 }} className="text-blue-500" />
+                <span className="font-medium text-[13px]">HR</span>
+              </div>
+              <div className="flex items-center gap-2 px-3 py-1.5 text-slate-700 hover:bg-gray-100 rounded-md cursor-pointer transition-colors">
+                <KeyboardArrowRightRoundedIcon sx={{ fontSize: 16 }} className="text-slate-400" />
+                <FolderRoundedIcon sx={{ fontSize: 16 }} className="text-blue-500" />
+                <span className="font-medium text-[13px]">Finance</span>
+              </div>
+              <div className="flex items-center gap-2 px-3 py-1.5 text-slate-700 hover:bg-gray-100 rounded-md cursor-pointer transition-colors">
+                <KeyboardArrowRightRoundedIcon sx={{ fontSize: 16 }} className="text-slate-400" />
+                <FolderRoundedIcon sx={{ fontSize: 16 }} className="text-blue-500" />
+                <span className="font-medium text-[13px]">Marketing</span>
+              </div>
+              <div className="flex items-center gap-2 px-3 py-1.5 text-slate-700 hover:bg-gray-100 rounded-md cursor-pointer transition-colors">
+                <KeyboardArrowRightRoundedIcon sx={{ fontSize: 16 }} className="text-slate-400" />
+                <FolderRoundedIcon sx={{ fontSize: 16 }} className="text-blue-500" />
+              </div>
+            </div>
+
+            <div className="mt-6 mb-1 px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              Approvals
+            </div>
+            <div className="flex flex-col gap-0.5">
+              <div className="flex items-center gap-2 px-3 py-1.5 text-slate-700 hover:bg-gray-100 rounded-md cursor-pointer transition-colors">
+                <KeyboardArrowRightRoundedIcon sx={{ fontSize: 16 }} className="text-slate-400" />
+                <span className="font-medium text-[13px]">Requested to me</span>
+              </div>
+              <div className="flex items-center gap-2 px-3 py-1.5 text-slate-700 hover:bg-gray-100 rounded-md cursor-pointer transition-colors">
+                <KeyboardArrowRightRoundedIcon sx={{ fontSize: 16 }} className="text-slate-400" />
+                <span className="font-medium text-[13px]">Requested by me</span>
+              </div>
+            </div>
+
+            <div className="mt-6 mb-1 px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              Pinned Docs
+            </div>
+            <div className="flex items-center justify-between px-3 py-2 text-slate-700 hover:bg-gray-100 rounded-md cursor-pointer transition-colors group">
+              <span className="font-medium text-[12px] truncate pr-2">Website Development Invoice</span>
+              <PushPinRoundedIcon sx={{ fontSize: 14 }} className="text-slate-400 group-hover:text-slate-800 shrink-0 rotate-45" />
+            </div>
+
+          </div>
+        </aside>
+
+        {/* MAIN CONTENT AREA */}
+        <main className="flex-1 flex flex-col h-full min-w-0 bg-white">
+
+          {/* Top Info & Stats */}
+          <div className="px-8 py-6 border-b border-gray-100">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-12 h-12 bg-blue-500 text-white flex items-center justify-center rounded-lg text-xl font-bold">
+                G
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-slate-800">Greaper</h1>
+                <p className="text-sm text-slate-500">Joshep Tony Rozario</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-12">
+              {DUMMY_STATS.map((stat, i) => (
+                <div key={i} className="flex flex-col">
+                  <span className="text-xs font-semibold text-slate-500 mb-1">{stat.label}</span>
+                  <span className="text-2xl font-bold text-blue-600">{stat.value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Search & Filters */}
+          <div className="px-8 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-4 flex-1">
+              <span className="font-semibold text-slate-700">Search</span>
+              <div className="flex items-center bg-white border border-gray-300 rounded-md px-2 py-1.5 shadow-sm max-w-lg w-full">
+                <div className="flex items-center gap-2 mr-2">
+                  <span className="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded text-xs font-medium text-slate-700">
+                    Created By <CancelRoundedIcon sx={{ fontSize: 14 }} className="text-slate-400 cursor-pointer hover:text-slate-600" />
+                  </span>
+                  <span className="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded text-xs font-medium text-slate-700">
+                    Alex Rozario <CancelRoundedIcon sx={{ fontSize: 14 }} className="text-slate-400 cursor-pointer hover:text-slate-600" />
+                  </span>
+                </div>
+                <SearchRoundedIcon sx={{ fontSize: 18 }} className="text-slate-400 mr-2" />
+                <input
+                  type="text"
+                  placeholder="enter your query"
+                  className="flex-1 outline-none text-sm placeholder:text-slate-400"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Tabs & Sort */}
+          <div className="px-8 py-2 flex items-center justify-between border-b border-gray-100">
+            <div className="flex items-center gap-6">
+              <span className="text-xs font-semibold text-slate-500">Suggested</span>
+              <button className="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-md">All</button>
+              <button className="flex items-center gap-1 text-xs font-semibold text-slate-600 hover:text-slate-800">
+                Filter by field <KeyboardArrowDownRoundedIcon sx={{ fontSize: 16 }} />
+              </button>
+            </div>
+            <div className="flex items-center gap-1 text-xs font-medium text-slate-500 cursor-pointer hover:text-slate-800">
+              Sort by: Last modified date <KeyboardArrowDownRoundedIcon sx={{ fontSize: 16 }} />
+            </div>
+          </div>
+
+          {/* Data Table */}
+          <div className="flex-1 overflow-auto p-8 pt-4">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b border-gray-200">
+                  <th className="py-3 px-2 w-10"><input type="checkbox" className="rounded text-blue-600 focus:ring-blue-500 border-gray-300" /></th>
+                  <th className="py-3 px-2 w-8"></th>
+                  <th className="py-3 px-2 text-xs font-semibold text-slate-500">Name</th>
+                  <th className="py-3 px-2 text-xs font-semibold text-slate-500">Type</th>
+                  <th className="py-3 px-2 text-xs font-semibold text-slate-500 text-center">Status</th>
+                  <th className="py-3 px-2 text-xs font-semibold text-slate-500">Created by</th>
+                  <th className="py-3 px-2 text-xs font-semibold text-slate-500">Shared with</th>
+                  <th className="py-3 px-2 text-xs font-semibold text-slate-500">Last Modified</th>
+                  <th className="py-3 px-2 w-10 text-center"><MoreHorizRoundedIcon sx={{ fontSize: 18 }} className="text-slate-400" /></th>
+                </tr>
+              </thead>
+              <tbody>
+                {DUMMY_DOCS.map((doc, idx) => (
+                  <tr key={idx} className="border-b border-gray-50 hover:bg-slate-50 transition-colors group cursor-pointer">
+                    <td className="py-3 px-2"><input type="checkbox" className="rounded text-blue-600 focus:ring-blue-500 border-gray-300" /></td>
+                    <td className="py-3 px-2">
+                      <KeyboardArrowRightRoundedIcon sx={{ fontSize: 18 }} className={`text-slate-400 ${doc.isFolder ? 'opacity-100' : 'opacity-0'}`} />
+                    </td>
+                    <td className="py-3 px-2">
+                      <div className="flex items-center gap-3">
+                        {doc.isFolder && <FolderRoundedIcon className="text-blue-500" sx={{ fontSize: 20 }} />}
+                        {doc.isPdf && <PictureAsPdfRoundedIcon className="text-red-500" sx={{ fontSize: 20 }} />}
+                        {doc.isDoc && <DescriptionRoundedIcon className="text-blue-600" sx={{ fontSize: 20 }} />}
+                        <span className="font-semibold text-blue-600 text-[13px]">{doc.name}</span>
+                      </div>
+                    </td>
+                    <td className="py-3 px-2 text-[13px] text-slate-600">{doc.type}</td>
+                    <td className="py-3 px-2 text-center">
+                      {doc.status && (
+                        <span className={`inline-block px-3 py-0.5 border rounded-sm text-[11px] font-bold tracking-wide ${doc.statusColor}`}>
+                          {doc.status}
+                        </span>
+                      )}
+                    </td>
+                    <td className="py-3 px-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-full bg-slate-200 overflow-hidden shrink-0">
+                          <img src={`https://i.pravatar.cc/150?u=${idx}`} alt="avatar" className="w-full h-full object-cover" />
+                        </div>
+                        <span className="text-[13px] text-slate-700 font-medium">{doc.author}</span>
+                      </div>
+                    </td>
+                    <td className="py-3 px-2">
+                      <div className="flex items-center">
+                        <div className="flex -space-x-2 mr-2">
+                          <img src="https://i.pravatar.cc/150?img=32" className="w-6 h-6 rounded-full border-2 border-white" alt="avatar" />
+                          <img src="https://i.pravatar.cc/150?img=12" className="w-6 h-6 rounded-full border-2 border-white" alt="avatar" />
+                        </div>
+                        <span className="text-xs font-semibold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded">+{doc.shared}</span>
+                      </div>
+                    </td>
+                    <td className="py-3 px-2 text-[13px] text-slate-600">{doc.date}</td>
+                    <td className="py-3 px-2 text-center">
+                      <MoreHorizRoundedIcon sx={{ fontSize: 18 }} className="text-slate-400 hover:text-slate-800" />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination */}
+          <div className="p-4 border-t border-gray-100 flex items-center justify-between">
+            <div className="w-full h-1 bg-gray-200 rounded-full max-w-2xl mx-auto overflow-hidden relative mb-4">
+              <div className="absolute left-0 top-0 h-full w-1/3 bg-gray-400 rounded-full"></div>
+            </div>
+            {/* Real pagination controls would go here */}
+          </div>
+
+        </main>
+      </div>
+    </DashboardLayoutNew>
+  );
+}

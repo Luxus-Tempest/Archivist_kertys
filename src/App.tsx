@@ -12,6 +12,7 @@ import { Members } from './pages/Members';
 import { useAuth } from './hooks/useAuth';
 import './index.css';
 import { InstructionPage } from './pages/InstructionPage';
+import { ExplorerV2 } from './pages/ExplorerV2';
 
 // Protected Route wrapper component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -105,6 +106,11 @@ function App() {
         <Route path="/process" element={
           <ProtectedRoute>
             <ProcessNew />
+          </ProtectedRoute>
+        } />
+        <Route path="/explorer-v2" element={
+          <ProtectedRoute>
+            <ExplorerV2 />
           </ProtectedRoute>
         } />
         <Route path="/history" element={
