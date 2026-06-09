@@ -327,5 +327,16 @@
       "lookup": "Lookup",
       "list": "List"
     }
+  },
+  "forgotPasswordPage": {
+    "title": "Forgot Password",
+    "subtitle": "Enter your email address to receive a reset link.",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "name@company.com",
+    "sendButton": "Send Reset Link",
+    "sending": "Sending...",
+    "successMessage": "A reset link has been sent to your email address.",
+    "backToLogin": "Back to login",
+    "resetRequestError": "An error occurred while requesting password reset."
   }
 }

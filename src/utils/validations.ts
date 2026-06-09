@@ -30,6 +30,23 @@ export type SignupFormData = z.infer<ReturnType<typeof signupSchema>>; //create 
 export type SignupOrgFormData = z.infer<ReturnType<typeof signupOrgSchema>>; //create organization only
 export type SignupUserFormData = z.infer<ReturnType<typeof signupUserSchema>>; //create user only 
 
+export const forgotPasswordSchema = (t: TFunction) => z.object({
+  Email: z.string().email(t("invalidEmail")),
+  OrganizationId: z.string().optional(),
+});
+
+export type ForgotPasswordFormData = z.infer<ReturnType<typeof forgotPasswordSchema>>;
+
+export const resetPasswordSchema = (t: TFunction) => z.object({
+  Password: z.string().min(4, t("passwordTooShort")),
+  ConfirmPassword: z.string().min(4, t("passwordTooShort")),
+}).refine((data) => data.Password === data.ConfirmPassword, {
+  message: t("passwordsMustMatch", "Les mots de passe ne correspondent pas"),
+  path: ["ConfirmPassword"],
+});
+
+export type ResetPasswordFormData = z.infer<ReturnType<typeof resetPasswordSchema>>;
+
 
 
 

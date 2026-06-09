@@ -70,7 +70,15 @@ export function ProcessNew() {
   }, [stagedMetadata, stagedFiles.length]);
 
   const handleFilesSelected = async (files: File[]) => {
+    const existingKeys = new Set(stagedFiles.map(f => `${f.name}-${f.size}`));
+
     for (const file of files) {
+      const fileKey = `${file.name}-${file.size}`;
+      if (existingKeys.has(fileKey)) {
+        continue; // Ignore duplicate occurrences
+      }
+      existingKeys.add(fileKey);
+
       const id = `${file.name}-${file.size}-${Date.now()}`;
       const metadata: StagedFileMetadata = {
         id,

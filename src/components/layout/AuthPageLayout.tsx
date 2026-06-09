@@ -6,13 +6,14 @@ import { SvgIcon } from '../SvgIcon';
 
 interface AuthPageLayoutProps {
   children: React.ReactNode;
-  title: string;
-  subtitle: string;
-  imageAlt: string;
-  imageSrc: string;
-  headline: React.ReactNode;
-  description: string;
+  title?: string;
+  subtitle?: string;
+  imageAlt?: string;
+  imageSrc?: string;
+  headline?: React.ReactNode;
+  description?: string;
   stepIndicator?: React.ReactNode;
+  displayLeftImage?: boolean;
 }
 
 export function AuthPageLayout({
@@ -24,6 +25,7 @@ export function AuthPageLayout({
   headline,
   description,
   stepIndicator,
+  displayLeftImage = true,
 }: AuthPageLayoutProps) {
   const { t } = useTranslation()
   return (
@@ -45,28 +47,34 @@ export function AuthPageLayout({
       {/* Main Content */}
       <main className="grow flex items-center justify-center px-6 pt-24 pb-12">
         {/* <main className="grow flex items-center justify-center px-6 pt-24 pb-12"> */}
-        <div className="w-full max-w-[1100px] grid md:grid-cols-2 bg-surface-container-lowest rounded-3xl overflow-hidden shadow-editorial h-max">
+        <div className={`bg-surface-container-lowest rounded-3xl overflow-hidden shadow-editorial h-max ${
+          displayLeftImage
+            ? 'w-full max-w-[1100px] grid md:grid-cols-2'
+            : 'w-full max-w-fit'
+        }`}>
           {/* Left Side: Visual/Branding */}
-          <div className="relative hidden md:flex flex-col justify-end p-12 bg-primary overflow-hidden">
-            <img
-              alt={imageAlt}
-              className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay"
-              src={imageSrc}
-            />
-            <div className="absolute inset-0 bg-linear-to-t from-primary via-primary/20 to-transparent"></div>
-            <div className="relative z-10 space-y-4 text-on-primary">
-              <h1 className="font-headline text-4xl font-extrabold tracking-tight leading-tight">
-                {headline}
-              </h1>
-              <p className="text-on-primary/70 font-body text-lg max-w-sm">
-                {description}
-              </p>
+          {displayLeftImage && (
+            <div className="relative hidden md:flex flex-col justify-end p-12 bg-primary overflow-hidden">
+              <img
+                alt={imageAlt}
+                className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay"
+                src={imageSrc}
+              />
+              <div className="absolute inset-0 bg-linear-to-t from-primary via-primary/20 to-transparent"></div>
+              <div className="relative z-10 space-y-4 text-on-primary">
+                <h1 className="font-headline text-4xl font-extrabold tracking-tight leading-tight">
+                  {headline}
+                </h1>
+                <p className="text-on-primary/70 font-body text-lg max-w-sm">
+                  {description}
+                </p>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Right Side: Form Content */}
-          <div className="flex flex-col justify-center p-4 md:p-10 lg:p-12">
-            <div className="max-w-md w-full mx-auto space-y-6">
+          <div className="flex flex-col justify-center p-8 md:p-10 lg:p-12">
+            <div className="w-full space-y-6">
               <div className="space-y-2">
                 {stepIndicator}
                 <h2 className="font-headline text-3xl font-bold text-on-surface tracking-tight">{title}</h2>

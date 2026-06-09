@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { AuthState, LoginResponse, User, CreateOrganizationPayload, RegisterInvitedUserPayload } from '../../types/auth';
-import type { LoginFormData, SignupFormData } from '../../utils/validations';
+import type { LoginFormData, SignupFormData, ForgotPasswordFormData } from '../../utils/validations';
 import i18next from 'i18next'
 
 
@@ -157,6 +157,63 @@ export const loginUser = createAsyncThunk<
   }
 });
 
+export const forgotPassword = createAsyncThunk<
+  { message: string },
+  ForgotPasswordFormData,
+  { rejectValue: string }
+>('v2/auth/forgot-password', async (data, thunkAPI) => {
+  try {
+    const response = await fetch(`${AUTH_API_URL}/forgot-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: data.Email,
+        ...(data.OrganizationId ? { organizationId: data.OrganizationId } : {}),
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      return thunkAPI.rejectWithValue(errorData.message || 'Error requesting password reset.');
+    }
+
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      return await response.json();
+    }
+    return { message: 'Reset email sent successfully' } as any;
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(error.message || 'Server connection error.');
+  }
+});
+
+export const resetPassword = createAsyncThunk<
+  { message: string },
+  { token: string; newPassword: string },
+  { rejectValue: string }
+>('v2/auth/reset-password', async ({ token, newPassword }, thunkAPI) => {
+  try {
+    const response = await fetch(`${AUTH_API_URL}/reset-password?token=${token}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ newPassword }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      return thunkAPI.rejectWithValue(errorData.message || 'Error resetting password.');
+    }
+
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      return await response.json();
+    }
+    return { message: 'Password reset successfully' } as any;
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(error.message || 'Server connection error.');
+  }
+});
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -249,6 +306,34 @@ const authSlice = createSlice({
         state.token = null;
         localStorage.removeItem('token');
       }
+    });
+
+    // Forgot Password
+    builder.addCase(forgotPassword.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(forgotPassword.fulfilled, (state) => {
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(forgotPassword.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload || 'Erreur inconnue';
+    });
+
+    // Reset Password
+    builder.addCase(resetPassword.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(resetPassword.fulfilled, (state) => {
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(resetPassword.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload || 'Erreur inconnue';
     });
   },
 });

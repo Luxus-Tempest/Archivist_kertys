@@ -76,5 +76,17 @@
       "reactivated": "La cuenta de {{name}} ha sido reactivada",
       "error": "Error al actualizar el estado del usuario. {{err}}"
     }
+  },
+  "forgotPassword": "¿Olvidó su contraseña?",
+  "forgotPasswordPage": {
+    "title": "Contraseña olvidada",
+    "subtitle": "Ingrese su dirección de correo electrónico para recibir un enlace de restablecimiento.",
+    "emailLabel": "Correo electrónico",
+    "emailPlaceholder": "nombre@empresa.com",
+    "sendButton": "Enviar enlace de restablecimiento",
+    "sending": "Enviando...",
+    "successMessage": "Se ha enviado un enlace de restablecimiento a su correo electrónico.",
+    "backToLogin": "Volver al inicio de sesión",
+    "resetRequestError": "Ocurrió un error al solicitar el restablecimiento de contraseña."
   }
 }

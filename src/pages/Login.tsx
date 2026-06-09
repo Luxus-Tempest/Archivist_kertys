@@ -100,9 +100,9 @@ export function Login() {
           />
 
           <div className="flex justify-end ml-1 -mt-2">
-            <a href="#" className="text-xs font-medium text-primary hover:underline transition-all">
+            <Link to="/forgot-password" className="text-xs font-medium text-primary hover:underline transition-all">
               {t('forgotPassword')}
-            </a>
+            </Link>
           </div>
         </div>
 

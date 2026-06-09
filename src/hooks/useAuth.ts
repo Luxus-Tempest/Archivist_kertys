@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from '../store';
-import { loginUser, signupUser, createOrganization, registerInvitedUser as registerInvitedUserThunk, logout, clearError, fetchMe } from '../store/auth/authSlice';
-import type { LoginFormData, SignupFormData } from '../utils/validations';
+import { loginUser, signupUser, createOrganization, registerInvitedUser as registerInvitedUserThunk, logout, clearError, fetchMe, forgotPassword, resetPassword } from '../store/auth/authSlice';
+import type { LoginFormData, SignupFormData, ForgotPasswordFormData } from '../utils/validations';
 
 export const useAuth = () => {
   const dispatch = useAppDispatch();
@@ -12,6 +12,14 @@ export const useAuth = () => {
 
   const signup = async (data: SignupFormData) => {
     return dispatch(signupUser(data)).unwrap();
+  };
+
+  const requestForgotPassword = async (data: ForgotPasswordFormData) => {
+    return dispatch(forgotPassword(data)).unwrap();
+  };
+
+  const handleResetPassword = async (data: { token: string; newPassword: string }) => {
+    return dispatch(resetPassword(data)).unwrap();
   };
 
   const registerOrganization = async (data: any) => {
@@ -42,6 +50,8 @@ export const useAuth = () => {
     isAuthenticated: !!token,
     login,
     signup,
+    forgotPassword: requestForgotPassword,
+    resetPassword: handleResetPassword,
     createOrganization: registerOrganization,
     registerInvitedUser: handleRegisterInvitedUser,
     getProfile,

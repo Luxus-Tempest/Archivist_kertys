@@ -64,11 +64,20 @@
   "bytesB": "{{bytes}} o",
   "valKb": "{{val}} Ko",
   "valMb": "{{val}} Mo",
+  "menu": {
+    "home": "Accueil",
+    "files": "Fichiers",
+    "shared": "Partagés",
+    "search": "Recherche"
+  },
+  "systemPulse": "Activité Système",
+  "sessions": "Sessions",
   "uploadNewFiles": "Nouveaux fichiers",
   "uploadingDocuments": "Téléchargement des documents...",
-  "clickToUploadOrDragDrop": "Cliquez pour télécharger ou glissez-déposez",
-  "pdfDocxXlsxHighresImagesEtcUpTo25mb": "PDF, DOCX, XLSX, images haute résolution, etc... jusqu'à 25 Mo",
+  "clickToUploadOrDragDrop": "Cliquez pour télécharger ou glissez-deposez",
+  "pdfDocxXlsxHighresImagesEtcUpTo25mb": "PDF, DOCX, XLSX, images haute resolution, etc... jusqu'a 25 Mo",
   "browseLocalFiles": "Parcourir les fichiers locaux",
+  "processing": "Traitement...",
   "stagedFiles": "Fichiers en attente",
   "clearAll": "Tout effacer",
   "reviewDocumentsBeforeSendingToVault": "Passez en revue les documents avant de les envoyer au coffre-fort",
@@ -137,6 +146,15 @@
     "active": "Actif",
     "blocked": "Bloqué"
   },
+  "organizationName": "Nom de l'organisation",
+  "professionalEmail": "E-mail professionnel",
+  "domain": "Domaine",
+  "egArchivistGlobal": "ex. Archivist Global",
+  "nameAtOrganizationCom": "nom@organisation.com",
+  "egMycompanyCom": "ex. monentreprise.com",
+  "organizationDetails": "Détails de l'organisation",
+  "enterYourOrganizationInfo": "Saisissez les informations de votre organisation pour commencer.",
+  "continue": "Continuer",
   "signupPage": {
     "organizationDetails": "Détails de l’organisation",
     "createAccount": "Créer un compte",
@@ -309,5 +327,16 @@
       "lookup": "Lookup",
       "list": "Liste"
     }
+  },
+  "forgotPasswordPage": {
+    "title": "Mot de passe oublié",
+    "subtitle": "Entrez votre adresse email pour recevoir un lien de réinitialisation.",
+    "emailLabel": "Adresse email",
+    "emailPlaceholder": "nom@entreprise.com",
+    "sendButton": "Envoyer le lien de réinitialisation",
+    "sending": "Envoi en cours...",
+    "successMessage": "Un email de réinitialisation a été envoyé à votre adresse.",
+    "backToLogin": "Retour à la connexion",
+    "resetRequestError": "Une erreur est survenue lors de la demande de réinitialisation."
   }
 }

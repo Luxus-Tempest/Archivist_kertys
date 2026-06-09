@@ -3,13 +3,12 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { Login } from './pages/Login';
 import { Signup } from './pages/Signup';
 import { InvitationRegister } from './pages/InvitationRegister';
-import { History } from './pages/History';
-import { Process } from './pages/Process';
+import { ForgotPassword } from './pages/ForgotPassword';
+import { ResetPassword } from './pages/ResetPassword';
 import { HistoryNew } from './pages/HistoryNew';
 import { ProcessNew } from './pages/ProcessNew';
 import { ExplorerNew } from './pages/ExplorerNew';
 import { Members } from './pages/Members';
-import { DashboardLayout } from './components/layout/DashboardLayout';
 import { useAuth } from './hooks/useAuth';
 import './index.css';
 import { InstructionPage } from './pages/InstructionPage';
@@ -91,6 +90,16 @@ function App() {
             <InvitationRegister />
           </GuestRoute>
         } />
+        <Route path="/forgot-password" element={
+          <GuestRoute>
+            <ForgotPassword />
+          </GuestRoute>
+        } />
+        <Route path="/reset-password" element={
+          <GuestRoute>
+            <ResetPassword />
+          </GuestRoute>
+        } />
         
         {/* New Dashboard Routes (Refactored Design) */}
         <Route path="/process" element={
@@ -119,31 +128,15 @@ function App() {
           </ProtectedRoute>
         } />
 
-        {/* Existing Dashboard Routes (Preserved) */}
+        {/* Redirect Root to Process */}
         <Route path="/" element={
           <ProtectedRoute>
-            <DashboardLayout>
-              <Navigate to="/process-old" replace />
-            </DashboardLayout>
-          </ProtectedRoute>
-        } />
-        <Route path="/process-old" element={
-          <ProtectedRoute>
-            <DashboardLayout>
-              <Process />
-            </DashboardLayout>
-          </ProtectedRoute>
-        } />
-        <Route path="/history-old" element={
-          <ProtectedRoute>
-            <DashboardLayout>
-              <History />
-            </DashboardLayout>
+            <Navigate to="/process" replace />
           </ProtectedRoute>
         } />
 
         {/* Fallbacks */}
-        <Route path="*" element={<Navigate to="/process-new" replace />} />
+        <Route path="*" element={<Navigate to="/process" replace />} />
       </Routes>
     </Router>
   );
