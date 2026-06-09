@@ -76,6 +76,7 @@ export function SidebarNew({ isCollapsed, setIsCollapsed }: SidebarProps) {
         font-body text-sm font-medium
         transition-all duration-300 ease-in-out
         z-40
+        group/sidebar
         ${isCollapsed ? 'w-16 overflow-visible' : 'w-64'}
       `}
     >
@@ -85,15 +86,13 @@ export function SidebarNew({ isCollapsed, setIsCollapsed }: SidebarProps) {
           {visibleGroups.map((group, gi) => (
             <div key={group.label}>
 
-              {!isCollapsed && (
-                <p className="px-3 mb-2 text-[10px] font-bold tracking-[0.14em] uppercase text-on-surface-variant/70 select-none">
-                  {group.label}
-                </p>
-              )}
-
-              {isCollapsed && gi !== 0 && (
-                <div className="mx-auto w-6 h-px bg-outline-variant/40 mb-2" />
-              )}
+              <div className="min-h-[28px] flex flex-col justify-end">
+                <div className={`transition-opacity duration-200 ${isCollapsed ? 'opacity-0' : 'opacity-100'}`}>
+                  <p className="px-3 mb-2 text-[10px] font-bold tracking-[0.14em] uppercase text-on-surface-variant/70 select-none whitespace-nowrap">
+                    {group.label}
+                  </p>
+                </div>
+              </div>
 
               <div className="flex flex-col gap-1">
 
@@ -110,8 +109,7 @@ export function SidebarNew({ isCollapsed, setIsCollapsed }: SidebarProps) {
                         }}
                         className={({ isActive }) =>
                           `
-                            relative flex items-center
-                            ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-3'}
+                            relative flex items-center gap-3 px-3
                             py-2.5 rounded-md transition-all duration-200
 
                             ${isDisabled
@@ -129,8 +127,8 @@ export function SidebarNew({ isCollapsed, setIsCollapsed }: SidebarProps) {
                         <SvgIcon
                           name={item.icon}
                           className="flex-shrink-0 transition-all duration-300"
-                          width={isCollapsed ? 24 : 18}
-                          height={isCollapsed ? 24 : 18}
+                          width={20}
+                          height={20}
                         />
 
                         {!isCollapsed && (
@@ -201,21 +199,28 @@ export function SidebarNew({ isCollapsed, setIsCollapsed }: SidebarProps) {
       {/* TOGGLE BUTTON */}
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
+        // className="
+        //   absolute -right-3.5 top-4
+        //   w-7 h-7 rounded-full bg-white
+        //   border border-gray-300 shadow-sm
+        //   flex items-center justify-center
+        //   cursor-pointer text-on-surface-variant hover:text-blue-dark hover:border-blue-300 hover:shadow-md
+        //   transition-all duration-300 z-50
+        // "
         className="
-          absolute -right-[17px] top-1/2 -translate-y-1/2
-          w-4 h-14 bg-cipher-bg
-          border-y border-r border-surface-container
-          rounded-r-xl flex items-center justify-center
-          cursor-pointer text-outline hover:text-primary
-          transition-all z-50
-          hover:w-5 hover:-right-[21px]
+          opacity-0
+          group-hover/sidebar:opacity-100
+          absolute right-1.5 top-4
+          cursor-pointer hover:text-blue-dark hover:border-blue-300
+          transition-all duration-300 z-50
         "
       >
-        {isCollapsed ? (
-          <ChevronRightRoundedIcon sx={{ fontSize: 18 }} />
-        ) : (
-          <ChevronLeftRoundedIcon sx={{ fontSize: 18 }} />
-        )}
+        <SvgIcon 
+          name={isCollapsed ? "open" : "collapse"} 
+          className="" 
+          width={30} 
+          height={25} 
+        />
       </button>
     </aside>
   );
