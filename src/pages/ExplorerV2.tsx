@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { DashboardLayoutNew } from '../components/layout/DashboardLayoutNew';
 import FolderRoundedIcon from '@mui/icons-material/FolderRounded';
 import PictureAsPdfRoundedIcon from '@mui/icons-material/PictureAsPdfRounded';
@@ -7,7 +8,6 @@ import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import KeyboardArrowRightRoundedIcon from '@mui/icons-material/KeyboardArrowRightRounded';
 import PushPinRoundedIcon from '@mui/icons-material/PushPinRounded';
-import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
@@ -18,7 +18,6 @@ import ShareRoundedIcon from '@mui/icons-material/ShareRounded';
 import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import UploadRoundedIcon from '@mui/icons-material/UploadRounded';
 import UnfoldMoreRoundedIcon from '@mui/icons-material/UnfoldMoreRounded';
 import KeyboardArrowLeftRoundedIcon from '@mui/icons-material/KeyboardArrowLeftRounded';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
@@ -30,18 +29,20 @@ import {
   type DocItem,
 } from '../components/explorer/DocumentDetailDrawer';
 import { useMetadata } from '../hooks/useMetadata';
+import { InformationBox } from '../components/global/InformationBox';
 
-const STATS = [
-  { label: 'Docs', value: 19 },
-  { label: 'Invoices', value: 48 },
-  { label: 'Reports', value: '07' },
-  { label: 'Purchase Orders', value: 21 },
-  { label: 'Requisitions', value: 18 }
-];
+// STATS will be dynamically mapped from classes.data
 
 export function ExplorerV2() {
   const [activeDoc, setActiveDoc] = useState<DocItem | null>(null);
-  const [nav, setNav] = useState('all');
+  const [searchParams, setSearchParams] = useSearchParams();
+  
+  const rootParam = searchParams.get('root') || 'all';
+  const classParam = searchParams.get('class') || '';
+  const openDocIdParam = searchParams.get('openDocId') || '';
+  
+  const nav = classParam ? classParam : rootParam;
+
   const [tab, setTab] = useState('all');
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('name');
@@ -49,7 +50,7 @@ export function ExplorerV2() {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [filters, setFilters] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const perPage = 10;
+  const perPage = 5;
 
   const [isDeptCollapsed, setIsDeptCollapsed] = useState(false);
   const [filterMenuOpen, setFilterMenuOpen] = useState(false);
@@ -72,9 +73,10 @@ export function ExplorerV2() {
   useEffect(() => {
     const matchedClass = classes.data.find(c => c.technicalName.toLowerCase() === nav.toLowerCase());
     if (matchedClass) {
-      fetchClassDocuments(matchedClass.technicalName, { offset: 0, limit: 50 });
+      const offset = (currentPage - 1) * perPage;
+      fetchClassDocuments(matchedClass.technicalName, { offset, limit: perPage });
     }
-  }, [nav, classes.data, fetchClassDocuments]);
+  }, [nav, currentPage, perPage, classes.data, fetchClassDocuments]);
 
   useEffect(() => {
     const handleGlobalClick = () => {
@@ -91,10 +93,46 @@ export function ExplorerV2() {
   };
 
   const handleNav = (id: string) => {
-    setNav(id);
+    if (id === 'all' || id === 'my') {
+      setSearchParams(prev => {
+        const next = new URLSearchParams(prev);
+        next.set('root', id);
+        next.delete('class');
+        next.delete('openDocId');
+        return next;
+      });
+    } else {
+      setSearchParams(prev => {
+        const next = new URLSearchParams(prev);
+        if (!next.has('root')) {
+          next.set('root', 'all');
+        }
+        next.set('class', id);
+        next.delete('openDocId');
+        return next;
+      });
+    }
     setTab('all');
     setSelected(new Set());
     setCurrentPage(1);
+  };
+
+  const handleOpenDoc = (doc: DocItem) => {
+    setActiveDoc(doc);
+    setSearchParams(prev => {
+      const next = new URLSearchParams(prev);
+      next.set('openDocId', String(doc.id));
+      return next;
+    });
+  };
+
+  const handleCloseDoc = () => {
+    setActiveDoc(null);
+    setSearchParams(prev => {
+      const next = new URLSearchParams(prev);
+      next.delete('openDocId');
+      return next;
+    });
   };
 
   const handleTab = (id: string) => {
@@ -164,7 +202,24 @@ export function ExplorerV2() {
   const onContextMenu = (e: React.MouseEvent, id: string | number) => {
     e.preventDefault();
     e.stopPropagation();
-    setCtxMenu({ x: e.clientX, y: e.clientY, docId: id });
+    
+    // Bounding context menu coordinates to keep it inside screen bounds
+    const menuWidth = 180;
+    const menuHeight = 300;
+    let x = e.clientX;
+    let y = e.clientY;
+    
+    if (x + menuWidth > window.innerWidth) {
+      x = window.innerWidth - menuWidth - 12;
+    }
+    if (y + menuHeight > window.innerHeight) {
+      y = window.innerHeight - menuHeight - 12;
+    }
+    
+    x = Math.max(12, x);
+    y = Math.max(12, y);
+    
+    setCtxMenu({ x, y, docId: id });
   };
 
   // Build filtered docs
@@ -173,15 +228,23 @@ export function ExplorerV2() {
 
   if (matchedClass) {
     filtered = (apiDocs.data || []).map((doc): DocItem => {
-      const isPdf = doc.extension?.toLowerCase() === 'pdf';
-      const isDoc = ['doc', 'docx'].includes(doc.extension?.toLowerCase());
+      const isPdf = doc.extension?.toLowerCase() === '.pdf' || doc.extension?.toLowerCase() === 'pdf';
+      const isDoc = ['.doc', '.docx', 'doc', 'docx'].includes(doc.extension?.toLowerCase() || '');
+      
+      const authorName = doc.me ? 'Moi' : (doc.user?.fullName || 'Système');
+      const authorImg = doc.me 
+        ? 'https://i.pravatar.cc/150?img=60'
+        : (doc.user?.fullName 
+            ? `https://ui-avatars.com/api/?name=${encodeURIComponent(doc.user.fullName)}&background=0D8ABC&color=fff`
+            : 'https://i.pravatar.cc/150?img=9');
+
       return {
         id: doc.documentId as any,
         name: doc.originalFileName,
-        type: doc.extension?.toUpperCase() || 'FILE',
-        status: '',
-        author: 'Système',
-        authorImg: 'https://i.pravatar.cc/150?img=9',
+        type: doc.extension?.replace(/^\./, '').toUpperCase() || 'FILE',
+        status: doc.status || 'UPLOADED',
+        author: authorName,
+        authorImg,
         shared: 0,
         date: doc.updatedAt?.split('T')[0] || '',
         rawDate: doc.createdAt ? new Date(doc.createdAt).toLocaleString() : '',
@@ -227,6 +290,7 @@ export function ExplorerV2() {
   // Client-side filtering & sorting
   if (tab === 'folders') filtered = filtered.filter(d => d.isFolder);
   else if (tab === 'docs') filtered = filtered.filter(d => d.isDoc || d.isPdf);
+  else if (tab === 'pending') filtered = filtered.filter(d => d.status === 'Pending' || d.status === 'UPLOADED');
 
   if (search) {
     const sl = search.toLowerCase();
@@ -237,6 +301,9 @@ export function ExplorerV2() {
     if (f === 'Folder') filtered = filtered.filter(d => d.isFolder);
     else if (f === 'PDF') filtered = filtered.filter(d => d.isPdf);
     else if (f === 'Doc') filtered = filtered.filter(d => d.isDoc);
+    else if (['Approved', 'Pending', 'Rejected', 'UPLOADED'].includes(f)) {
+      filtered = filtered.filter(d => d.status === f);
+    }
   });
 
   const sortMap: Record<string, keyof DocItem> = { name: 'name', type: 'type', date: 'date' };
@@ -248,22 +315,49 @@ export function ExplorerV2() {
     });
   }
 
-  const total = filtered.length;
+  const isServerSide = !!matchedClass;
+  const total = isServerSide ? apiDocs.totalCount : filtered.length;
   const totalPages = Math.ceil(total / perPage);
   const start = (currentPage - 1) * perPage;
-  const paginatedDocs = filtered.slice(start, start + perPage);
+  
+  // For server-side, filtered is already sliced by the backend. For client-side, we slice here.
+  const paginatedDocs = isServerSide ? filtered : filtered.slice(start, start + perPage);
 
   const allSel = paginatedDocs.length > 0 && paginatedDocs.every(d => selected.has(String(d.id)));
   const someSel = paginatedDocs.some(d => selected.has(String(d.id)));
 
+  const getPageNumbers = () => {
+    const pages: (number | string)[] = [];
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      pages.push(1);
+      if (currentPage > 3) {
+        pages.push('...');
+      }
+      const startPage = Math.max(2, currentPage - 1);
+      const endPage = Math.min(totalPages - 1, currentPage + 1);
+      for (let i = startPage; i <= endPage; i++) {
+        pages.push(i);
+      }
+      if (currentPage < totalPages - 2) {
+        pages.push('...');
+      }
+      pages.push(totalPages);
+    }
+    return pages;
+  };
+
   const navItemClass = (id: string) =>
-    `flex items-center gap-2 px-2 py-1.5 rounded-md text-[12.5px] cursor-pointer transition-colors select-none ${nav === id
+    `flex items-center gap-2 px-2 py-1.5 rounded-md text-[12.5px] cursor-pointer transition-colors select-none ${rootParam === id
       ? 'bg-blue-thin text-blue-dark font-semibold'
       : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-medium'
     }`;
 
   const subItemClass = (id: string) =>
-    `flex items-center gap-1.5 px-2 py-1.5 rounded-md text-xs cursor-pointer transition-colors select-none ${nav === id
+    `flex items-center gap-1.5 px-2 py-1.5 rounded-md text-xs cursor-pointer transition-colors select-none ${classParam === id
       ? 'text-blue-dark font-semibold'
       : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800'
     }`;
@@ -284,6 +378,17 @@ export function ExplorerV2() {
     if (status === 'Rejected') return 'bg-red-50 text-red-900 border-red-300';
     return '';
   };
+
+  useEffect(() => {
+    if (openDocIdParam && filtered.length > 0) {
+      const doc = filtered.find(d => String(d.id) === openDocIdParam);
+      if (doc && (!activeDoc || String(activeDoc.id) !== openDocIdParam)) {
+        setActiveDoc(doc);
+      }
+    } else if (!openDocIdParam && activeDoc) {
+      setActiveDoc(null);
+    }
+  }, [openDocIdParam, filtered, activeDoc]);
 
   return (
     <DashboardLayoutNew isFullWidth isChildPaddingBottom={false}>
@@ -325,6 +430,8 @@ export function ExplorerV2() {
 
           {/* Header */}
           <div className="px-5 pt-4 pb-3 border-b border-slate-200 shrink-0">
+            
+            
             <div className="flex items-center gap-3 mb-3.5">
               {/* <div className="w-10 h-10 rounded-lg bg-blue-thin flex items-center justify-center text-lg font-medium text-blue-dark shrink-0">G</div>
               <div>
@@ -340,13 +447,26 @@ export function ExplorerV2() {
                 </button>
               </div> */}
             </div>
-            <div className="flex items-center">
-              {STATS.map((s, idx) => (
-                <div key={s.label} className={`flex flex-col pr-5 mr-5 ${idx < STATS.length - 1 ? 'border-r border-slate-200' : ''}`}>
-                  <span className="text-[10px] font-medium text-slate-400 uppercase tracking-widest mb-0.5">{s.label}</span>
-                  <span className="text-[22px] font-medium text-blue-dark">{s.value}</span>
-                </div>
-              ))}
+            <div className="flex items-center overflow-x-auto [scrollbar-width:none]">
+              {classes.isLoading && classes.data.length === 0 ? (
+                Array.from({ length: 5 }).map((_, idx) => (
+                  <div key={idx} className="flex flex-col pr-5 mr-5 border-r border-slate-200 last:border-none animate-pulse shrink-0">
+                    <div className="w-16 h-3 bg-slate-200 rounded mb-1.5"></div>
+                    <div className="w-8 h-6 bg-slate-200 rounded"></div>
+                  </div>
+                ))
+              ) : classes.data.length === 0 ? (
+                <div className="text-xs text-slate-400">Pas de statistiques disponibles</div>
+              ) : (
+                classes.data.map((c, idx) => (
+                  c.totalRecords > 0 ? (
+                    <div key={c.id} className={`flex flex-col pr-5 mr-5 shrink-0 ${idx < classes.data.length - 1 ? 'border-r border-slate-200' : ''}`}>
+                      <span className="text-[10px] font-medium text-slate-400 uppercase tracking-widest mb-0.5 truncate max-w-[120px]">{c.name}</span>
+                      <span className="text-[12px] font-medium text-blue-dark">{c.totalRecords}</span>
+                    </div>
+                  ) : null
+                ))
+              )}
             </div>
           </div>
 
@@ -365,7 +485,7 @@ export function ExplorerV2() {
               ))}
             </div>
 
-            <div className="relative" onClick={(e) => e.stopPropagation()}>
+            {/* <div className="relative" onClick={(e) => e.stopPropagation()}>
               <button className="flex items-center gap-1 px-2.5 py-1.5 bg-white text-slate-600 text-xs rounded-md border border-slate-300 hover:bg-slate-50 font-medium transition-colors" onClick={() => setFilterMenuOpen(!filterMenuOpen)}>
                 <FilterListRoundedIcon sx={{ fontSize: 14 }} /> Filter
               </button>
@@ -380,14 +500,15 @@ export function ExplorerV2() {
                   <div className="text-[11px] text-slate-400 font-medium px-2 pt-1 pb-1.5">Filter by status</div>
                   <div className="flex items-center gap-2 px-2.5 py-1.5 rounded text-[12.5px] text-slate-600 cursor-pointer hover:bg-slate-50 hover:text-slate-900 transition-colors" onClick={() => addFilter('Approved')}><CheckCircleRoundedIcon className="text-green-600" sx={{ fontSize: 14 }} /> Approved</div>
                   <div className="flex items-center gap-2 px-2.5 py-1.5 rounded text-[12.5px] text-slate-600 cursor-pointer hover:bg-slate-50 hover:text-slate-900 transition-colors" onClick={() => addFilter('Pending')}><AccessTimeRoundedIcon className="text-amber-600" sx={{ fontSize: 14 }} /> Pending</div>
+                  <div className="flex items-center gap-2 px-2.5 py-1.5 rounded text-[12.5px] text-slate-600 cursor-pointer hover:bg-slate-50 hover:text-slate-900 transition-colors" onClick={() => addFilter('UPLOADED')}><CheckCircleRoundedIcon className="text-blue-500" sx={{ fontSize: 14 }} /> Uploaded</div>
                   <div className="flex items-center gap-2 px-2.5 py-1.5 rounded text-[12.5px] text-slate-600 cursor-pointer hover:bg-slate-50 hover:text-slate-900 transition-colors" onClick={() => addFilter('Rejected')}><CancelOutlinedIcon className="text-red-500" sx={{ fontSize: 14 }} /> Rejected</div>
                 </div>
               )}
-            </div>
+            </div> */}
           </div>
 
           {/* Tabs Row */}
-          <div className="px-5 border-b border-slate-200 flex items-center justify-between shrink-0 h-[38px]">
+          {/* <div className="px-5 border-b border-slate-200 flex items-center justify-between shrink-0 h-[38px]">
             <div className="flex gap-0.5 h-full items-center">
               <div onClick={() => handleTab('all')} className={tabClassStyle('all')}>All</div>
               <div onClick={() => handleTab('folders')} className={tabClassStyle('folders')}>Folders</div>
@@ -399,16 +520,33 @@ export function ExplorerV2() {
               <span className="select-none">{sortLabelMap[sort]}</span>
               <KeyboardArrowDownRoundedIcon sx={{ fontSize: 11 }} />
             </div>
-          </div>
+          </div> */}
+
+          {/* Breadcrumbs / Path */}
+            <div className="flex items-center ml-3 gap-1.5 text-[14px] font-bold text-slate-400 mt-1 uppercase tracking-wider select-none">
+              <span 
+                className="cursor-pointer hover:text-slate-600 transition-colors" 
+                onClick={() => handleNav(rootParam)}
+              >
+                {rootParam === 'my' ? 'My Files' : 'All'}
+              </span>
+              {classParam && (
+                <>
+                  <KeyboardArrowRightRoundedIcon sx={{ fontSize: 12 }} className="text-slate-400" />
+                  <span className="text-slate-700">
+                    {classes.data.find(c => c.technicalName.toLowerCase() === classParam.toLowerCase())?.name || classParam}
+                  </span>
+                </>
+              )}
+            </div>
 
           {/* Selection Bar */}
           <div className={`flex items-center gap-2.5 px-5 py-1.5 bg-blue-thin border-b border-blue-200 shrink-0 transition-all overflow-hidden ${selected.size > 0 ? 'h-auto opacity-100' : 'h-0 opacity-0 border-none py-0'}`}>
             <CheckBoxRoundedIcon sx={{ fontSize: 15 }} className="text-blue-dark" />
             <span className="text-[12.5px] font-medium text-blue-dark">{selected.size} selected</span>
             <div className="ml-auto flex gap-1.5">
-              <button className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white border border-slate-300 text-slate-600 text-xs hover:bg-slate-50 transition-colors" onClick={() => bulkAction('share')}><ShareRoundedIcon sx={{ fontSize: 14 }} /> Share</button>
               <button className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white border border-slate-300 text-slate-600 text-xs hover:bg-slate-50 transition-colors" onClick={() => bulkAction('download')}><DownloadRoundedIcon sx={{ fontSize: 14 }} /> Download</button>
-              <button className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white border border-slate-300 text-red-600 text-xs hover:bg-slate-50 transition-colors" onClick={() => bulkAction('delete')}><DeleteRoundedIcon sx={{ fontSize: 14 }} /> Delete</button>
+              <button disabled className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white border border-slate-300 text-slate-600 text-xs hover:bg-slate-50 transition-colors" onClick={() => bulkAction('delete')}><DeleteRoundedIcon sx={{ fontSize: 14 }} /> Delete</button>
               <button className="flex items-center justify-center p-1 rounded-md bg-transparent border border-transparent text-slate-500 hover:bg-slate-200/50 transition-colors ml-1" onClick={() => setSelected(new Set())}><CloseRoundedIcon sx={{ fontSize: 14 }} /></button>
             </div>
           </div>
@@ -423,7 +561,6 @@ export function ExplorerV2() {
                   <th className="w-[120px] py-[9px] px-2.5 text-[10px] font-medium text-slate-400 uppercase tracking-widest cursor-pointer select-none hover:text-slate-800 transition-colors" onClick={() => handleSort('type')}>Type <UnfoldMoreRoundedIcon sx={{ fontSize: 11, verticalAlign: '-1px' }} /></th>
                   <th className="w-[90px] py-[9px] px-2.5 text-[10px] font-medium text-slate-400 uppercase tracking-widest cursor-pointer select-none hover:text-slate-800 transition-colors" onClick={() => handleSort('status')}>Status <UnfoldMoreRoundedIcon sx={{ fontSize: 11, verticalAlign: '-1px' }} /></th>
                   <th className="w-[110px] py-[9px] px-2.5 text-[10px] font-medium text-slate-400 uppercase tracking-widest">Author</th>
-                  <th className="w-[90px] py-[9px] px-2.5 text-[10px] font-medium text-slate-400 uppercase tracking-widest">Shared</th>
                   <th className="w-[120px] py-[9px] px-2.5 text-[10px] font-medium text-slate-400 uppercase tracking-widest cursor-pointer select-none hover:text-slate-800 transition-colors" onClick={() => handleSort('date')}>Modified <UnfoldMoreRoundedIcon sx={{ fontSize: 11, verticalAlign: '-1px' }} /></th>
                   <th className="w-[40px] py-[9px] px-2.5"></th>
                 </tr>
@@ -446,8 +583,7 @@ export function ExplorerV2() {
                   <tr>
                     <td colSpan={8}>
                       <div className="p-10 text-center text-slate-400 flex flex-col items-center">
-                        <CancelOutlinedIcon sx={{ fontSize: 32, mb: 1 }} />
-                        <span>Aucun document ne correspond à votre recherche</span>
+                        <InformationBox title="Collection vide" description="Cette collection ne contient aucun fichier" icon="search" />
                       </div>
                     </td>
                   </tr>
@@ -462,7 +598,7 @@ export function ExplorerV2() {
                           if (doc.isFolder) {
                             handleNav(doc.dept);
                           } else {
-                            setActiveDoc(doc);
+                            handleOpenDoc(doc);
                           }
                         }}
                         onContextMenu={(e) => onContextMenu(e, doc.id)}
@@ -488,19 +624,11 @@ export function ExplorerV2() {
                           ) : <span className="text-slate-300">—</span>}
                         </td>
                         <td className="px-2.5 py-2.5 overflow-hidden text-ellipsis whitespace-nowrap align-middle">
-                          <div className="flex items-center gap-1.5">
+                          {!doc.isFolder ? ( <div className="flex items-center gap-1.5">
                             <img src={doc.authorImg} alt="" className="w-[22px] h-[22px] rounded-full object-cover shrink-0 bg-slate-100" />
                             <span className="text-xs truncate">{doc.author.split(' ')[0]}</span>
                           </div>
-                        </td>
-                        <td className="px-2.5 py-2.5 align-middle">
-                          <div className="flex items-center">
-                            <div className="flex items-center">
-                              <img src="https://i.pravatar.cc/150?img=32" alt="" className="w-[22px] h-[22px] rounded-full object-cover border-2 border-white -mr-1.5 relative z-[1]" />
-                              <img src="https://i.pravatar.cc/150?img=12" alt="" className="w-[22px] h-[22px] rounded-full object-cover border-2 border-white relative z-0" />
-                            </div>
-                            <span className="text-[10px] font-medium text-slate-500 bg-slate-100 border border-slate-200 rounded px-1.5 py-px ml-1">+{doc.shared}</span>
-                          </div>
+                          ) : <span className="text-slate-300">—</span>}
                         </td>
                         <td className="px-2.5 py-2.5 align-middle">
                           <span className="text-[11.5px] text-slate-500">{doc.rawDate || '—'}</span>
@@ -520,20 +648,42 @@ export function ExplorerV2() {
 
           {/* Footer / Pagination */}
           <div className="px-5 py-2 border-t border-slate-200 flex items-center justify-between shrink-0 h-[44px]">
-            <span className="text-[11.5px] text-slate-400">Showing {Math.min(perPage, total)} of {total} result{total !== 1 ? 's' : ''}</span>
+            <span className="text-[11.5px] text-slate-400">
+              Showing {total > 0 ? start + 1 : 0} - {Math.min(start + perPage, total)} of {total} result{total !== 1 ? 's' : ''}
+            </span>
             <div className="flex items-center gap-1">
               {totalPages > 1 && (
                 <>
-                  <button className="w-7 h-7 rounded-md border border-slate-200 bg-white text-slate-500 flex items-center justify-center text-xs font-medium hover:bg-slate-50 hover:text-slate-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed" onClick={() => setCurrentPage(p => p - 1)} disabled={currentPage === 1}><KeyboardArrowLeftRoundedIcon sx={{ fontSize: 13 }} /></button>
-                  {Array.from({ length: Math.min(totalPages, 5) }).map((_, i) => {
-                    const page = i + 1;
+                  <button 
+                    className="w-7 h-7 rounded-md border border-slate-200 bg-white text-slate-500 flex items-center justify-center text-xs font-medium hover:bg-slate-50 hover:text-slate-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed" 
+                    onClick={() => setCurrentPage(p => p - 1)} 
+                    disabled={currentPage === 1}
+                  >
+                    <KeyboardArrowLeftRoundedIcon sx={{ fontSize: 13 }} />
+                  </button>
+                  
+                  {getPageNumbers().map((page, i) => {
+                    if (page === '...') {
+                      return <span key={`dots-${i}`} className="px-1 text-slate-400 text-xs select-none">…</span>;
+                    }
                     return (
-                      <button key={page} className={`w-7 h-7 rounded-md border text-xs flex items-center justify-center transition-colors ${page === currentPage ? 'bg-blue-thin text-blue-dark border-transparent font-medium' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-800'}`} onClick={() => setCurrentPage(page)}>{page}</button>
-                    )
+                      <button 
+                        key={page} 
+                        className={`w-7 h-7 rounded-md border text-xs flex items-center justify-center transition-colors ${page === currentPage ? 'bg-blue-thin text-blue-dark border-transparent font-medium' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-800'}`} 
+                        onClick={() => setCurrentPage(page as number)}
+                      >
+                        {page}
+                      </button>
+                    );
                   })}
-                  {totalPages > 5 && <span className="px-1 text-slate-400 text-xs">…</span>}
-                  {totalPages > 5 && <button className={`w-7 h-7 rounded-md border text-xs flex items-center justify-center transition-colors ${totalPages === currentPage ? 'bg-blue-thin text-blue-dark border-transparent font-medium' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-800'}`} onClick={() => setCurrentPage(totalPages)}>{totalPages}</button>}
-                  <button className="w-7 h-7 rounded-md border border-slate-200 bg-white text-slate-500 flex items-center justify-center text-xs font-medium hover:bg-slate-50 hover:text-slate-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed" onClick={() => setCurrentPage(p => p + 1)} disabled={currentPage === totalPages}><KeyboardArrowRightRoundedIcon sx={{ fontSize: 13 }} /></button>
+                  
+                  <button 
+                    className="w-7 h-7 rounded-md border border-slate-200 bg-white text-slate-500 flex items-center justify-center text-xs font-medium hover:bg-slate-50 hover:text-slate-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed" 
+                    onClick={() => setCurrentPage(p => p + 1)} 
+                    disabled={currentPage === totalPages}
+                  >
+                    <KeyboardArrowRightRoundedIcon sx={{ fontSize: 13 }} />
+                  </button>
                 </>
               )}
             </div>
@@ -558,7 +708,7 @@ export function ExplorerV2() {
 
       <DocumentDetailDrawer
         doc={activeDoc}
-        onClose={() => setActiveDoc(null)}
+        onClose={handleCloseDoc}
         onToast={showToast}
       />
 

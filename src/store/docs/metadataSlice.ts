@@ -39,6 +39,9 @@ export interface MetadataDocument {
   storagePath: string;
   createdAt: string;
   updatedAt: string;
+  status?: string;
+  me?: boolean;
+  user?: { fullName: string; email: string } | null;
 }
 
 /** Réponse pour metadata par DocumentId */

@@ -2,16 +2,12 @@ import { useState, useEffect } from 'react';
 import Drawer from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import ShareRoundedIcon from '@mui/icons-material/ShareRounded';
-import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
-import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
 import LinkRoundedIcon from '@mui/icons-material/LinkRounded';
 import ZoomInRoundedIcon from '@mui/icons-material/ZoomInRounded';
 import ZoomOutRoundedIcon from '@mui/icons-material/ZoomOutRounded';
 import FullscreenRoundedIcon from '@mui/icons-material/FullscreenRounded';
 import FolderRoundedIcon from '@mui/icons-material/FolderRounded';
 import PictureAsPdfRoundedIcon from '@mui/icons-material/PictureAsPdfRounded';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded';
 import { useMetadata } from '../../hooks/useMetadata';
 import { fetchAuthBlob } from '../../utils/api';
@@ -61,7 +57,7 @@ interface Props {
 type DetailTab = 'details';
 
 export function DocumentDetailDrawer({ doc, onClose, onToast }: Props) {
-  const [detailTab, setDetailTab] = useState<DetailTab>('details');
+  const detailTab: DetailTab = 'details';
   const [previewZoom, setPreviewZoom] = useState(70);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
@@ -137,10 +133,7 @@ export function DocumentDetailDrawer({ doc, onClose, onToast }: Props) {
     }
   };
 
-  const detailTabClass = (id: DetailTab) =>
-    `px-3 py-2.5 text-[12px] border-b-2 cursor-pointer transition-colors select-none whitespace-nowrap ${detailTab === id
-      ? 'border-blue-dark text-blue-dark font-semibold'
-      : 'border-transparent text-slate-500 hover:text-slate-800 hover:border-slate-200'}`;
+
 
   return (
     <Drawer
