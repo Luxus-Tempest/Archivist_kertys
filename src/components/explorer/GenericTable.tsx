@@ -1,7 +1,7 @@
-import type { ReactNode } from 'react';
-import UnfoldMoreRoundedIcon from '@mui/icons-material/UnfoldMoreRounded';
-import KeyboardArrowLeftRoundedIcon from '@mui/icons-material/KeyboardArrowLeftRounded';
-import KeyboardArrowRightRoundedIcon from '@mui/icons-material/KeyboardArrowRightRounded';
+import type { ReactNode } from "react";
+import UnfoldMoreRoundedIcon from "@mui/icons-material/UnfoldMoreRounded";
+import KeyboardArrowLeftRoundedIcon from "@mui/icons-material/KeyboardArrowLeftRounded";
+import KeyboardArrowRightRoundedIcon from "@mui/icons-material/KeyboardArrowRightRounded";
 
 export type GenericTableColumn<T> = {
   id: string;
@@ -36,7 +36,10 @@ type GenericTableProps<T> = {
   onPageChange?: (page: number) => void;
 };
 
-function getPageNumbers(currentPage: number, totalPages: number): (number | string)[] {
+function getPageNumbers(
+  currentPage: number,
+  totalPages: number,
+): (number | string)[] {
   const pages: (number | string)[] = [];
 
   if (totalPages <= 7) {
@@ -48,7 +51,7 @@ function getPageNumbers(currentPage: number, totalPages: number): (number | stri
 
   pages.push(1);
   if (currentPage > 3) {
-    pages.push('...');
+    pages.push("...");
   }
 
   const startPage = Math.max(2, currentPage - 1);
@@ -58,7 +61,7 @@ function getPageNumbers(currentPage: number, totalPages: number): (number | stri
   }
 
   if (currentPage < totalPages - 2) {
-    pages.push('...');
+    pages.push("...");
   }
   pages.push(totalPages);
 
@@ -102,7 +105,7 @@ export function GenericTable<T>({
                 <th className="w-[36px] pl-4 py-[9px]">
                   <input
                     type="checkbox"
-                    className="w-[15px] h-[15px] rounded-[3px] border-slate-300 cursor-pointer accent-blue-500 block"
+                    className="w-[15px] h-[15px] rounded-full! border-slate-300 cursor-pointer accent-blue-500 block"
                     checked={allSelected}
                     ref={(el) => {
                       if (el) el.indeterminate = someSelected && !allSelected;
@@ -114,17 +117,27 @@ export function GenericTable<T>({
               {columns.map((col) => (
                 <th
                   key={col.id}
-                  className={`${col.width ?? ''} py-[9px] px-2.5 text-[10px] font-medium text-slate-400 uppercase tracking-widest ${
-                    col.sortable ? 'cursor-pointer select-none hover:text-slate-800 transition-colors' : ''
+                  className={`${col.width ?? ""} py-[9px] px-2.5 text-[10px] font-medium text-slate-400 uppercase tracking-widest ${
+                    col.sortable
+                      ? "cursor-pointer select-none hover:text-slate-800 transition-colors"
+                      : ""
                   }`}
-                  onClick={col.sortable && col.sortKey ? () => onSort?.(col.sortKey!) : undefined}
+                  onClick={
+                    col.sortable && col.sortKey
+                      ? () => onSort?.(col.sortKey!)
+                      : undefined
+                  }
                 >
                   {col.header}
                   {col.sortable && sort === col.sortKey && (
-                    <UnfoldMoreRoundedIcon sx={{ fontSize: 11, verticalAlign: '-1px' }} />
+                    <UnfoldMoreRoundedIcon
+                      sx={{ fontSize: 11, verticalAlign: "-1px" }}
+                    />
                   )}
                   {col.sortable && sort !== col.sortKey && (
-                    <UnfoldMoreRoundedIcon sx={{ fontSize: 11, verticalAlign: '-1px' }} />
+                    <UnfoldMoreRoundedIcon
+                      sx={{ fontSize: 11, verticalAlign: "-1px" }}
+                    />
                   )}
                 </th>
               ))}
@@ -133,7 +146,10 @@ export function GenericTable<T>({
           <tbody>
             {isLoading ? (
               Array.from({ length: loadingRows }).map((_, idx) => (
-                <tr key={idx} className="animate-pulse border-b border-slate-200">
+                <tr
+                  key={idx}
+                  className="animate-pulse border-b border-slate-200"
+                >
                   {selectable && (
                     <td className="pl-4 py-2.5">
                       <div className="w-4 h-4 bg-slate-200 rounded" />
@@ -159,7 +175,7 @@ export function GenericTable<T>({
                   <tr
                     key={key}
                     className={`border-b border-slate-200 cursor-pointer transition-colors ${
-                      sel ? 'bg-blue-thin' : 'hover:bg-slate-50'
+                      sel ? "bg-blue-thin" : "hover:bg-slate-50"
                     }`}
                     onClick={() => onRowClick?.(row)}
                     onContextMenu={(e) => onRowContextMenu?.(e, row)}
@@ -171,7 +187,7 @@ export function GenericTable<T>({
                       >
                         <input
                           type="checkbox"
-                          className="w-[15px] h-[15px] rounded-[3px] border-slate-300 cursor-pointer accent-blue-500 block"
+                          className="w-[15px] h-[15px] rounded-full! border-slate-300 cursor-pointer accent-blue-500 block"
                           checked={sel}
                           onChange={() => onToggleRow?.(rowKey(row))}
                         />
@@ -193,8 +209,9 @@ export function GenericTable<T>({
       {onPageChange && (
         <div className="px-5 py-2 border-t border-slate-200 flex items-center justify-between shrink-0 h-[44px]">
           <span className="text-[11.5px] text-slate-400">
-            Showing {total > 0 ? start + 1 : 0} - {Math.min(start + perPage, total)} of {total} result
-            {total !== 1 ? 's' : ''}
+            Showing {total > 0 ? start + 1 : 0} -{" "}
+            {Math.min(start + perPage, total)} of {total} result
+            {total !== 1 ? "s" : ""}
           </span>
           <div className="flex items-center gap-1">
             {showPagination && (
@@ -208,9 +225,12 @@ export function GenericTable<T>({
                 </button>
 
                 {getPageNumbers(currentPage, totalPages).map((page, i) => {
-                  if (page === '...') {
+                  if (page === "...") {
                     return (
-                      <span key={`dots-${i}`} className="px-1 text-slate-400 text-xs select-none">
+                      <span
+                        key={`dots-${i}`}
+                        className="px-1 text-slate-400 text-xs select-none"
+                      >
                         …
                       </span>
                     );
@@ -220,8 +240,8 @@ export function GenericTable<T>({
                       key={page}
                       className={`w-7 h-7 rounded-md border text-xs flex items-center justify-center transition-colors ${
                         page === currentPage
-                          ? 'bg-blue-thin text-blue-dark border-transparent font-medium'
-                          : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-800'
+                          ? "bg-blue-thin text-blue-dark border-transparent font-medium"
+                          : "bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-800"
                       }`}
                       onClick={() => onPageChange(page as number)}
                     >

@@ -308,8 +308,8 @@ export function CollectionsDisplayer({
         emptyState={
           <div className="p-10 text-center text-slate-400 flex flex-col items-center">
             <InformationBox
-              title="Collection vide"
-              description="Cette collection ne contient aucun fichier"
+              title="Information de la collection"
+              description="Aucun fichiers trouvés. "
               icon="search"
             />
           </div>

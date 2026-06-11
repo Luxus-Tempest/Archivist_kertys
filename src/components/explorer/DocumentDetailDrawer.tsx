@@ -12,7 +12,7 @@ import PictureAsPdfRoundedIcon from "@mui/icons-material/PictureAsPdfRounded";
 import AutorenewRoundedIcon from "@mui/icons-material/AutorenewRounded";
 import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRounded";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
-import EditRoundedIcon from "@mui/icons-material/EditRounded";
+import EditNoteIcon from "@mui/icons-material/EditNote";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import { useMetadata } from "../../hooks/useMetadata";
 import { useDocument } from "../../hooks/useDocument";
@@ -95,7 +95,9 @@ function PdfPreview({ url }: { url: string }) {
           .filter((e) => e.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
         if (visible.length > 0) {
-          const idx = pageRefs.current.indexOf(visible[0].target as HTMLDivElement);
+          const idx = pageRefs.current.indexOf(
+            visible[0].target as HTMLDivElement,
+          );
           if (idx !== -1) setCurrentPage(idx + 1);
         }
       },
@@ -108,7 +110,10 @@ function PdfPreview({ url }: { url: string }) {
   const scrollToPage = useCallback((n: number) => {
     const el = pageRefs.current[n - 1];
     if (el && scrollRef.current) {
-      scrollRef.current.scrollTo({ top: el.offsetTop - 16, behavior: "smooth" });
+      scrollRef.current.scrollTo({
+        top: el.offsetTop - 16,
+        behavior: "smooth",
+      });
     }
   }, []);
 
@@ -121,9 +126,15 @@ function PdfPreview({ url }: { url: string }) {
 
   const toggleFullscreen = () => {
     if (!document.fullscreenElement && containerRef.current) {
-      containerRef.current.requestFullscreen().then(() => setIsFullscreen(true)).catch(() => {});
+      containerRef.current
+        .requestFullscreen()
+        .then(() => setIsFullscreen(true))
+        .catch(() => {});
     } else {
-      document.exitFullscreen().then(() => setIsFullscreen(false)).catch(() => {});
+      document
+        .exitFullscreen()
+        .then(() => setIsFullscreen(false))
+        .catch(() => {});
     }
   };
 
@@ -152,14 +163,19 @@ function PdfPreview({ url }: { url: string }) {
               max={pageCount || 1}
               value={currentPage}
               onChange={(e) => {
-                const n = Math.max(1, Math.min(pageCount, Number(e.target.value)));
+                const n = Math.max(
+                  1,
+                  Math.min(pageCount, Number(e.target.value)),
+                );
                 setCurrentPage(n);
                 scrollToPage(n);
               }}
               className="w-6 text-center text-[11px] font-medium text-white bg-transparent outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             />
             <span className="text-[11px] text-slate-500">/</span>
-            <span className="text-[11px] text-slate-400 min-w-[12px]">{pageCount || "—"}</span>
+            <span className="text-[11px] text-slate-400 min-w-[12px]">
+              {pageCount || "—"}
+            </span>
           </div>
           <button
             onClick={() => scrollToPage(Math.min(pageCount, currentPage + 1))}
@@ -240,7 +256,9 @@ function PdfPreview({ url }: { url: string }) {
             {Array.from({ length: pageCount }).map((_, i) => (
               <div
                 key={i}
-                ref={(el) => { pageRefs.current[i] = el; }}
+                ref={(el) => {
+                  pageRefs.current[i] = el;
+                }}
                 style={{
                   boxShadow: "0 2px 20px rgba(0,0,0,0.5)",
                   borderRadius: "2px",
@@ -294,7 +312,9 @@ function PdfPreview({ url }: { url: string }) {
             />
           ))}
           {pageCount > 12 && (
-            <span className="text-[10px] text-slate-500 ml-1">+{pageCount - 12}</span>
+            <span className="text-[10px] text-slate-500 ml-1">
+              +{pageCount - 12}
+            </span>
           )}
         </div>
       )}
@@ -307,8 +327,10 @@ export function DocumentDetailDrawer({ doc, onClose, onToast }: Props) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedFields, setEditedFields] = useState<Record<string, any>>({});
 
-  const { activeRow, fetchMetadataByDocumentId, updateMetadataRow } = useMetadata();
-  const { file, fetchFileForPreview, downloadFile, clearFilePreview } = useDocument();
+  const { activeRow, fetchMetadataByDocumentId, updateMetadataRow } =
+    useMetadata();
+  const { file, fetchFileForPreview, downloadFile, clearFilePreview } =
+    useDocument();
 
   // ── KEY FIX: stable preview loading ──────────────────────────────────────
   //
@@ -454,13 +476,15 @@ export function DocumentDetailDrawer({ doc, onClose, onToast }: Props) {
 
           {/* Body */}
           <div className="flex flex-1 min-h-0 overflow-hidden">
-
             {/* Preview pane */}
             <div className="flex-1 flex flex-col min-w-0 overflow-hidden bg-[#404040]">
               {doc.isFolder ? (
                 <div className="flex-1 flex flex-col items-center justify-center gap-3 select-none">
                   <div className="w-20 h-20 rounded-2xl bg-blue-500/10 flex items-center justify-center">
-                    <FolderRoundedIcon sx={{ fontSize: 44 }} className="text-blue-300" />
+                    <FolderRoundedIcon
+                      sx={{ fontSize: 44 }}
+                      className="text-blue-300"
+                    />
                   </div>
                   <p className="text-sm font-medium text-slate-400">
                     Dossier — aucun aperçu disponible
@@ -483,10 +507,15 @@ export function DocumentDetailDrawer({ doc, onClose, onToast }: Props) {
               ) : previewFailed ? (
                 <div className="flex-1 flex flex-col items-center justify-center gap-3 p-8">
                   <div className="w-16 h-16 rounded-2xl bg-red-500/10 flex items-center justify-center">
-                    <PictureAsPdfRoundedIcon sx={{ fontSize: 32 }} className="text-red-400" />
+                    <PictureAsPdfRoundedIcon
+                      sx={{ fontSize: 32 }}
+                      className="text-red-400"
+                    />
                   </div>
                   <div className="text-center">
-                    <p className="text-sm font-semibold text-slate-300">Aperçu non disponible</p>
+                    <p className="text-sm font-semibold text-slate-300">
+                      Aperçu non disponible
+                    </p>
                     <p className="text-xs text-slate-500 mt-1">
                       Impossible de charger ce fichier.
                     </p>
@@ -505,7 +534,6 @@ export function DocumentDetailDrawer({ doc, onClose, onToast }: Props) {
             {/* Properties panel */}
             <div className="w-[300px] min-w-[300px] flex flex-col overflow-hidden bg-white border-l border-slate-200">
               <div className="flex-1 overflow-y-auto [scrollbar-width:thin] divide-y divide-slate-100">
-
                 {/* Metadata */}
                 <div>
                   <div className="sticky top-0 z-10 flex items-center justify-between px-4 py-2.5 bg-slate-50 border-b border-slate-100">
@@ -522,7 +550,11 @@ export function DocumentDetailDrawer({ doc, onClose, onToast }: Props) {
                   {activeRow.isLoading ? (
                     <div className="p-4 space-y-3 animate-pulse">
                       {[100, 75, 90, 60].map((w, i) => (
-                        <div key={i} className="h-3 bg-slate-100 rounded" style={{ width: `${w}%` }} />
+                        <div
+                          key={i}
+                          className="h-3 bg-slate-100 rounded"
+                          style={{ width: `${w}%` }}
+                        />
                       ))}
                     </div>
                   ) : activeRow.data ? (
@@ -532,7 +564,10 @@ export function DocumentDetailDrawer({ doc, onClose, onToast }: Props) {
                         .map((key) => {
                           const val = activeRow.data![key];
                           return (
-                            <div key={key} className="px-4 py-2.5 border-b border-slate-50 last:border-0">
+                            <div
+                              key={key}
+                              className="px-4 py-2.5 border-b border-slate-50 last:border-0"
+                            >
                               <span className="block text-[9.5px] font-bold text-slate-400 uppercase tracking-wider mb-1">
                                 {key}
                               </span>
@@ -540,9 +575,16 @@ export function DocumentDetailDrawer({ doc, onClose, onToast }: Props) {
                                 <input
                                   type="text"
                                   className="w-full text-[12px] border border-slate-200 rounded-md px-2.5 py-1.5 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-50 bg-slate-50/50 transition-all font-medium text-slate-700"
-                                  value={editedFields[key] !== undefined ? editedFields[key] : (val ?? "")}
+                                  value={
+                                    editedFields[key] !== undefined
+                                      ? editedFields[key]
+                                      : (val ?? "")
+                                  }
                                   onChange={(e) =>
-                                    setEditedFields({ ...editedFields, [key]: e.target.value })
+                                    setEditedFields({
+                                      ...editedFields,
+                                      [key]: e.target.value,
+                                    })
                                   }
                                 />
                               ) : (
@@ -560,7 +602,9 @@ export function DocumentDetailDrawer({ doc, onClose, onToast }: Props) {
                     </div>
                   ) : (
                     <div className="px-4 py-8 text-center">
-                      <p className="text-xs text-slate-400">Aucune métadonnée disponible</p>
+                      <p className="text-xs text-slate-400">
+                        Aucune métadonnée disponible
+                      </p>
                     </div>
                   )}
                 </div>
@@ -574,14 +618,19 @@ export function DocumentDetailDrawer({ doc, onClose, onToast }: Props) {
                   </div>
                   <div className="divide-y divide-slate-50">
                     <div className="flex items-center justify-between px-4 py-2.5">
-                      <span className="text-[11px] text-slate-400 shrink-0">Document ID</span>
+                      <span className="text-[11px] text-slate-400 shrink-0">
+                        Document ID
+                      </span>
                       <div className="flex items-center gap-1.5 min-w-0 ml-3">
                         <span className="text-[11px] font-medium text-slate-600 truncate font-mono">
                           {doc.docId}
                         </span>
                         <button
                           className="shrink-0 w-5 h-5 flex items-center justify-center rounded text-blue-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-                          onClick={() => { navigator.clipboard.writeText(doc.docId); onToast("ID copié !"); }}
+                          onClick={() => {
+                            navigator.clipboard.writeText(doc.docId);
+                            onToast("ID copié !");
+                          }}
                         >
                           <LinkRoundedIcon sx={{ fontSize: 12 }} />
                         </button>
@@ -589,26 +638,42 @@ export function DocumentDetailDrawer({ doc, onClose, onToast }: Props) {
                     </div>
                     {doc.size && (
                       <div className="flex items-center justify-between px-4 py-2.5">
-                        <span className="text-[11px] text-slate-400">Taille</span>
-                        <span className="text-[11px] font-medium text-slate-600 ml-3">{formatSize(doc.size)}</span>
+                        <span className="text-[11px] text-slate-400">
+                          Taille
+                        </span>
+                        <span className="text-[11px] font-medium text-slate-600 ml-3">
+                          {formatSize(doc.size)}
+                        </span>
                       </div>
                     )}
                     <div className="flex items-center justify-between px-4 py-2.5">
                       <span className="text-[11px] text-slate-400">Type</span>
-                      <span className="text-[11px] font-medium text-slate-600 ml-3">{doc.type}</span>
+                      <span className="text-[11px] font-medium text-slate-600 ml-3">
+                        {doc.type}
+                      </span>
                     </div>
                     <div className="flex items-center justify-between px-4 py-2.5">
-                      <span className="text-[11px] text-slate-400">Modifié le</span>
-                      <span className="text-[11px] font-medium text-slate-600 ml-3">{doc.rawDate}</span>
+                      <span className="text-[11px] text-slate-400">
+                        Modifié le
+                      </span>
+                      <span className="text-[11px] font-medium text-slate-600 ml-3">
+                        {doc.rawDate}
+                      </span>
                     </div>
                     <div className="flex items-center justify-between px-4 py-2.5">
                       <span className="text-[11px] text-slate-400">Auteur</span>
-                      <span className="text-[11px] font-medium text-slate-600 ml-3">{doc.author}</span>
+                      <span className="text-[11px] font-medium text-slate-600 ml-3">
+                        {doc.author}
+                      </span>
                     </div>
                     {doc.dept && (
                       <div className="flex items-center justify-between px-4 py-2.5">
-                        <span className="text-[11px] text-slate-400">Classe</span>
-                        <span className="text-[11px] font-medium text-slate-600 ml-3 capitalize">{doc.dept}</span>
+                        <span className="text-[11px] text-slate-400">
+                          Classe
+                        </span>
+                        <span className="text-[11px] font-medium text-slate-600 ml-3 capitalize">
+                          {doc.dept}
+                        </span>
                       </div>
                     )}
                   </div>
@@ -619,28 +684,34 @@ export function DocumentDetailDrawer({ doc, onClose, onToast }: Props) {
               <div className="shrink-0 px-3 py-3 border-t border-slate-200 bg-slate-50/60 flex gap-2">
                 {isEditing ? (
                   <>
-                    <button
+                    <Button
                       onClick={() => setIsEditing(false)}
-                      className="flex-1 py-2 border border-slate-300 text-slate-600 text-[12px] font-medium rounded-lg hover:bg-slate-100 transition-colors"
+                      variant="outline"
+                      className="w-full!"
                     >
                       Annuler
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       onClick={handleSave}
-                      className="flex-1 py-2 bg-blue-600 text-white text-[12px] font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-sm shadow-blue-200"
+                      variant="solid"
+                      className="w-full!"
+                      // icon={<SaveRoundedIcon sx={{ fontSize: 12 }} />}
+                      // iconPosition="left"
                     >
                       Enregistrer
-                    </button>
+                    </Button>
                   </>
                 ) : (
-                  <button
+                  <Button
+                    variant="lightSolid"
                     onClick={handleStartEdit}
                     disabled={!activeRow.data}
-                    className="flex-1 py-2 flex items-center justify-center gap-1.5 border border-slate-300 text-slate-600 text-[12px] font-medium rounded-lg hover:bg-slate-100 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                    icon={<EditNoteIcon sx={{ fontSize: 20 }} />}
+                    iconPosition="left"
+                    className="w-full!"
                   >
-                    <EditRoundedIcon sx={{ fontSize: 13 }} />
-                    Modifier les métadonnées
-                  </button>
+                    Modifier
+                  </Button>
                 )}
               </div>
             </div>

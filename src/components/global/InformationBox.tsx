@@ -12,7 +12,7 @@ export const InformationBox = ({ title, description, icon }: Props) => {
             <div className="w-16 h-16 mb-4 opacity-20">
                 <SvgIcon name={icon} width="100%" height="100%" />
             </div>
-            <p className="text-sm font-medium text-outline">{title}</p>
+            <p className="text-lg font-bold text-gray-950">{title}</p>
             <p className="text-xs text-outline-variant mt-1">{description}</p>
         </div>
     );

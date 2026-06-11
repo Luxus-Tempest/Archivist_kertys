@@ -16,12 +16,8 @@ export type ActionMenuItem = {
 
 export const DOCUMENT_ACTION_ITEMS: ActionMenuItem[] = [
   { id: 'open', label: 'Open', icon: <LaunchRoundedIcon sx={{ fontSize: 14 }} /> },
-  { id: 'rename', label: 'Rename', icon: <EditRoundedIcon sx={{ fontSize: 14 }} /> },
-  { id: 'share', label: 'Share', icon: <ShareRoundedIcon sx={{ fontSize: 14 }} /> },
-  { id: 'pin', label: 'Pin', icon: <PushPinRoundedIcon sx={{ fontSize: 14 }} /> },
-  { id: 'fav', label: 'Add to favorites', icon: <StarRoundedIcon sx={{ fontSize: 14 }} /> },
   { id: 'download', label: 'Download', icon: <DownloadRoundedIcon sx={{ fontSize: 14 }} />, dividerBefore: true },
-  { id: 'delete', label: 'Delete', icon: <DeleteRoundedIcon sx={{ fontSize: 14 }} />, dividerBefore: true, variant: 'danger' },
+  // { id: 'delete', label: 'Delete', icon: <DeleteRoundedIcon sx={{ fontSize: 14 }} />, dividerBefore: true, variant: 'danger' },
 ];
 
 type ActionsMenuProps = {
