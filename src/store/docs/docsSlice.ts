@@ -3,6 +3,26 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { ProcessingStatus } from '../../types/documents';
 import type { UploadResponse, HistoryResponse, SessionInfo } from '../../types/documents';
 
+export type DocumentFileFormat = 'pdf' | 'native';
+
+export const DOCUMENT_FILE_FORMAT = {
+  PREVIEW: 'pdf' as DocumentFileFormat,
+  DOWNLOAD: 'native' as DocumentFileFormat,
+} as const;
+
+export function getDocumentFileEndpoint(docId: string, format: DocumentFileFormat = DOCUMENT_FILE_FORMAT.PREVIEW) {
+  return `/docs/file/${docId}?format=${format}`;
+}
+
+interface DocumentFileState {
+  docId: string | null;
+  format: DocumentFileFormat | null;
+  objectUrl: string | null;
+  isLoading: boolean;
+  isDownloading: boolean;
+  error: string | null;
+}
+
 export interface StagedFileMetadata {
   id: string;
   name: string;
@@ -20,6 +40,7 @@ interface DocsState {
     isLoading: boolean;
     error: string | null;
   };
+  file: DocumentFileState;
 }
 
 // Récupération initiale depuis localStorage
@@ -32,7 +53,15 @@ const loadInitialState = (): DocsState => {
       totalCount: 0,
       isLoading: false,
       error: null
-    }
+    },
+    file: {
+      docId: null,
+      format: null,
+      objectUrl: null,
+      isLoading: false,
+      isDownloading: false,
+      error: null,
+    },
   };
 
   try {
@@ -47,7 +76,12 @@ const loadInitialState = (): DocsState => {
         history: {
           ...defaultState.history,
           ...(parsed.history || {})
-        }
+        },
+        file: {
+          ...defaultState.file,
+          ...(parsed.file || {}),
+          objectUrl: null,
+        },
       };
     }
   } catch (e) {
@@ -140,6 +174,35 @@ export const docsSlice = createSlice({
       state.history.isLoading = false;
       state.history.error = action.payload;
     },
+    setFileLoading: (state, action: PayloadAction<{ docId: string; format: DocumentFileFormat }>) => {
+      state.file.docId = action.payload.docId;
+      state.file.format = action.payload.format;
+      state.file.isLoading = true;
+      state.file.error = null;
+      state.file.objectUrl = null;
+    },
+    setFileSuccess: (state, action: PayloadAction<{ docId: string; format: DocumentFileFormat; objectUrl: string }>) => {
+      state.file.docId = action.payload.docId;
+      state.file.format = action.payload.format;
+      state.file.objectUrl = action.payload.objectUrl;
+      state.file.isLoading = false;
+      state.file.error = null;
+    },
+    setFileError: (state, action: PayloadAction<string>) => {
+      state.file.isLoading = false;
+      state.file.error = action.payload;
+      state.file.objectUrl = null;
+    },
+    clearFile: (state) => {
+      state.file.docId = null;
+      state.file.format = null;
+      state.file.objectUrl = null;
+      state.file.isLoading = false;
+      state.file.error = null;
+    },
+    setFileDownloading: (state, action: PayloadAction<boolean>) => {
+      state.file.isDownloading = action.payload;
+    },
   },
 });
 
@@ -156,6 +219,11 @@ export const {
   setHistoryLoading,
   setHistoryData,
   setHistoryError,
+  setFileLoading,
+  setFileSuccess,
+  setFileError,
+  clearFile,
+  setFileDownloading,
 } = docsSlice.actions;
 
 export default docsSlice.reducer;

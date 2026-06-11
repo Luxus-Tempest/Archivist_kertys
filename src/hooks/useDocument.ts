@@ -1,34 +1,54 @@
 import { useState, useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from '../store';
-import { fetchAuth } from '../utils/api';
+import { fetchAuth, fetchAuthBlob } from '../utils/api';
 import type { UploadResponse, HistoryResponse } from '../types/documents';
-import { setHistoryLoading, setHistoryData, setHistoryError } from '../store/docs/docsSlice';
+import {
+  setHistoryLoading,
+  setHistoryData,
+  setHistoryError,
+  setFileLoading,
+  setFileSuccess,
+  setFileError,
+  clearFile,
+  setFileDownloading,
+  getDocumentFileEndpoint,
+  DOCUMENT_FILE_FORMAT,
+} from '../store/docs/docsSlice';
+
+function triggerBrowserDownload(blob: Blob, fileName: string) {
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = fileName;
+  anchor.click();
+  URL.revokeObjectURL(url);
+}
 
 export function useDocument() {
   const dispatch = useAppDispatch();
   const [isUploading, setIsUploading] = useState(false);
   const [localError, setError] = useState<string | null>(null);
-  
-  const { history } = useAppSelector((state) => state.docs);
+
+  const { history, file } = useAppSelector((state) => state.docs);
 
   const uploadFiles = async (files: File[]): Promise<UploadResponse | null> => {
     setIsUploading(true);
     setError(null);
-    
+
     try {
       const formData = new FormData();
-      files.forEach(file => {
-        formData.append('files', file); 
+      files.forEach((fileItem) => {
+        formData.append('files', fileItem);
       });
-      
+
       const response = await fetchAuth('/docs/upload', {
         method: 'POST',
-        body: formData
+        body: formData,
       });
-      
+
       return response as UploadResponse;
     } catch (err: any) {
-      setError(err.message || "An error occurred during file upload.");
+      setError(err.message || 'An error occurred during file upload.');
       return null;
     } finally {
       setIsUploading(false);
@@ -40,30 +60,81 @@ export function useDocument() {
       const data = await fetchAuth('/docs/pendingSessions');
       return data.pendingSessions || [];
     } catch (err) {
-      console.error("Failed to fetch pending sessions:", err);
+      console.error('Failed to fetch pending sessions:', err);
       return [];
     }
   };
 
-  const getHistory = useCallback(async (params?: { offset?: number, limit?: number }) => {
-    const offset = params?.offset ?? 0;
-    const limit = params?.limit ?? 10;
+  const getHistory = useCallback(
+    async (params?: { offset?: number; limit?: number }) => {
+      const offset = params?.offset ?? 0;
+      const limit = params?.limit ?? 10;
 
-    dispatch(setHistoryLoading());
-    try {
-      const data = await fetchAuth(`/docs/user/sessions-infos?offset=${offset}&limit=${limit}`);
-      dispatch(setHistoryData(data as HistoryResponse));
-    } catch (err: any) {
-      dispatch(setHistoryError(err.message || "Failed to fetch history"));
+      dispatch(setHistoryLoading());
+      try {
+        const data = await fetchAuth(`/docs/user/sessions-infos?offset=${offset}&limit=${limit}`);
+        dispatch(setHistoryData(data as HistoryResponse));
+      } catch (err: any) {
+        dispatch(setHistoryError(err.message || 'Failed to fetch history'));
+      }
+    },
+    [dispatch],
+  );
+
+  const clearFilePreview = useCallback(() => {
+    if (file.objectUrl) {
+      URL.revokeObjectURL(file.objectUrl);
     }
-  }, [dispatch]);
+    dispatch(clearFile());
+  }, [dispatch, file.objectUrl]);
+
+  const fetchFileForPreview = useCallback(
+    async (docId: string) => {
+      if (file.objectUrl) {
+        URL.revokeObjectURL(file.objectUrl);
+      }
+
+      dispatch(setFileLoading({ docId, format: DOCUMENT_FILE_FORMAT.PREVIEW }));
+      try {
+        const blob = await fetchAuthBlob(getDocumentFileEndpoint(docId, DOCUMENT_FILE_FORMAT.PREVIEW));
+        const objectUrl = URL.createObjectURL(blob);
+        dispatch(setFileSuccess({ docId, format: DOCUMENT_FILE_FORMAT.PREVIEW, objectUrl }));
+        return objectUrl;
+      } catch (err: any) {
+        dispatch(setFileError(err.message || 'Impossible de charger le fichier'));
+        return null;
+      }
+    },
+    [dispatch, file.objectUrl],
+  );
+
+  const downloadFile = useCallback(
+    async (docId: string, fileName: string) => {
+      dispatch(setFileDownloading(true));
+      try {
+        const blob = await fetchAuthBlob(getDocumentFileEndpoint(docId, DOCUMENT_FILE_FORMAT.DOWNLOAD));
+        triggerBrowserDownload(blob, fileName);
+        return true;
+      } catch (err) {
+        console.error('downloadFile error:', err);
+        return false;
+      } finally {
+        dispatch(setFileDownloading(false));
+      }
+    },
+    [dispatch],
+  );
 
   return {
     uploadFiles,
     fetchPendingSessions,
     getHistory,
+    fetchFileForPreview,
+    downloadFile,
+    clearFilePreview,
     history,
+    file,
     isUploading,
-    error: localError
+    error: localError,
   };
 }
